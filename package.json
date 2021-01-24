@@ -20,6 +20,7 @@
   "homepage": "https://github.com/litvinenkoAlexlit/961239-typoteka-3#readme",
   "devDependencies": {
     "eslint": "7.18.0",
-    "eslint-config-htmlacademy": "2.0.0"
-  }
+    "eslint-config-htmlacademy": "1.0.1"
+  },
+  "dependencies": {}
 }
