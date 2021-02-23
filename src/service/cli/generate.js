@@ -1,6 +1,7 @@
 'use strict';
 
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
+const chalk = require(`chalk`);
 const {EXIT_CODE} = require(`./../constants`);
 const {getRandomInt, shuffle} = require(`./../utils/utils`);
 
@@ -78,16 +79,15 @@ const generatePublications = (count) => {
   return JSON.stringify(new Array(count).fill({}).map(generatePublication));
 };
 
-const writeMock = (data) => {
-  fs.writeFile(FILENAME, data, (err) => {
-    if (err) {
-      console.error(NOT_WORKING_TEXT);
-      process.exit(EXIT_CODE.ERROR);
-
-    }
-    console.info(SUCCESS_TEXT);
+const writeMock = async (data) => {
+  try {
+    await fs.writeFile(FILENAME, data);
+    console.info(chalk.green(SUCCESS_TEXT));
     process.exit(EXIT_CODE.SUCCESS);
-  });
+  } catch (err) {
+    console.error(chalk.red(NOT_WORKING_TEXT));
+    process.exit(EXIT_CODE.ERROR);
+  }
 };
 
 const createMockData = (param) => {
@@ -99,7 +99,7 @@ const createMockData = (param) => {
   }
 
   if (count > MAX_MOCK_COUNT) {
-    console.error(MANY_PUBL_TEXT);
+    console.error(chalk.red(MANY_PUBL_TEXT));
     process.exit(EXIT_CODE.ERROR);
   }
   const mock = generatePublications(count);
