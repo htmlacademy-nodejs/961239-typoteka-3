@@ -8,9 +8,29 @@ const EXIT_CODE = {
   ERROR: 1
 };
 
+const URL = {
+  BASE: `/`,
+  REGISTER: `/register`,
+  LOGIN: `/login`,
+  MY: `/my`,
+  SEARCH: `/search`,
+  CATEGORY: `/categories`,
+  ARTICLES: `/articles`,
+  ARTICLESURL: {
+    CATEGORY: `/category`,
+    ID: `/:id`,
+    ADD: `/add`,
+    EDIT: `/edit`
+  },
+  MYURLS: {
+    COMMENTS: `/comments`
+  }
+};
+
 module.exports = {
   DEFAULT_COMMAND,
   USER_ARVG_INDEX,
   NOT_COMMAND_TEXT,
-  EXIT_CODE
+  EXIT_CODE,
+  URL
 };
