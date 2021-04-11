@@ -4,11 +4,11 @@ const {Router} = require(`express`);
 const {URL} = require(`./../../service/constants`);
 const baseRouter = new Router();
 
-baseRouter.get(URL.BASE, (request, response) => response.send(URL.BASE));
-baseRouter.get(URL.LOGIN, (request, response) => response.send(URL.LOGIN));
-baseRouter.get(URL.REGISTER, (request, response) => response.send(URL.REGISTER));
-baseRouter.get(URL.CATEGORY, (request, response) => response.sebd(URL.CATEGORIES));
-baseRouter.get(URL.MY, (request, response) => response.send(URL.MY));
-baseRouter.get(URL.SEARCH, (request, response) => response.send(URL.SEARCH));
+baseRouter.get(URL.BASE, (request, response) => response.render(`main`));
+baseRouter.get(URL.LOGIN, (request, response) => response.render(`login`));
+baseRouter.get(URL.REGISTER, (request, response) => response.render(`sign-up`));
+baseRouter.get(URL.CATEGORY, (request, response) => response.render(`all-categories`));
+baseRouter.get(URL.MY, (request, response) => response.render(`my`));
+baseRouter.get(URL.SEARCH, (request, response) => response.render(`search`));
 
 module.exports = baseRouter;
