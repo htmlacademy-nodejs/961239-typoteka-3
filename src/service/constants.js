@@ -24,7 +24,8 @@ const URL = {
   },
   MYURLS: {
     COMMENTS: `/comments`
-  }
+  },
+  POSTS: `/posts`
 };
 
 module.exports = {
