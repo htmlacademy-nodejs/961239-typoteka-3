@@ -15,7 +15,6 @@ const app = express();
 
 
 app.use(express.static(PUBLIC_PATH));
-app.use(URL.ARTICLES, express.static(PUBLIC_PATH));
 app.set(`views`, TEMPLATE_PATH);
 app.set(`view engine`, `pug`);
 app.use(URL.ARTICLES, articlesRouter);
