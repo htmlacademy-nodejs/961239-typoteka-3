@@ -26,7 +26,12 @@ const URL = {
     COMMENTS: `/comments`
   },
   API: {
-    POSTS: `/api/posts`
+    ARTICLES: `/api/articles`,
+    ARTICLEID: `api/articles/:articleId`,
+    CATEGORIES: `/api/categories`,
+    COMMENTS: `/api/articles/:articleId/comments`,
+    COMMENTID: `/api/articles/:articleId/comments/:commentId`,
+    SEARCH: `/api/search?query=`
   }
 };
 
