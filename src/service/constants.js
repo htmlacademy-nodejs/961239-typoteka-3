@@ -26,7 +26,7 @@ const URL = {
     COMMENTS: `/comments`
   },
   API: {
-    POSTS: `/posts`
+    POSTS: `/api/posts`
   }
 };
 
