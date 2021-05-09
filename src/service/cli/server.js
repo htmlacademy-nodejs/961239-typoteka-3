@@ -3,9 +3,10 @@
 const fs = require(`fs`).promises;
 const {URL} = require(`./../constants`);
 const express = require(`express`);
+const path = require(`path`);
 
 const DEFAULT_PORT = 3000;
-const MOCK_DATA_PATH = `./../../mock.json`;
+const MOCK_DATA_PATH = path.resolve(__dirname, `./../../../mock.json`);
 
 const NOT_FOUND_MESSAGE = `Not found`;
 
@@ -17,7 +18,7 @@ const app = express();
 app.use(express.json());
 
 
-app.get(URL.POSTS, async (request, response) => {
+app.get(URL.API.POSTS, async (request, response) => {
   const mockData = await fs.readFile(MOCK_DATA_PATH, `utf-8`);
   const mockDataArray = JSON.parse(mockData);
   response.json(mockDataArray);

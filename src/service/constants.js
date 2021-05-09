@@ -24,6 +24,9 @@ const URL = {
   },
   MYURLS: {
     COMMENTS: `/comments`
+  },
+  API: {
+    POSTS: `/posts`
   }
 };
 
