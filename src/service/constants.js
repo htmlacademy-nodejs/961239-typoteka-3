@@ -31,7 +31,7 @@ const URL = {
     CATEGORIES: `/api/categories`,
     COMMENTS: `/api/articles/:articleId/comments`,
     COMMENTID: `/api/articles/:articleId/comments/:commentId`,
-    SEARCH: `/api/search?query=`
+    SEARCH: `/api/search`
   }
 };
 

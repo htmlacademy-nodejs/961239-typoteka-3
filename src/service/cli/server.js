@@ -12,10 +12,14 @@ const MOCK_DATA_PATH = path.resolve(__dirname, `./../../../mock.json`);
 const Messages = {
   NOT_FOUND: `Not found`,
   NOT_FOUND_ARTICLE: `Article not found`,
+  NOT_FOUND_COMMENT: `Comment not found`,
   BAD_REQUEST: `Invalid request params`,
   ARTICLE_CREATE: `Article created`,
   ARTICLE_EDIT: `Article edited`,
-  ARTICLE_DELETE: `Article deleted`
+  ARTICLE_DELETE: `Article deleted`,
+  COMMENT_ADD: `Comment added`,
+  COMMENT_DELETE: `Comment deleted`,
+  SERVER_ERROR: `Something went wrong`
 };
 
 const StatusCode = {
@@ -96,6 +100,46 @@ const deleteArticle = (articleId) => {
   return {code: StatusCode.OK, message: Messages.ARTICLE_DELETE};
 };
 
+const findComments = (articleId) => {
+  const articleIndex = readingData.findIndex((elem) => articleId === elem.id);
+  if (articleIndex === -1) {
+    return {code: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_ARTICLE};
+  }
+  return {code: StatusCode.OK, content: readingData[articleIndex].comments};
+};
+
+const addComment = (articleId, data) => {
+  const articleIndex = readingData.findIndex((elem) => articleId === elem.id);
+  if (articleIndex === -1) {
+    return {code: StatusCode.NOTFOUND, message: Messages.NOT_FOUND_ARTICLE};
+  }
+  if (data.text) {
+    readingData[articleIndex].comments.push({
+      id: nanoid(6),
+      text: data.text
+    });
+    return {code: StatusCode.OK, message: Messages.COMMENT_ADD};
+  }
+  return {code: StatusCode.BADREQUEST, message: Messages.BAD_REQUEST};
+};
+
+const deleteComment = (articleId, commentId) => {
+  const articleIndex = readingData.findIndex((elem) => articleId === elem.id);
+  if (articleIndex === -1) {
+    return {code: StatusCode.NOTFOUND, message: Messages.NOT_FOUND_ARTICLE};
+  }
+  const commentIndex = readingData[articleIndex].comments.findIndex((elem) => commentId === elem.id);
+  if (commentIndex === -1) {
+    return {code: StatusCode.NOTFOUND, message: Messages.NOT_FOUND_COMMENT};
+  }
+  readingData[articleIndex].comments.splice(commentIndex, 1);
+  return {code: StatusCode.OK, message: Messages.COMMENT_DELETE};
+};
+
+const searchArticle = (query) => {
+  return readingData.filter((elem) => elem.title.indexOf(query) !== -1);
+};
+
 const checkArticle = (articleData) =>
   articleData.title && articleData.fullText && articleData.createDate && articleData.category;
 
@@ -126,9 +170,37 @@ app.delete(URL.API.ARTICLEID, (request, response) => {
   return response.status(result.code).send(result.message);
 });
 
+app.get(URL.API.COMMENTS, (request, response) => {
+  const result = findComments(request.params.articleId);
+  return response.status(result.code).send(result.content);
+});
+
+app.post(URL.API.COMMENTS, (request, response) => {
+  const result = addComment(request.params.articleId, request.body);
+  return response.status(result.code).send(result.message);
+});
+
+app.delete(URL.API.COMMENTID, (request, response) => {
+  const result = deleteComment(request.params.articleId, request.params.commentId);
+  return response.status(result.code).send(result.message);
+});
+
+app.get(URL.API.SEARCH, (request, response) => {
+  const foundArticles = searchArticle(request.query.query);
+  return foundArticles.length ? response.status(StatusCode.OK).send(foundArticles) :
+    response.status(StatusCode.NOTFOUND).send(Messages.NOT_FOUND);
+});
+
 app.use((request, response) => response
 .status(StatusCode.NOTFOUND).send(Messages.NOT_FOUND)
 );
+
+// next добавляем для того, чтобы не вызывать дефолтный обработчик 500й
+// eslint-disable-next-line
+app.use((error, request, response, next) => {
+  console.error(error.stack);
+  return response.status(StatusCode.SERVERERROR).send(Messages.SERVER_ERROR);
+});
 
 
 module.exports = {
