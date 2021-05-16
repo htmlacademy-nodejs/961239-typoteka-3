@@ -2,12 +2,14 @@
 
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
+const {nanoid} = require(`nanoid`);
 const {EXIT_CODE} = require(`./../constants`);
 const {getRandomInt, shuffle} = require(`./../utils/utils`);
 
 const TITLES_PATH = `./../data/titles.txt`;
 const CATEGORIES_PATH = `./../data/categories.txt`;
 const SENTENCES_PATH = `./../data/sentences.txt`;
+const COMMENTS_PATH = `./../data/comments.txt`;
 
 const FILENAME = `./../../mock.json`;
 const DEFAULT_MOCK_COUNT = 1;
@@ -26,19 +28,30 @@ const readMockData = async (path) => {
   return mockData.split(`\n`);
 };
 
-const generatePublication = (TITLE_PUBL, ANNOUNCE_PUBL, CATEGORY_PUBL) => ({
+const generateMockComments = (commentsList, count) => {
+  const comments = new Array(count).fill(` `).map(() =>({
+    id: nanoid(6),
+    text: commentsList[getRandomInt(0, commentsList.length - 1)]
+  }));
+  return comments;
+};
+
+const generatePublication = (TITLE_PUBL, ANNOUNCE_PUBL, CATEGORY_PUBL, COMMENTS_PUBL) => ({
+  id: nanoid(6),
   title: TITLE_PUBL[getRandomInt(0, TITLE_PUBL.length - 1)],
   announce: shuffle(ANNOUNCE_PUBL).slice(0, getRandomInt(1, ANNOUNCE_MAX_COUNT)).join(` `),
   fullText: shuffle(ANNOUNCE_PUBL).slice(0, getRandomInt(1, ANNOUNCE_PUBL.length)).join(` `),
   createDate: new Date(getRandomInt(LOW_DATE, NOW_DATE)),
-  category: shuffle(CATEGORY_PUBL).slice(getRandomInt(0, CATEGORY_PUBL.length - 1))
+  category: shuffle(CATEGORY_PUBL).slice(getRandomInt(0, CATEGORY_PUBL.length - 1)),
+  comments: generateMockComments(COMMENTS_PUBL, getRandomInt(0, COMMENTS_PUBL.length))
 });
 
 const generatePublications = async (count) => {
   const TITLE_PUBL = await readMockData(TITLES_PATH);
   const ANNOUNCE_PUBL = await readMockData(SENTENCES_PATH);
   const CATEGORY_PUBL = await readMockData(CATEGORIES_PATH);
-  return JSON.stringify(new Array(count).fill({}).map(() => generatePublication(TITLE_PUBL, ANNOUNCE_PUBL, CATEGORY_PUBL)));
+  const COMMENTS_PUBL = await readMockData(COMMENTS_PATH);
+  return JSON.stringify(new Array(count).fill({}).map(() => generatePublication(TITLE_PUBL, ANNOUNCE_PUBL, CATEGORY_PUBL, COMMENTS_PUBL)));
 };
 
 const writeMock = async (data) => {
@@ -72,4 +85,3 @@ module.exports = {
   name: `--generate`,
   run: createMockData
 };
-
