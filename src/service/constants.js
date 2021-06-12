@@ -26,13 +26,36 @@ const URL = {
     COMMENTS: `/comments`
   },
   API: {
-    ARTICLES: `/api/articles`,
-    ARTICLEID: `/api/articles/:articleId`,
-    CATEGORIES: `/api/categories`,
-    COMMENTS: `/api/articles/:articleId/comments`,
-    COMMENTID: `/api/articles/:articleId/comments/:commentId`,
-    SEARCH: `/api/search`
+    PREFIX: `/api`,
+    BASEROUTE: `/`,
+    ARTICLESROUTE: `/articles`,
+    ARTICLEID: `/:articleId`,
+    CATEGORIESROUTE: `/categories`,
+    COMMENTS: `/:articleId/comments`,
+    COMMENTID: `/:articleId/comments/:commentId`,
+    SEARCHROUTE: `/search`
   }
+};
+
+const Messages = {
+  NOT_FOUND: `Not found`,
+  NOT_FOUND_ARTICLE: `Article not found`,
+  NOT_FOUND_COMMENT: `Comment not found`,
+  BAD_REQUEST: `Invalid request params`,
+  ARTICLE_CREATE: `Article created`,
+  ARTICLE_EDIT: `Article edited`,
+  ARTICLE_DELETE: `Article deleted`,
+  COMMENT_ADD: `Comment added`,
+  COMMENT_DELETE: `Comment deleted`,
+  SERVER_ERROR: `Something went wrong`
+};
+
+const StatusCode = {
+  OK: `200`,
+  CREATED: `201`,
+  BADREQUEST: `400`,
+  NOTFOUND: `404`,
+  SERVERERROR: `500`
 };
 
 module.exports = {
@@ -40,5 +63,12 @@ module.exports = {
   USER_ARVG_INDEX,
   NOT_COMMAND_TEXT,
   EXIT_CODE,
-  URL
+  URL,
+  Messages,
+  StatusCode
+};
+
+module.exports.Env = {
+  DEVELOPMENT: `development`,
+  PRODUCTION: `production`
 };

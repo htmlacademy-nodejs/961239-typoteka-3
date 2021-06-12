@@ -4,7 +4,7 @@ const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 const {nanoid} = require(`nanoid`);
 const {EXIT_CODE} = require(`./../constants`);
-const {getRandomInt, shuffle} = require(`./../utils/utils`);
+const {getRandomInt, shuffle} = require(`./../utils/dev-utils`);
 
 const TITLES_PATH = `./../data/titles.txt`;
 const CATEGORIES_PATH = `./../data/categories.txt`;

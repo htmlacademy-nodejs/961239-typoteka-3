@@ -4,5 +4,6 @@ parserOptions:
 env:
   es6: true
   node: true
+  jest/globals: true
 
-extends: 'htmlacademy/node'
+extends: ['htmlacademy/node', 'plugin:jest/style']
