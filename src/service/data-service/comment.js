@@ -14,7 +14,7 @@ class CommentService {
   getAll(articleId) {
     const articleIndex = this._articles.findIndex((elem) => articleId === elem.id);
     if (articleIndex === -1) {
-      return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_article};
+      return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_ARTICLE};
     }
     return {status: StatusCode.OK, content: this._articles[articleIndex].comments};
   }
@@ -23,7 +23,7 @@ class CommentService {
     const {articleId, message} = commentData;
     const articleIndex = this._articles.findIndex((elem) => articleId === elem.id);
     if (articleIndex === -1) {
-      return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_article};
+      return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_ARTICLE};
     }
     if (message.text) {
       this._articles[articleIndex].comments.push({
@@ -39,7 +39,7 @@ class CommentService {
     const {articleId, commentId} = requestData;
     const articleIndex = this._articles.findIndex((elem) => articleId === elem.id);
     if (articleIndex === -1) {
-      return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_article};
+      return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_ARTICLE};
     }
     const commentIndex = this._articles[articleIndex].comments.findIndex((elem) => commentId === elem.id);
     if (commentIndex === -1) {

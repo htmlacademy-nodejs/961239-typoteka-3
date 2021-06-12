@@ -44,8 +44,6 @@ class ArticleService {
   edit(articleData) {
     const {data, articleId} = articleData;
     const articleIndex = this._articles.findIndex((elem) => articleId === elem.id);
-    console.log(articleId);
-    console.log(this._articles);
     if (articleIndex === -1) {
       return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_ARTICLE};
     }
