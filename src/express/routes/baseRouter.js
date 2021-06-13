@@ -3,8 +3,14 @@
 const {Router} = require(`express`);
 const {URL} = require(`./../../service/constants`);
 const baseRouter = new Router();
+const {getAPI} = require(`./../api`);
 
-baseRouter.get(URL.BASE, (request, response) => response.render(`main`));
+const api = getAPI();
+
+baseRouter.get(URL.BASE, async (request, response) => {
+  const articles = await api.getArticles();
+  response.render(`main`, {articles});
+});
 baseRouter.get(URL.LOGIN, (request, response) => response.render(`login`));
 baseRouter.get(URL.REGISTER, (request, response) => response.render(`sign-up`));
 baseRouter.get(URL.CATEGORY, (request, response) => response.render(`all-categories`));
