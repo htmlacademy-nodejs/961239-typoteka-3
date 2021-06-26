@@ -16,3 +16,6 @@ build/
 
 #Файл с моковыми данными
 mock.json
+
+#Загруженные изображения
+src/express/upload

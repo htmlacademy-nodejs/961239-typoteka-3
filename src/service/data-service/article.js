@@ -34,6 +34,7 @@ class ArticleService {
         fullText: articleData.fullText,
         createDate: articleData.createDate,
         category: articleData.category,
+        image: articleData.image || null,
         comments: []
       });
       return {status: StatusCode.CREATED, content: Messages.ARTICLE_CREATE};
@@ -52,7 +53,8 @@ class ArticleService {
         title: data.title,
         announce: data.announce,
         fullText: data.fullText,
-        category: data.category
+        category: data.category,
+        image: data.image || null
       };
       return {status: StatusCode.OK, content: Messages.ARTICLE_EDIT};
     }

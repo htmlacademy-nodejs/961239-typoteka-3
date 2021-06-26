@@ -6,7 +6,12 @@ block content
       .search-page__wrapper
         h1 Поиск
         .search.search-page__form
-          form(action='#' method='get')
+          form.search(method="get" action="/search" autocomplete="off")
             label
-              input(type='text' name='search' placeholder='Что ищем?')
+              input(type='text' name='query' placeholder='Что ищем?' value=query)
             button.search__button.button.button--transparent(type='submit') Найти
+          each article in searchResult
+            .search__result
+              time.search__date(datetime=article.createDate) #{moment(article.createDate).format(`DD.MM.YYYY hh:mm`)}</time>
+                a.search__link
+                  | #{article.title}

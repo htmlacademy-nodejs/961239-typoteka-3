@@ -27,12 +27,23 @@ class API {
     return this._load(`/search`, {params: {query}});
   }
 
-  async getCategories() {
-    return this._load(`/category`);
+  getComments(id) {
+    return this._load(`/articles/${id}/comments`);
   }
 
-  async createArticle(data) {
+  getCategories() {
+    return this._load(`/categories`);
+  }
+
+  createArticle(data) {
     return this._load(`/articles`, {
+      method: `POST`,
+      data
+    });
+  }
+
+  editArticle(data, id) {
+    return this._load(`/articles/${id}`, {
       method: `POST`,
       data
     });
