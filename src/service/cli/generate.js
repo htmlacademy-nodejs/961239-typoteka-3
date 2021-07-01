@@ -1,17 +1,18 @@
 'use strict';
 
 const fs = require(`fs`).promises;
+const path = require(`path`);
 const chalk = require(`chalk`);
 const {nanoid} = require(`nanoid`);
 const {EXIT_CODE} = require(`./../constants`);
 const {getRandomInt, shuffle} = require(`./../utils/dev-utils`);
 
-const TITLES_PATH = `./../data/titles.txt`;
-const CATEGORIES_PATH = `./../data/categories.txt`;
-const SENTENCES_PATH = `./../data/sentences.txt`;
-const COMMENTS_PATH = `./../data/comments.txt`;
+const TITLES_PATH = path.resolve(__dirname, `./../../data/titles.txt`);
+const CATEGORIES_PATH = path.resolve(__dirname, `./../../data/categories.txt`);
+const SENTENCES_PATH = path.resolve(__dirname, `./../../data/sentences.txt`);
+const COMMENTS_PATH = path.resolve(__dirname, `./../../data/comments.txt`);
 
-const FILENAME = `./../../mock.json`;
+const FILENAME = path.resolve(__dirname, `./../../mock.json`);
 const DEFAULT_MOCK_COUNT = 1;
 const MAX_MOCK_COUNT = 1000;
 
@@ -23,8 +24,8 @@ const ANNOUNCE_MAX_COUNT = 5;
 const NOW_DATE = new Date(Date.now());
 const LOW_DATE = new Date(NOW_DATE.getFullYear(), NOW_DATE.getMonth() - 3, NOW_DATE.getDay());
 
-const readMockData = async (path) => {
-  const mockData = await fs.readFile(path, `utf-8`);
+const readMockData = async (dataPath) => {
+  const mockData = await fs.readFile(dataPath, `utf-8`);
   return mockData.split(`\n`);
 };
 
@@ -42,6 +43,7 @@ const generatePublication = (TITLE_PUBL, ANNOUNCE_PUBL, CATEGORY_PUBL, COMMENTS_
   announce: shuffle(ANNOUNCE_PUBL).slice(0, getRandomInt(1, ANNOUNCE_MAX_COUNT)).join(` `),
   fullText: shuffle(ANNOUNCE_PUBL).slice(0, getRandomInt(1, ANNOUNCE_PUBL.length)).join(` `),
   createDate: new Date(getRandomInt(LOW_DATE, NOW_DATE)),
+  image: `example0${getRandomInt(1, 4)}.jpg`,
   category: shuffle(CATEGORY_PUBL).slice(getRandomInt(0, CATEGORY_PUBL.length - 1)),
   comments: generateMockComments(COMMENTS_PUBL, getRandomInt(0, COMMENTS_PUBL.length))
 });

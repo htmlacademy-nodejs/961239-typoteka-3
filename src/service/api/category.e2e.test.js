@@ -203,7 +203,6 @@ category(app, new CategoryService(mockData));
 
 
 describe(`API returns all categories`, () => {
-
   let response;
 
   beforeAll(async () => {
