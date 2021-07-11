@@ -44,7 +44,7 @@ const generatePublication = (TITLE_PUBL, ANNOUNCE_PUBL, CATEGORY_PUBL, COMMENTS_
   fullText: shuffle(ANNOUNCE_PUBL).slice(0, getRandomInt(1, ANNOUNCE_PUBL.length)).join(` `),
   createDate: new Date(getRandomInt(LOW_DATE, NOW_DATE)),
   image: `example0${getRandomInt(1, 4)}.jpg`,
-  category: shuffle(CATEGORY_PUBL).slice(getRandomInt(0, CATEGORY_PUBL.length - 1)),
+  categories: shuffle(CATEGORY_PUBL).slice(getRandomInt(0, CATEGORY_PUBL.length - 1)),
   comments: generateMockComments(COMMENTS_PUBL, getRandomInt(0, COMMENTS_PUBL.length))
 });
 

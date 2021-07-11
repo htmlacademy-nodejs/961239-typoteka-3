@@ -9,15 +9,15 @@ class CategoryService {
   }
 
   findAll() {
-    const categories = [];
-    this._articles.forEach((elem) => {
-      elem.category.forEach((elemCategory) => {
-        if (!categories.includes(elemCategory)) {
-          categories.push(elemCategory);
+    const foundCategories = [];
+    this._articles.forEach(({categories}) => {
+      categories.forEach((elemCategory) => {
+        if (!foundCategories.includes(elemCategory)) {
+          foundCategories.push(elemCategory);
         }
       });
     });
-    return {status: StatusCode.OK, content: categories};
+    return {status: StatusCode.OK, content: foundCategories};
   }
 }
 
