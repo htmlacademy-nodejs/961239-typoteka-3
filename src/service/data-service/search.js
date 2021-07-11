@@ -10,8 +10,9 @@ class SearchService {
 
   findArticles(query) {
     const foundarticles = this._articles.filter((elem) => elem.title.indexOf(query) !== -1);
-    return foundarticles.length ? {status: StatusCode.OK, content: foundarticles} :
-      {status: StatusCode.NOTFOUND, content: Messages.NO_RESULT};
+    return foundarticles.length
+      ? {status: StatusCode.OK, content: foundarticles}
+      : {status: StatusCode.NOTFOUND, content: Messages.NO_RESULT};
   }
 }
 

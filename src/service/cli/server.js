@@ -50,7 +50,7 @@ module.exports = {
 
     } catch (err) {
       logger.error(`An error occurred: ${err.message}`);
-      process.exit(1);
+      return process.exit(1);
     }
   }
 };

@@ -33,7 +33,7 @@ class ArticleService {
         announce: articleData.announce,
         fullText: articleData.fullText,
         createDate: articleData.createDate,
-        category: articleData.category,
+        categories: articleData.categories,
         image: articleData.image || null,
         comments: []
       });
@@ -53,7 +53,7 @@ class ArticleService {
         title: data.title,
         announce: data.announce,
         fullText: data.fullText,
-        category: data.category,
+        categories: data.categories,
         image: data.image || null
       };
       return {status: StatusCode.OK, content: Messages.ARTICLE_EDIT};
@@ -71,7 +71,7 @@ class ArticleService {
   }
 
   _checkArticle(articleData) {
-    return articleData.title && articleData.fullText && articleData.createDate && articleData.category;
+    return articleData.title && articleData.fullText && articleData.createDate && articleData.categories;
   }
 }
 
