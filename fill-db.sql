@@ -65,7 +65,7 @@ VALUES (
   'example07.jpg',
   2
   );
-ALTER TABLE comments ENABLE TRIGGER ALL;
+ALTER TABLE users ENABLE TRIGGER ALL;
 
 ALTER TABLE comments DISABLE TRIGGER ALL;
 INSERT INTO comments (user_id, article_id, date, message)
