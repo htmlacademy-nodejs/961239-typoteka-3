@@ -1,8 +1,10 @@
+-- добавление ролей
 INSERT INTO roles (name)
 VALUES ('guest'),
 ('reader'),
 ('author');
 
+-- добавление статей
 INSERT INTO articles (title, created_date, announce, full_text, image)
 VALUES (
   'Обзор новейшего смартфона',
@@ -24,6 +26,7 @@ VALUES (
   'Альбом стал настоящим открытием года. Мощные гитарные рифы и скоростные соло-партии не дадут заскучать. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле? Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике.',
   'example03.jpg');
 
+-- добавление категорий
 INSERT INTO categories (name)
 VALUES ('IT'),
   ('Железо'),
@@ -32,6 +35,7 @@ VALUES ('IT'),
   ('Деревья'),
   ('Кино');
 
+-- добавление пользователей
 ALTER TABLE users DISABLE TRIGGER ALL;
 INSERT INTO users (email, firstname, lastname, password, avatar, role_id)
 VALUES (
@@ -67,6 +71,7 @@ VALUES (
   );
 ALTER TABLE users ENABLE TRIGGER ALL;
 
+-- добавление комментариев
 ALTER TABLE comments DISABLE TRIGGER ALL;
 INSERT INTO comments (user_id, article_id, date, message)
 VALUES (
@@ -107,6 +112,7 @@ VALUES (
   );
 ALTER TABLE comments ENABLE TRIGGER ALL;
 
+-- добавление связей между категориями и статьями
 ALTER TABLE articles_categories DISABLE TRIGGER ALL;
 INSERT INTO articles_categories (category_id, article_id)
 VALUES (
