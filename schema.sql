@@ -23,11 +23,16 @@ CREATE TABLE users
 CREATE TABLE articles
 (
     id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    author_id int NOT NULL,
     title character varying(250) NOT NULL,
     created_date timestamp DEFAULT current_timestamp,
     announce character varying(250) NOT NULL,
     full_text character varying(1000),
     image text
+    CONSTRAINT authors FOREIGN KEY (author_id)
+        REFERENCES users (id) MATCH FULL
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 CREATE TABLE categories
