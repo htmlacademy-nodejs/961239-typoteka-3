@@ -4,6 +4,7 @@ const express = require(`express`);
 const routes = require(`./../api`);
 const {URL, Messages, StatusCode} = require(`./../constants`);
 const {getLogger} = require(`./../lib/logger`);
+const sequelize = require(`./../lib/sequelize`);
 
 const DEFAULT_PORT = 3000;
 
@@ -37,8 +38,17 @@ app.use((error, request, response, next) => {
 
 module.exports = {
   name: `--server`,
+  // eslint-disable-next-line consistent-return
   async run(portNumber) {
     const port = Number.parseInt(portNumber, 10) || DEFAULT_PORT;
+    try {
+      logger.info(`Trying to connect to database...`);
+      await sequelize.authenticate();
+    } catch (err) {
+      logger.error(`An error occurred: ${err.message}`);
+      process.exit(1);
+    }
+    logger.info(`Connection to database successfully established`);
     try {
       app.listen(port, (err) => {
         if (err) {
