@@ -38,7 +38,6 @@ app.use((error, request, response, next) => {
 
 module.exports = {
   name: `--server`,
-  // eslint-disable-next-line consistent-return
   async run(portNumber) {
     const port = Number.parseInt(portNumber, 10) || DEFAULT_PORT;
     try {
@@ -60,7 +59,6 @@ module.exports = {
 
     } catch (err) {
       logger.error(`An error occurred: ${err.message}`);
-      return process.exit(1);
     }
   }
 };

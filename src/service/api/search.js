@@ -1,13 +1,23 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL} = require(`./../constants`);
-const {requestHandler} = require(`./../utils/utils`);
+const {URL, StatusCode} = require(`./../constants`);
 
 const route = new Router();
 
 module.exports = (app, service) => {
   app.use(URL.API.SEARCHROUTE, route);
 
-  route.get(URL.API.BASEROUTE, (request, response) => requestHandler(response, service.findArticles, request.query.query));
+  route.get(URL.API.BASEROUTE, async (request, response) => {
+    const {query = ``} = request.query;
+    if (!query) {
+      response.status(StatusCode.BADREQUEST).json({});
+      return;
+    }
+    console.log(service);
+    const searchResults = await service.findArticles(query);
+    const searchStatus = searchResults.length > 0 ? StatusCode.OK : StatusCode.NOTFOUND;
+    response.status(searchStatus)
+        .json(searchResults);
+  });
 };

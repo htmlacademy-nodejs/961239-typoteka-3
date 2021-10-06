@@ -1,23 +1,38 @@
 'use strict';
 
-const {StatusCode} = require(`../constants`);
+const Sequelize = require(`sequelize`);
+const Aliase = require(`../models/aliase`);
 
 class CategoryService {
-  constructor(articles) {
-    this._articles = articles;
-    this.findAll = this.findAll.bind(this);
+  constructor(sequelize) {
+    this._Category = sequelize.models.Category;
   }
 
-  findAll() {
-    const foundCategories = [];
-    this._articles.forEach(({categories}) => {
-      categories.forEach((elemCategory) => {
-        if (!foundCategories.includes(elemCategory)) {
-          foundCategories.push(elemCategory);
-        }
+  async findAll(needCount) {
+    if (needCount) {
+      const result = await this._Category.findAll({
+        attributes: [
+          `id`,
+          `name`,
+          [
+            Sequelize.fn(
+                `COUNT`,
+                `*`
+            ),
+            `count`
+          ]
+        ],
+        group: [Sequelize.col(`Category.id`)],
+        include: [{
+          model: this._OfferCategory,
+          as: Aliase.OFFER_CATEGORIES,
+          attributes: []
+        }]
       });
-    });
-    return {status: StatusCode.OK, content: foundCategories};
+      return result.map((it) => it.get());
+    } else {
+      return this._Category.findAll({raw: true});
+    }
   }
 }
 

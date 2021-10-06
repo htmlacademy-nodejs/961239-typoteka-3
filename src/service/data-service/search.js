@@ -1,18 +1,26 @@
 'use strict';
 
-const {Messages, StatusCode} = require(`./../constants`);
+const {Op} = require(`sequelize`);
+const Aliase = require(`./../models/aliase`);
 
 class SearchService {
-  constructor(articles) {
-    this._articles = articles;
-    this.findArticles = this.findArticles.bind(this);
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
   }
 
-  findArticles(query) {
-    const foundarticles = this._articles.filter((elem) => elem.title.indexOf(query) !== -1);
-    return foundarticles.length
-      ? {status: StatusCode.OK, content: foundarticles}
-      : {status: StatusCode.NOTFOUND, content: Messages.NO_RESULT};
+  async findArticles(searchText) {
+    const articles = await this._Article.findAll({
+      where: {
+        title: {
+          [Op.substring]: searchText
+        }
+      },
+      include: [Aliase.CATEGORIES],
+      order: [
+        [`createdAt`, `DESC`]
+      ]
+    });
+    return articles.map((article) => article.get());
   }
 }
 

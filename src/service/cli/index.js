@@ -2,7 +2,7 @@
 
 const help = require(`./help`);
 const version = require(`./version`);
-const generate = require(`./generate`);
+const generate = require(`./filldb`);
 const fill = require(`./fill`);
 const server = require(`./server`);
 
