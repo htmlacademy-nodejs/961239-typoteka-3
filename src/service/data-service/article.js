@@ -1,77 +1,55 @@
 'use strict';
 
-const {nanoid} = require(`nanoid`);
-const {Messages, StatusCode} = require(`./../constants`);
+const Aliase = require(`./../models/aliase`);
 
 class ArticleService {
-  constructor(articles) {
-    this._articles = articles;
-    this.getAll = this.getAll.bind(this);
-    this.getOne = this.getOne.bind(this);
-    this.add = this.add.bind(this);
-    this.edit = this.edit.bind(this);
-    this.delete = this.delete.bind(this);
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
+    this._Comment = sequelize.models.Comment;
+    this._Category = sequelize.models.Category;
   }
 
-  getAll() {
-    return {status: StatusCode.OK, content: this._articles};
+  findOne(id) {
+    return this._Article.findByPk(id, {include: [Aliase.CATEGORIES]});
   }
 
-  getOne(id) {
-    const article = this._articles.find((elem) => id === elem.id);
-    if (article) {
-      return {status: StatusCode.OK, content: article};
+  async findAll(needComments) {
+    const include = [Aliase.CATEGORIES];
+
+    if (needComments) {
+      include.push(Aliase.COMMENTS);
     }
-    return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_ARTICLE};
+
+    const articles = await this._Article.findAll({
+      include,
+      order: [
+        [`createdAt`, `DESC`]
+      ]
+    });
+    return articles.map((item) => item.get());
   }
 
-  add(articleData) {
-    if (this._checkArticle(articleData)) {
-      this._articles.push({
-        id: nanoid(6),
-        title: articleData.title,
-        announce: articleData.announce,
-        fullText: articleData.fullText,
-        createDate: articleData.createDate,
-        categories: articleData.categories,
-        image: articleData.image || null,
-        comments: []
-      });
-      return {status: StatusCode.CREATED, content: Messages.ARTICLE_CREATE};
-    }
-    return {status: StatusCode.BADREQUEST, content: Messages.BAD_REQUEST};
+  async create(articleData) {
+    console.log(articleData);
+    const article = await this._Article.create(articleData);
+    console.log(article);
+    await article.addCategories(articleData.categories);
+    return article.get();
   }
 
-  edit(articleData) {
-    const {data, articleId} = articleData;
-    const articleIndex = this._articles.findIndex((elem) => articleId === elem.id);
-    if (articleIndex === -1) {
-      return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_ARTICLE};
-    }
-    if (this._checkArticle(data)) {
-      this._articles[articleIndex] = {...this._articles[articleIndex],
-        title: data.title,
-        announce: data.announce,
-        fullText: data.fullText,
-        categories: data.categories,
-        image: data.image || null
-      };
-      return {status: StatusCode.OK, content: Messages.ARTICLE_EDIT};
-    }
-    return {status: StatusCode.BADREQUEST, content: Messages.BAD_REQUEST};
+  async delete(id) {
+    const deletedRows = await this._Article.destroy({
+      where: {id}
+    });
+    return !!deletedRows;
   }
 
-  delete(articleId) {
-    const articleIndex = this._articles.findIndex((elem) => articleId === elem.id);
-    if (articleIndex === -1) {
-      return {status: StatusCode.NOTFOUND, content: Messages.NOT_FOUND_ARTICLE};
-    }
-    this._articles.splice(articleIndex, 1);
-    return {status: StatusCode.OK, content: Messages.ARTICLE_DELETE};
-  }
-
-  _checkArticle(articleData) {
-    return articleData.title && articleData.fullText && articleData.createDate && articleData.categories;
+  async update(id, article) {
+    console.log(article);
+    const [affectedRows] = await this._Article.update(article, {
+      where: {id}
+    });
+    return !!affectedRows;
   }
 }
 

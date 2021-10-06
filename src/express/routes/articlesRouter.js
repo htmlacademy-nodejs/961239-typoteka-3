@@ -33,7 +33,7 @@ articlesRouter.get(`${URL.ARTICLESURL.EDIT}/:id`, async (request, response) => {
 });
 
 articlesRouter.get(URL.ARTICLESURL.ID, async (request, response) => {
-  const article = await api.getArticle(request.params.id);
+  const article = await api.getArticle(request.params.id, true);
   response.render(`post`, {article});
 });
 

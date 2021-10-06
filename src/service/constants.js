@@ -58,6 +58,11 @@ const StatusCode = {
   SERVERERROR: `500`
 };
 
+const SCHEMA_NAME = `typoteka`;
+
+const ANNOUNCE_SIZE = 250;
+const FULLTEXT_SIZE = 1000;
+
 module.exports = {
   DEFAULT_COMMAND,
   USER_ARVG_INDEX,
@@ -65,7 +70,10 @@ module.exports = {
   EXIT_CODE,
   URL,
   Messages,
-  StatusCode
+  StatusCode,
+  SCHEMA_NAME,
+  ANNOUNCE_SIZE,
+  FULLTEXT_SIZE
 };
 
 module.exports.Env = {

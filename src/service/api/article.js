@@ -1,30 +1,88 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL} = require(`./../constants`);
-const {requestHandler} = require(`./../utils/utils`);
+const {URL, StatusCode, Messages} = require(`./../constants`);
 
 const route = new Router();
 
 module.exports = (app, articleService, commentService) => {
   app.use(URL.API.ARTICLESROUTE, route);
 
-  route.get(URL.API.BASEROUTE, (request, response) => requestHandler(response, articleService.getAll));
+  route.get(URL.API.BASEROUTE, async (request, response) => {
+    const {comments} = request.query;
+    const articles = await articleService.findAll(comments);
+    if (!articles) {
+      return response.status(StatusCode.NOTFOUND)
+        .send(Messages.NOT_FOUND);
+    }
+    return response.status(StatusCode.OK)
+      .json(articles);
+  });
 
-  route.get(URL.API.ARTICLEID, (request, response) => requestHandler(response, articleService.getOne, request.params.articleId));
+  route.get(URL.API.ARTICLEID, async (request, response) => {
+    const {articleId} = request.params;
+    const article = await articleService.findOne(articleId);
+    if (!article) {
+      return response.status(StatusCode.NOTFOUND)
+        .send(Messages.NOT_FOUND_ARTICLE);
+    }
+    return response.status(StatusCode.OK)
+      .json(article);
+  });
 
-  route.post(URL.API.BASEROUTE, (request, response) => requestHandler(response, articleService.add, request.body));
+  route.post(URL.API.BASEROUTE, async (request, response) => {
+    const newArticle = articleService.create(request.body);
+    return response.status(Messages.CREATED)
+      .json(newArticle);
+  });
 
-  route.put(URL.API.ARTICLEID, (request, response) =>
-    requestHandler(response, articleService.edit, {data: request.body, articleId: request.params.articleId}));
+  route.put(URL.API.ARTICLEID, async (request, response) => {
+    const {articleId} = request.params;
+    const updatedArticle = articleService.update(articleId, request.body);
+    if (!updatedArticle) {
+      return response.status(StatusCode.NOTFOUND)
+        .send(Messages.NOT_FOUND_ARTICLE);
+    }
+    return response.status(StatusCode.OK)
+      .json(Messages.ARTICLE_EDIT);
+  });
 
-  route.delete(URL.API.ARTICLEID, (request, response) => requestHandler(response, articleService.delete, request.params.articleId));
+  route.delete(URL.API.ARTICLEID, async (request, response) => {
+    const {articleId} = request.params;
+    const deletedArticle = articleService.delete(articleId);
+    if (!deletedArticle) {
+      return response.status(StatusCode.NOTFOUND)
+        .send(Messages.NOT_FOUND_ARTICLE);
+    }
+    return response.status(StatusCode.OK)
+      .json(deletedArticle);
+  });
 
-  route.get(URL.API.COMMENTS, (request, response) => requestHandler(response, commentService.getAll, request.params.articleId));
+  route.get(URL.API.COMMENTS, async (request, response) => {
+    const {articleId} = request.params;
+    const comments = await commentService.findAll(articleId);
+    return response.status(StatusCode.OK)
+      .json(comments);
+  });
 
-  route.post(URL.API.COMMENTS, (request, response) =>
-    requestHandler(response, commentService.add, {articleId: request.params.articleId, message: request.body}));
+  route.post(URL.API.COMMENTS, async (request, response) => {
+    const {articleId} = request.params;
+    commentService.getComments(articleId);
+    const newComment = commentService.create(request.body);
+    return response.status(StatusCode.CREATED)
+      .json(newComment);
+  });
 
-  route.delete(URL.API.COMMENTID, (request, response) =>
-    requestHandler(response, commentService.delete, {articleId: request.params.articleId, commentId: request.params.commentId}));
+  route.delete(URL.API.COMMENTID, async (request, response) => {
+    const {articleId} = request.params;
+    commentService.getComments(articleId);
+    const {commentId} = request.params;
+    const deletedComment = commentService.delete(commentId);
+    if (!deletedComment) {
+      return response.status(StatusCode.NOTFOUND)
+        .send(Messages.NOT_FOUND_COMMENT);
+    }
+    return response.status(Messages.OK)
+      .json(deletedComment);
+  });
 };

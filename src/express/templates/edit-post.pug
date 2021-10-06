@@ -33,7 +33,7 @@ block content
                     .new-publication__checkbox.new-publication__checkbox--auto
                         input(type='checkbox' name=`category-${index}` id=`checkbox-${index}` checked=article.categories.includes(category))
                         label(for=`checkbox-${index}`)
-                          | #{category}
+                          | #{category.name}
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text
                   label

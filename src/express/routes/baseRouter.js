@@ -8,8 +8,14 @@ const {getAPI} = require(`./../api`);
 const api = getAPI();
 
 baseRouter.get(URL.BASE, async (request, response) => {
-  const articles = await api.getArticles();
-  response.render(`main`, {articles});
+  const [
+    articles,
+    categories
+  ] = await Promise.all([
+    api.getArticles(),
+    api.getCategories(true)
+  ]);
+  response.render(`main`, {articles, categories});
 });
 baseRouter.get(URL.LOGIN, (request, response) => response.render(`login`));
 baseRouter.get(URL.REGISTER, (request, response) => response.render(`sign-up`));

@@ -73,7 +73,7 @@ block content
             ul.preview__breadcrumbs(style="flex-wrap: wrap")
               each category in article.categories
                 li.preview__breadcrumbs-item
-                  a.preview__breadcrumbs-link(href='#') #{category}
+                  a.preview__breadcrumbs-link(href='#') #{category.name}
             .preview__background
               img.preview__background-image(src=`/media/img/${article.image}` width='460' height='240' srcset=`/media/img/${article.image}, /media/img/${article.image}` alt='Фотография небоскреба')
             time.preview__time(datetime=article.createDate) #{moment(article.createDate).format(`DD.MM.YYYY, hh:mm`)}
