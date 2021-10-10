@@ -5,23 +5,31 @@ const {URL} = require(`./../../service/constants`);
 const baseRouter = new Router();
 const {getAPI} = require(`./../api`);
 
+const ARTICLES_PER_PAGE = 8;
+
 const api = getAPI();
 
 baseRouter.get(URL.BASE, async (request, response) => {
+  let {page = 1} = request.query;
+  page += page;
+  const limit = ARTICLES_PER_PAGE;
+  const offset = (page - 1) * ARTICLES_PER_PAGE;
   const [
-    articles,
+    {count, articles},
     categories
   ] = await Promise.all([
-    api.getArticles(),
+    api.getArticles({limit, offset}),
     api.getCategories(true)
   ]);
-  response.render(`main`, {articles, categories});
+  const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+  response.render(`main`, {articles, page, totalPages, categories});
 });
+
 baseRouter.get(URL.LOGIN, (request, response) => response.render(`login`));
 baseRouter.get(URL.REGISTER, (request, response) => response.render(`sign-up`));
 baseRouter.get(URL.CATEGORY, (request, response) => response.render(`all-categories`));
 baseRouter.get(URL.MY, async (request, response) => {
-  const articles = await api.getArticles();
+  const articles = await api.getArticles({limit: 1, offset: 1});
   response.render(`my`, {articles});
 });
 baseRouter.get(URL.SEARCH, async (request, response) => {

@@ -9,8 +9,13 @@ module.exports = (app, articleService, commentService) => {
   app.use(URL.API.ARTICLESROUTE, route);
 
   route.get(URL.API.BASEROUTE, async (request, response) => {
-    const {comments} = request.query;
-    const articles = await articleService.findAll(comments);
+    const {offset, limit, comments} = request.query;
+    let articles;
+    if (limit || offset) {
+      articles = await articleService.findPage({limit, offset});
+    } else {
+      articles = await articleService.findAll(comments);
+    }
     if (!articles) {
       return response.status(StatusCode.NOTFOUND)
         .send(Messages.NOT_FOUND);
