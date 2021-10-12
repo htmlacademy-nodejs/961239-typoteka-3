@@ -14,7 +14,6 @@ module.exports = (app, service) => {
       response.status(StatusCode.BADREQUEST).json({});
       return;
     }
-    console.log(service);
     const searchResults = await service.findArticles(query);
     const searchStatus = searchResults.length > 0 ? StatusCode.OK : StatusCode.NOTFOUND;
     response.status(searchStatus)

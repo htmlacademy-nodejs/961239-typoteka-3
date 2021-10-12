@@ -29,10 +29,21 @@ class ArticleService {
     return articles.map((item) => item.get());
   }
 
+  async findPage({limit, offset}) {
+    const {count, rows} = await this._Article.findAndCountAll({
+      limit,
+      offset,
+      include: [Aliase.CATEGORIES, Aliase.COMMENTS],
+      order: [
+        [`createdAt`, `DESC`]
+      ],
+      distinct: true
+    });
+    return {count, articles: rows};
+  }
+
   async create(articleData) {
-    console.log(articleData);
     const article = await this._Article.create(articleData);
-    console.log(article);
     await article.addCategories(articleData.categories);
     return article.get();
   }
@@ -45,10 +56,11 @@ class ArticleService {
   }
 
   async update(id, article) {
-    console.log(article);
     const [affectedRows] = await this._Article.update(article, {
       where: {id}
     });
+    const updatedArticle = await this._Article.findByPk(id);
+    await updatedArticle.setCategories(article.categories);
     return !!affectedRows;
   }
 }

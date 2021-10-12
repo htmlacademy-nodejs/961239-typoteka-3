@@ -9,8 +9,13 @@ module.exports = (app, articleService, commentService) => {
   app.use(URL.API.ARTICLESROUTE, route);
 
   route.get(URL.API.BASEROUTE, async (request, response) => {
-    const {comments} = request.query;
-    const articles = await articleService.findAll(comments);
+    const {offset, limit, comments} = request.query;
+    let articles;
+    if (limit || offset) {
+      articles = await articleService.findPage({limit, offset});
+    } else {
+      articles = await articleService.findAll(comments);
+    }
     if (!articles) {
       return response.status(StatusCode.NOTFOUND)
         .send(Messages.NOT_FOUND);
@@ -31,14 +36,14 @@ module.exports = (app, articleService, commentService) => {
   });
 
   route.post(URL.API.BASEROUTE, async (request, response) => {
-    const newArticle = articleService.create(request.body);
-    return response.status(Messages.CREATED)
+    const newArticle = await articleService.create(request.body);
+    return response.status(StatusCode.CREATED)
       .json(newArticle);
   });
 
   route.put(URL.API.ARTICLEID, async (request, response) => {
     const {articleId} = request.params;
-    const updatedArticle = articleService.update(articleId, request.body);
+    const updatedArticle = await articleService.update(articleId, request.body);
     if (!updatedArticle) {
       return response.status(StatusCode.NOTFOUND)
         .send(Messages.NOT_FOUND_ARTICLE);
@@ -49,7 +54,7 @@ module.exports = (app, articleService, commentService) => {
 
   route.delete(URL.API.ARTICLEID, async (request, response) => {
     const {articleId} = request.params;
-    const deletedArticle = articleService.delete(articleId);
+    const deletedArticle = await articleService.delete(articleId);
     if (!deletedArticle) {
       return response.status(StatusCode.NOTFOUND)
         .send(Messages.NOT_FOUND_ARTICLE);
@@ -67,22 +72,19 @@ module.exports = (app, articleService, commentService) => {
 
   route.post(URL.API.COMMENTS, async (request, response) => {
     const {articleId} = request.params;
-    commentService.getComments(articleId);
-    const newComment = commentService.create(request.body);
+    const newComment = await commentService.create(articleId, request.body);
     return response.status(StatusCode.CREATED)
       .json(newComment);
   });
 
   route.delete(URL.API.COMMENTID, async (request, response) => {
-    const {articleId} = request.params;
-    commentService.getComments(articleId);
     const {commentId} = request.params;
-    const deletedComment = commentService.delete(commentId);
+    const deletedComment = await commentService.delete(commentId);
     if (!deletedComment) {
       return response.status(StatusCode.NOTFOUND)
         .send(Messages.NOT_FOUND_COMMENT);
     }
-    return response.status(Messages.OK)
+    return response.status(StatusCode.OK)
       .json(deletedComment);
   });
 };
