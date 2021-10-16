@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL, StatusCode, ServerMessages} = require(`./../constants`);
+const {URL, StatusCode, ServerMessages} = require(`./../../constants`);
 const articleValidator = require(`./../middlewares/article-validator`);
 const commentValidator = require(`./../middlewares/comment-validator`);
 const routeParamsValidator = require(`./../middlewares/route-params-validator`);
@@ -51,8 +51,9 @@ module.exports = (app, articleService, commentService) => {
       return response.status(StatusCode.NOTFOUND)
         .send(ServerMessages.NOT_FOUND_ARTICLE);
     }
+    const updatedArticleData = await articleService.findOne(articleId);
     return response.status(StatusCode.OK)
-      .json(ServerMessages.ARTICLE_EDIT);
+      .json(updatedArticleData);
   });
 
   route.delete(URL.API.ARTICLEID, routeParamsValidator, async (request, response) => {

@@ -6,7 +6,7 @@ const Sequelize = require(`sequelize`);
 
 const search = require(`./search`);
 const SearchService = require(`./../data-service/search`);
-const {StatusCode} = require(`./../constants`);
+const {StatusCode} = require(`./../../constants`);
 const initDB = require(`./../lib/init-db`);
 
 const mockCategories = [

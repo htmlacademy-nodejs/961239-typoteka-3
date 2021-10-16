@@ -1,7 +1,7 @@
 'use strict';
 
 const {Model} = require(`sequelize`);
-const {SCHEMA_NAME} = require(`./../constants`);
+const {SCHEMA_NAME} = require(`./../../constants`);
 
 const defineCategory = require(`./category`);
 const defineComment = require(`./comment`);

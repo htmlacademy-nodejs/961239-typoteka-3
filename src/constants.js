@@ -17,10 +17,11 @@ const URL = {
   CATEGORY: `/categories`,
   ARTICLES: `/articles`,
   ARTICLESURL: {
-    CATEGORY: `/category`,
+    CATEGORY: `/category/:id`,
     ID: `/:id`,
     ADD: `/add`,
-    EDIT: `/edit`
+    EDIT: `/:id/edit`,
+    COMMENTS: `/:id/comments`
   },
   MYURLS: {
     COMMENTS: `/comments`
@@ -56,6 +57,13 @@ const StatusCode = {
   SERVERERROR: `500`
 };
 
+const HttpMethod = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 const ValidationMessages = {
   COMMENT: {
     TEXT_MIN: `Комментарий должен содержать как минимум 20 символов`
@@ -84,6 +92,7 @@ module.exports = {
   URL,
   ServerMessages,
   StatusCode,
+  HttpMethod,
   ValidationMessages,
   SCHEMA_NAME,
   ANNOUNCE_SIZE,

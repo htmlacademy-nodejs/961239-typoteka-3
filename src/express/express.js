@@ -2,7 +2,7 @@
 
 const express = require(`express`);
 const path = require(`path`);
-const {URL} = require(`./../service/constants`);
+const {URL} = require(`./../constants`);
 const baseRouter = require(`./routes/baseRouter`);
 const myRouter = require(`./routes/myRouter`);
 const articlesRouter = require(`./routes/articlesRouter`);

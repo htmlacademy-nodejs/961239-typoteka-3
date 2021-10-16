@@ -1,7 +1,7 @@
 'use strict';
 
 const {DataTypes, Model} = require(`sequelize`);
-const {SCHEMA_NAME} = require(`./../constants`);
+const {SCHEMA_NAME} = require(`./../../constants`);
 
 class Comment extends Model {}
 

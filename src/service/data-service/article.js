@@ -10,7 +10,7 @@ class ArticleService {
   }
 
   findOne(id) {
-    return this._Article.findByPk(id, {include: [Aliase.CATEGORIES]});
+    return this._Article.findByPk(id, {include: [Aliase.CATEGORIES, Aliase.COMMENTS]});
   }
 
   async findAll(needComments) {

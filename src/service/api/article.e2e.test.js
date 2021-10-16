@@ -8,7 +8,7 @@ const initDB = require(`./../lib/init-db`);
 const article = require(`./article`);
 const ArticleService = require(`./../data-service/article`);
 const CommentService = require(`./../data-service/comment`);
-const {StatusCode, Messages} = require(`./../constants`);
+const {StatusCode, Messages} = require(`./../../constants`);
 
 const mockCategories = [
   `IT`,
