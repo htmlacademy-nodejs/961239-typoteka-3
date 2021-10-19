@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL} = require(`./../../service/constants`);
+const {URL} = require(`./../../constants`);
 const myRouter = new Router();
 const {getAPI} = require(`./../api`);
 

@@ -4,8 +4,8 @@ const fs = require(`fs`).promises;
 const path = require(`path`);
 const chalk = require(`chalk`);
 const moment = require(`moment`);
-const {EXIT_CODE} = require(`./../constants`);
-const {getRandomInt, shuffle} = require(`./../utils/dev-utils`);
+const {EXIT_CODE} = require(`./../../constants`);
+const {getRandomInt, shuffle} = require(`./../../utils/dev-utils`);
 
 const TITLES_PATH = path.resolve(__dirname, `./../../data/titles.txt`);
 const SENTENCES_PATH = path.resolve(__dirname, `./../../data/sentences.txt`);

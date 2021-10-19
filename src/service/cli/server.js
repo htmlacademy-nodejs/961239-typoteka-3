@@ -2,7 +2,7 @@
 
 const express = require(`express`);
 const routes = require(`./../api`);
-const {URL, Messages, StatusCode} = require(`./../constants`);
+const {URL, Messages, StatusCode} = require(`./../../constants`);
 const {getLogger} = require(`./../lib/logger`);
 const sequelize = require(`./../lib/sequelize`);
 

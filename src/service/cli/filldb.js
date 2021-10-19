@@ -2,8 +2,8 @@
 
 const fs = require(`fs`).promises;
 const path = require(`path`);
-const {EXIT_CODE, ANNOUNCE_SIZE, FULLTEXT_SIZE} = require(`./../constants`);
-const {getRandomInt, shuffle, getRandomDate} = require(`../utils/dev-utils`);
+const {EXIT_CODE, ANNOUNCE_SIZE, FULLTEXT_SIZE} = require(`./../../constants`);
+const {getRandomInt, shuffle, getRandomDate} = require(`./../../utils/dev-utils`);
 const {getLogger} = require(`./../lib/logger`);
 const sequelize = require(`./../lib/sequelize`);
 const initDB = require(`./../lib/init-db`);

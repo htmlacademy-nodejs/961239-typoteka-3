@@ -7,7 +7,7 @@ const Sequelize = require(`sequelize`);
 const initDB = require(`./../lib/init-db`);
 const category = require(`./category`);
 const CategoryService = require(`./../data-service/category`);
-const {StatusCode} = require(`./../constants`);
+const {StatusCode} = require(`./../../constants`);
 
 const mockCategories = [
   `IT`,

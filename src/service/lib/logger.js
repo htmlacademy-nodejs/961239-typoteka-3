@@ -1,7 +1,7 @@
 "use strict";
 
 const pino = require(`pino`);
-const {Env} = require(`./../constants`);
+const {Env} = require(`./../../constants`);
 const path = require(`path`);
 
 const LOG_FILE = path.resolve(__dirname, `./../logs/api.log`);
