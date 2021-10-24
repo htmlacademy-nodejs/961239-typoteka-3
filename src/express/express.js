@@ -9,6 +9,7 @@ const articlesRouter = require(`./routes/articlesRouter`);
 const PUBLIC_PATH = path.resolve(__dirname, `public`);
 const TEMPLATE_PATH = path.resolve(__dirname, `templates`);
 const UPLOAD_PATH = path.resolve(__dirname, `upload`);
+const cookieParser = require(`cookie-parser`);
 const moment = require(`moment`);
 
 const PORT = 8080;
@@ -17,6 +18,7 @@ const app = express();
 
 app.locals.moment = moment;
 app.use(express.static(PUBLIC_PATH));
+app.use(cookieParser());
 app.use(`/media`, express.static(UPLOAD_PATH));
 app.set(`views`, TEMPLATE_PATH);
 app.set(`view engine`, `pug`);

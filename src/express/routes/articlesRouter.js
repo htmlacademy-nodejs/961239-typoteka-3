@@ -10,7 +10,7 @@ const csrf = require(`csurf`);
 
 const api = getAPI();
 
-const csrfProtection = csrf();
+const csrfProtection = csrf({cookie: true});
 
 const collectCategories = async (body) => {
   const categories = await api.getCategories();
