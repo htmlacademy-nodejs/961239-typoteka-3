@@ -8,16 +8,16 @@ block content
         a.popup__button.button.button--popup-close(aria-label='Закрыть окно') Закрыть окно
         h2.popup__title Регистрация
         .popup__form.popup__form--active.form.form--register
-          form(action='#' method='get')
+          form(action='/register' method='post')
             .form__field
               label
                 input(type='email' name='email' placeholder='Электронная почта' required)
             .form__field
               label
-                input(type='text' name='name' placeholder='Имя' required)
+                input(type='text' name='first-name' placeholder='Имя' required)
             .form__field
               label
-                input(type='text' name='surname' placeholder='Фамилия')
+                input(type='text' name='last-name' placeholder='Фамилия')
             .form__field
               label
                 input(type='password' name='password' placeholder='Пароль' required)

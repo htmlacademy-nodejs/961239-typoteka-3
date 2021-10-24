@@ -4,12 +4,19 @@ class CommentService {
   constructor(sequelize) {
     this._Article = sequelize.models.Article;
     this._Comment = sequelize.models.Comment;
+    this._User = sequelize.models.User;
   }
 
-  findAll(articleId) {
+  async findAll(articleId) {
     return this._Comment.findAll({
       where: {articleId},
-      raw: true
+      include: [{
+        model: this._User,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      }],
+      raw: true,
     });
   }
 

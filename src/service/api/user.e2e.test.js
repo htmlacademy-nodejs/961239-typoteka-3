@@ -5,12 +5,13 @@ const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
 const initDB = require(`./../lib/init-db`);
-const article = require(`./article`);
-const ArticleService = require(`./../data-service/article`);
-const CommentService = require(`./../data-service/comment`);
-const {StatusCode, Messages} = require(`./../../constants`);
+const {StatusCode} = require(`./../../constants`);
 
+const defineModels = require(`../models`);
 const passwordUtils = require(`./../lib/password`);
+
+const user = require(`./user`);
+const UserService = require(`../data-service/user`);
 
 const mockCategories = [
   `IT`,
@@ -44,6 +45,7 @@ const mockUsers = [
     avatar: `avatar03.jpg`
   }
 ];
+
 
 const mockData = [
   {
@@ -227,300 +229,117 @@ const mockData = [
   }
 ];
 
-const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
+const createAPI = async () => {
+  defineModels(Sequelize);
+  const app = express();
+  app.use(express.json());
+  user(app, new UserService(Sequelize));
+  return app;
+};
 
-const app = express();
-app.use(express.json());
+const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 
 
 beforeAll(async () => {
   await initDB(mockDB, {categories: mockCategories, articles: mockData, users: mockUsers});
-
-  article(app, new ArticleService(mockDB), new CommentService(mockDB));
 });
 
-describe(`Return all articles`, () => {
+
+describe(`Create user with valid data`, () => {
   let response;
 
   beforeAll(async () => {
+    let app = await createAPI();
     response = await request(app)
-      .get(`/articles`);
+        .post(`/user`)
+        .send({
+          name: `Семен Семенов`,
+          email: `semenov@example.com`,
+          password: `semenov`,
+          passwordRepeated: `semenov`,
+          avatar: `avatar04.jpg`
+        });
   });
 
-  test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`All articles found`, () => expect(response.body).toHaveLength(5));
+  test(`Status code 201`, () => expect(response.statusCode).toBe(StatusCode.CREATED));
 });
 
-describe(`Find specific article`, () => {
+describe(`Return error if data doesn't have required field`, () => {
   let response;
+  let app;
 
   beforeAll(async () => {
+    app = await createAPI();
     response = await request(app)
-      .get(`/articles/1`);
-  });
-
-  test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Article found`, () => expect(response.body.title).toEqual(`Обзор новейшего смартфона`));
-});
-
-describe(`Find non-existing article`, () => {
-  let response;
-
-  beforeAll(async () => {
-    response = await request(app)
-      .get(`/articles/555555`);
-  });
-
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_ARTICLE));
-});
-
-describe(`Create new article with correct data`, () => {
-  let response;
-
-  beforeAll(async () => {
-    response = await request(app)
-      .post(`/articles`)
+      .post(`/user`)
       .send({
-        title: `Тестовый заголовок статьи.`,
-        announce: `Тестовый анонс`,
-        fullText: `Тестовый полный текст.`,
-        categories: [1]
+        email: `semenov@example.com`,
+        password: `semenov`,
+        passwordRepeated: `semenov`,
+        avatar: `example04.jpg`
       });
   });
 
-  test(`Status code 201`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CREATED, 10)));
-  test(`Article has correct title`, () => expect(response.body.title).toEqual(`Тестовый заголовок статьи.`));
-  test(`Article has correct announce`, () => expect(response.body.announce).toEqual(`Тестовый анонс`));
-  test(`Article has correct fullText`, () => expect(response.body.fullText).toEqual(`Тестовый полный текст.`));
+  test(`Status code 400`, () => expect(response.statusCode).toBe(StatusCode.BADREQUEST));
 });
 
-describe(`Edit article with correct data`, () => {
+describe(`Return error if data is invalid`, () => {
+
   let response;
-  let articleDataResponse;
-
-  beforeAll(async () => {
-    response = await request(app)
-      .put(`/articles/1`)
-      .send({
-        "title": `Тест заголовок`,
-        "announce": `Некоторый анонс`,
-        "fullText": `Рыба`,
-        "categories": [5, 3]
-      });
-    articleDataResponse = await request(app)
-      .get(`/articles/1`);
-  });
-
-  test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Article has correct title`, async () => expect(articleDataResponse.body.title).toEqual(`Тест заголовок`));
-  test(`Article has correct announce`, async () => expect(articleDataResponse.body.announce).toEqual(`Некоторый анонс`));
-  test(`Article has correct full text`, async () => expect(articleDataResponse.body.fullText).toEqual(`Рыба`));
-  test(`Article has correct count of categories`, async () => expect(articleDataResponse.body.categories).toHaveLength(2));
-});
-
-describe(`Delete article`, () => {
-  let response;
-  let articleDataResponse;
-  let articlesListResponse;
-
-  beforeAll(async () => {
-    response = await request(app)
-      .delete(`/articles/2`);
-    articleDataResponse = await request(app)
-      .get(`/articles/2`);
-    articlesListResponse = await request(app)
-      .get(`/articles`);
-  });
-
-  test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Article doesn't exist anymore`, () => expect(articleDataResponse.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Article isn't in the offers list`, () => expect(articlesListResponse.body).toHaveLength(5));
-});
-
-describe(`Return comments list`, () => {
-  let response;
-
-  beforeAll(async () => {
-    response = await request(app)
-      .get(`/articles/3/comments`);
-  });
-
-  test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Comments have correct count`, () => expect(response.body).toHaveLength(5));
-});
-
-describe(`Add new comment`, () => {
-  let response;
-  let commentsListResponse;
-
-  beforeAll(async () => {
-    response = await request(app)
-      .post(`/articles/3/comments`)
-      .send({
-        "text": `New comment`
-      });
-    commentsListResponse = await request(app)
-      .get(`/articles/3/comments`);
-  });
-
-  test(`Status code 201`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CREATED, 10)));
-  test(`New comment added`, () => expect(commentsListResponse.body).toHaveLength(6));
-  test(`Comment include correct message`, () => expect(commentsListResponse.body[5].text).toEqual(`New comment`));
-});
-
-describe(`Delete comment`, () => {
-  let response;
-  let commentsListResponse;
-
-  beforeAll(async () => {
-    response = await request(app)
-      .delete(`/articles/3/comments/6`);
-    commentsListResponse = await request(app)
-      .get(`/articles/3/comments`);
-  });
-
-  test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Comment deleted`, () => expect(commentsListResponse.body).toHaveLength(5));
-  test(`Deleted comment doesn't exist`, () => expect(commentsListResponse.body.find((elem) => elem.id === 1)).toBeUndefined());
-});
-
-// временный файл, в котором хранятся все тесты на валидацию
-// т.к. валидация запросов на данном этапе
-// не должна работать
-/*
-describe(`Create article without required parameters`, () => {
-  let response;
-  let articlesListResponse;
   let app;
 
   beforeAll(async () => {
     app = await createAPI();
     response = await request(app)
-      .post(`/articles`)
+      .post(`/user`)
       .send({
-        announce: `Некоторый анонс`,
-        fullText: `Рыба`,
-        categories: [1, 2]
-      });
-    articlesListResponse = await request(app)
-      .get(`/articles`);
-  });
-
-  test(`Status code 401`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.BAD_REQUEST));
-  test(`Article didn't create`, () => expect(articlesListResponse.body).toHaveLength(6));
-});
-
-describe(`Edit non-existing article`, () => {
-  let app;
-  let response;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-      .put(`/articles/3333444`)
-      .send({
-        "title": `Тест заголовок`,
-        "announce": `Некоторый анонс`,
-        "fullText": `Рыба`,
-        "createDate": `2021-04-16T10:02:37.120Z`,
-        "categories": [
-          `Тестовая1`,
-          `Тестовая2`
-        ]
+        name: `Семен Семенов`,
+        email: `semenov`,
+        password: `semenov`,
+        passwordRepeated: `semenov`,
+        avatar: `example04.jpg`
       });
   });
 
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_ARTICLE));
+  test(`Status code 400`, () => expect(response.statusCode).toBe(StatusCode.BADREQUEST));
 });
 
-describe(`Edit article without require data`, () => {
-  let response;
-  let articleDataResponse;
-  let app;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-      .put(`/articles/2`)
-      .send({});
-    articleDataResponse = await request(app)
-      .get(`/articles/2`);
-  });
-
-  test(`Status code 401`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.BAD_REQUEST));
-  test(`Article didn't edited`, () => expect(articleDataResponse.body.title).toEqual(`Борьба с прокрастинацией`));
-});
-
-describe(`Add comment with wrong data`, () => {
-  let response;
-  let commentsListResponse;
-  let app;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-    .post(`/articles/3/comments`)
-    .send({});
-    commentsListResponse = await request(app)
-    .get(`/articles/3/comments`);
-  });
-
-  test(`Status code 401`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.BAD_REQUEST));
-  test(`Comment didn't create`, () => expect(commentsListResponse.body).toHaveLength(6));
-});
-
-describe(`Add comment to non-existing offer`, () => {
+describe(`Return error if passwords don't match`, () => {
   let response;
   let app;
 
   beforeAll(async () => {
     app = await createAPI();
     response = await request(app)
-    .post(`/articles/nonexistid/comments`)
-    .send({
-      "text": `New comment`
-    });
+      .post(`/user`)
+      .send({
+        name: `Семен Семенов`,
+        email: `semenov`,
+        password: `semenov`,
+        passwordRepeated: `semenov2`,
+        avatar: `example04.jpg`
+      });
   });
 
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_ARTICLE));
+  test(`Status code 400`, () => expect(response.statusCode).toBe(StatusCode.BADREQUEST));
 });
 
-
-describe(`Delete non-existing comment`, () => {
+describe(`Return error if email is already used`, () => {
   let response;
-  let commentsListResponse;
   let app;
 
   beforeAll(async () => {
     app = await createAPI();
     response = await request(app)
-      .delete(`/articles/3/comments/nonexistid`);
-    commentsListResponse = await request(app)
-      .get(`/articles/3/comments`);
+      .post(`/user`)
+      .send({
+        name: `Семен Семенов`,
+        email: `semenov`,
+        password: `semenov`,
+        passwordRepeated: `semenov2`,
+        avatar: `example04.jpg`
+      });
   });
 
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_COMMENT));
-  test(`Count of comments doesn't change`, () => expect(commentsListResponse.body).toHaveLength(5));
+  test(`Status code 400`, () => expect(response.statusCode).toBe(StatusCode.BADREQUEST));
 });
-
-describe(`Delete comment in non-existing offer`, () => {
-  let app;
-  let response;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-      .delete(`/articles/nonexistid/comments/nonexistid`);
-  });
-
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_ARTICLE));
-});
-*/
