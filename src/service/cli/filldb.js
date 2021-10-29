@@ -7,6 +7,7 @@ const {getRandomInt, shuffle, getRandomDate} = require(`./../../utils/dev-utils`
 const {getLogger} = require(`./../lib/logger`);
 const sequelize = require(`./../lib/sequelize`);
 const initDB = require(`./../lib/init-db`);
+const passwordUtils = require(`./../lib/password`);
 
 const logger = getLogger({name: `api`});
 
@@ -45,18 +46,19 @@ const generateMockCategories = (count, categories) => {
   return categoriesList;
 };
 
-const generatePublication = (titles, sentences, comments, categories) => ({
+const generatePublication = (titles, sentences, comments, categories, users) => ({
   title: titles[getRandomInt(0, titles.length - 1)],
   announce: generateAnnounce(sentences),
   fullText: generateFullText(sentences),
   createdAt: getRandomDate(),
   image: `example0${getRandomInt(1, 4)}.jpg`,
+  user: users[getRandomInt(0, users.length - 1)].email,
   categories: generateMockCategories(getRandomInt(1, categories.length - 1), categories),
   comments: generateMockComments(getRandomInt(0, comments.length), comments)
 });
 
-const generatePublications = (count, titles, sentences, comments, categories) => {
-  const articles = new Array(count).fill({}).map(() => generatePublication(titles, sentences, comments, categories));
+const generatePublications = (count, titles, sentences, comments, categories, users) => {
+  const articles = new Array(count).fill({}).map(() => generatePublication(titles, sentences, comments, categories, users));
   return articles;
 };
 
@@ -76,10 +78,23 @@ module.exports = {
     const categories = await readMockData(path.resolve(__dirname, `./../../data/categories.txt`));
     const sentences = await readMockData(path.resolve(__dirname, `./../../data/sentences.txt`));
     const comments = await readMockData(path.resolve(__dirname, `./../../data/comments.txt`));
-
+    const users = [
+      {
+        name: `Иван Иванов`,
+        email: `ivanov@example.com`,
+        passwordHash: await passwordUtils.hash(`ivanov`),
+        avatar: `avatar01.jpg`
+      },
+      {
+        name: `Пётр Петров`,
+        email: `petrov@example.com`,
+        passwordHash: await passwordUtils.hash(`petrov`),
+        avatar: `avatar02.jpg`
+      }
+    ];
     const count = args;
     const countArticle = Number.parseInt(count, 10) || DEFAULT_MOCK_COUNT;
-    const articles = generatePublications(countArticle, titles, sentences, comments, categories);
-    return initDB(sequelize, {articles, categories});
+    const articles = generatePublications(countArticle, titles, sentences, comments, categories, users);
+    return initDB(sequelize, {articles, categories, users});
   }
 };

@@ -2,7 +2,7 @@
 
 const express = require(`express`);
 const routes = require(`./../api`);
-const {URL, Messages, StatusCode} = require(`./../../constants`);
+const {URL, ServerMessages, StatusCode} = require(`./../../constants`);
 const {getLogger} = require(`./../lib/logger`);
 const sequelize = require(`./../lib/sequelize`);
 
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 
 app.use(URL.API.PREFIX, routes);
 app.use((request, response) => {
-  response.status(StatusCode.NOTFOUND).send(Messages.NOT_FOUND);
+  response.status(StatusCode.NOTFOUND).send(ServerMessages.NOT_FOUND);
   logger.error(`Route not found: ${request.url}`);
 });
 
@@ -32,7 +32,7 @@ app.use((request, response) => {
 app.use((error, request, response, next) => {
   console.error(error.stack);
   logger.error(`An error occured on processing request: ${error.message}`);
-  return response.status(StatusCode.SERVERERROR).send(Messages.SERVER_ERROR);
+  return response.status(StatusCode.SERVERERROR).send(ServerMessages.SERVER_ERROR);
 });
 
 

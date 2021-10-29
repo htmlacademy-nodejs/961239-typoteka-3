@@ -34,7 +34,8 @@ const URL = {
     CATEGORIESROUTE: `/categories`,
     COMMENTS: `/:articleId/comments`,
     COMMENTID: `/:articleId/comments/:commentId`,
-    SEARCHROUTE: `/search`
+    SEARCHROUTE: `/search`,
+    USERROUTE: `/user`
   }
 };
 
@@ -54,6 +55,7 @@ const StatusCode = {
   CREATED: `201`,
   BADREQUEST: `400`,
   NOTFOUND: `404`,
+  CONFLICT: `409`,
   SERVERERROR: `500`
 };
 
@@ -66,7 +68,8 @@ const HttpMethod = {
 
 const ValidationMessages = {
   COMMENT: {
-    TEXT_MIN: `Комментарий должен содержать как минимум 20 символов`
+    TEXT_MIN: `Комментарий должен содержать как минимум 20 символов`,
+    USER_ID: `Некорректный идентификатор пользователя`
   },
   ARTICLE: {
     CATEGORY_REQUIRED: `Необходимо выбрать как минимум одну категорию`,
@@ -76,6 +79,18 @@ const ValidationMessages = {
     ANNOUNCE_MIN: `Анонс должен содержать как минимум 30 символов`,
     ANNOUNCE_MAX: `Анонс не может содержать более 250 символов`,
     FULLTEXT_MAX: `Текст публикации не может содержать более 1000 символов`
+  },
+  USER: {
+    NAME: `Имя содержит некорректные символы`,
+    NAME_REQUIRED: `Поле Имя обязательно для заполнения`,
+    EMAIL: `Некорректный электронный адрес`,
+    EMAIL_REQUIRED: `Поле Email обязательно для заполнения`,
+    EMAIL_EXIST: `Электронный адрес уже используется`,
+    PASSWORD: `Пароль содержит меньше 6-ти символов`,
+    PASSWORD_REQUIRED: `Поле Пароль обязательно для заполнения`,
+    PASSWORD_REPEATED: `Пароли не совпадают`,
+    AVATAR: `Изображение не выбрано или тип изображения не поддерживается`,
+    AVATAR_REQUIRED: `Поле Изображение обязательно для заполнения`
   }
 };
 

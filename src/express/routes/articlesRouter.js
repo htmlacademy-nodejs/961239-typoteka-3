@@ -5,12 +5,12 @@ const {URL} = require(`./../../constants`);
 const {prepareErrors} = require(`./../../utils/utils`);
 const articlesRouter = new Router();
 const {getAPI} = require(`./../api`);
-const upload = require(`./../storage`);
+const upload = require(`./../middlewares/upload`);
 const csrf = require(`csurf`);
 
 const api = getAPI();
 
-const csrfProtection = csrf();
+const csrfProtection = csrf({cookie: true});
 
 const collectCategories = async (body) => {
   const categories = await api.getCategories();
@@ -43,10 +43,10 @@ articlesRouter.get(URL.ARTICLESURL.ADD, csrfProtection, async (request, response
   response.render(`new-post`, {categories, csrfToken: request.csrfToken()});
 });
 
-articlesRouter.get(URL.ARTICLESURL.EDIT, async (request, response) => {
+articlesRouter.get(URL.ARTICLESURL.EDIT, csrfProtection, async (request, response) => {
   const {id} = request.params;
   const [article, categories] = await getEditArticleData(id);
-  response.render(`edit-post`, {article, categories, id});
+  response.render(`edit-post`, {article, categories, id, csrfToken: request.csrfToken()});
 });
 
 articlesRouter.get(URL.ARTICLESURL.ID, async (request, response) => {
@@ -75,7 +75,7 @@ articlesRouter.post(URL.ARTICLESURL.ADD, upload.single(`upload`), csrfProtection
   }
 });
 
-articlesRouter.post(URL.ARTICLESURL.EDIT, upload.single(`upload`), async (request, response) => {
+articlesRouter.post(URL.ARTICLESURL.EDIT, upload.single(`upload`), csrfProtection, async (request, response) => {
   const {body, file} = request;
   const {id} = request.params;
   const articleData = {
