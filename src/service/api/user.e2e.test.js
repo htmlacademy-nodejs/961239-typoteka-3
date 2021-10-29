@@ -7,7 +7,6 @@ const Sequelize = require(`sequelize`);
 const initDB = require(`./../lib/init-db`);
 const {StatusCode} = require(`./../../constants`);
 
-const defineModels = require(`../models`);
 const passwordUtils = require(`./../lib/password`);
 
 const user = require(`./user`);
@@ -229,19 +228,13 @@ const mockData = [
   }
 ];
 
-const createAPI = async () => {
-  defineModels(Sequelize);
-  const app = express();
-  app.use(express.json());
-  user(app, new UserService(Sequelize));
-  return app;
-};
-
+const app = express();
 const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 
 
 beforeAll(async () => {
   await initDB(mockDB, {categories: mockCategories, articles: mockData, users: mockUsers});
+  user(app, new UserService(mockDB));
 });
 
 
@@ -249,7 +242,6 @@ describe(`Create user with valid data`, () => {
   let response;
 
   beforeAll(async () => {
-    let app = await createAPI();
     response = await request(app)
         .post(`/user`)
         .send({
@@ -266,10 +258,8 @@ describe(`Create user with valid data`, () => {
 
 describe(`Return error if data doesn't have required field`, () => {
   let response;
-  let app;
 
   beforeAll(async () => {
-    app = await createAPI();
     response = await request(app)
       .post(`/user`)
       .send({
@@ -284,12 +274,9 @@ describe(`Return error if data doesn't have required field`, () => {
 });
 
 describe(`Return error if data is invalid`, () => {
-
   let response;
-  let app;
 
   beforeAll(async () => {
-    app = await createAPI();
     response = await request(app)
       .post(`/user`)
       .send({
@@ -306,10 +293,8 @@ describe(`Return error if data is invalid`, () => {
 
 describe(`Return error if passwords don't match`, () => {
   let response;
-  let app;
 
   beforeAll(async () => {
-    app = await createAPI();
     response = await request(app)
       .post(`/user`)
       .send({
@@ -326,10 +311,8 @@ describe(`Return error if passwords don't match`, () => {
 
 describe(`Return error if email is already used`, () => {
   let response;
-  let app;
 
   beforeAll(async () => {
-    app = await createAPI();
     response = await request(app)
       .post(`/user`)
       .send({
