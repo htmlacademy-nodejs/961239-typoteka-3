@@ -228,20 +228,21 @@ const mockData = [
   }
 ];
 
-const app = express();
-const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
-
-
-beforeAll(async () => {
+const createAPI = async () => {
+  const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
   await initDB(mockDB, {categories: mockCategories, articles: mockData, users: mockUsers});
+  const app = express();
+  app.use(express.json());
   user(app, new UserService(mockDB));
-});
+  return app;
+};
 
 
 describe(`Create user with valid data`, () => {
   let response;
 
   beforeAll(async () => {
+    let app = await createAPI();
     response = await request(app)
         .post(`/user`)
         .send({
@@ -253,13 +254,15 @@ describe(`Create user with valid data`, () => {
         });
   });
 
-  test(`Status code 201`, () => expect(response.statusCode).toBe(StatusCode.CREATED));
+  test(`Status code 201`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CREATED, 10)));
 });
 
 describe(`Return error if data doesn't have required field`, () => {
   let response;
+  let app;
 
   beforeAll(async () => {
+    app = await createAPI();
     response = await request(app)
       .post(`/user`)
       .send({
@@ -270,13 +273,16 @@ describe(`Return error if data doesn't have required field`, () => {
       });
   });
 
-  test(`Status code 400`, () => expect(response.statusCode).toBe(StatusCode.BADREQUEST));
+  test(`Status code 400`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
 });
 
 describe(`Return error if data is invalid`, () => {
+
   let response;
+  let app;
 
   beforeAll(async () => {
+    app = await createAPI();
     response = await request(app)
       .post(`/user`)
       .send({
@@ -288,13 +294,15 @@ describe(`Return error if data is invalid`, () => {
       });
   });
 
-  test(`Status code 400`, () => expect(response.statusCode).toBe(StatusCode.BADREQUEST));
+  test(`Status code 400`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
 });
 
 describe(`Return error if passwords don't match`, () => {
   let response;
+  let app;
 
   beforeAll(async () => {
+    app = await createAPI();
     response = await request(app)
       .post(`/user`)
       .send({
@@ -306,13 +314,15 @@ describe(`Return error if passwords don't match`, () => {
       });
   });
 
-  test(`Status code 400`, () => expect(response.statusCode).toBe(StatusCode.BADREQUEST));
+  test(`Status code 400`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
 });
 
 describe(`Return error if email is already used`, () => {
   let response;
+  let app;
 
   beforeAll(async () => {
+    app = await createAPI();
     response = await request(app)
       .post(`/user`)
       .send({
@@ -324,5 +334,5 @@ describe(`Return error if email is already used`, () => {
       });
   });
 
-  test(`Status code 400`, () => expect(response.statusCode).toBe(StatusCode.BADREQUEST));
+  test(`Status code 400`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
 });

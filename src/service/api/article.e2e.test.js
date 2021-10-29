@@ -8,7 +8,7 @@ const initDB = require(`./../lib/init-db`);
 const article = require(`./article`);
 const ArticleService = require(`./../data-service/article`);
 const CommentService = require(`./../data-service/comment`);
-const {StatusCode, Messages} = require(`./../../constants`);
+const {StatusCode, ServerMessages} = require(`./../../constants`);
 
 const passwordUtils = require(`./../lib/password`);
 
@@ -272,7 +272,7 @@ describe(`Find non-existing article`, () => {
   });
 
   test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_ARTICLE));
+  test(`Response contains correct message`, () => expect(response.text).toEqual(ServerMessages.NOT_FOUND_ARTICLE));
 });
 
 describe(`Create new article with correct data`, () => {
@@ -282,9 +282,9 @@ describe(`Create new article with correct data`, () => {
     response = await request(app)
       .post(`/articles`)
       .send({
-        title: `Тестовый заголовок статьи.`,
-        announce: `Тестовый анонс`,
-        fullText: `Тестовый полный текст.`,
+        title: `Тестовый заголовок статьи. 1234567890`,
+        announce: `Тестовый анонс статьи 1234567890`,
+        fullText: `Тестовый полный текст. 1234567890`,
         categories: [1]
       });
   });
