@@ -1,4 +1,5 @@
 'use strict';
+const Aliase = require(`./../models/aliase`);
 
 const {Op} = require(`sequelize`);
 
@@ -18,6 +19,7 @@ class SearchService {
       },
       include: [`categories`, {
         model: this._User,
+        as: Aliase.USERS,
         attributes: {
           exclude: [`passwordHash`]
         }

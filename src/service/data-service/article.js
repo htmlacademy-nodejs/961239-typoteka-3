@@ -22,6 +22,7 @@ class ArticleService {
     if (NeedComments) {
       include.push({
         model: this._Comment,
+        as: Aliase.COMMENTS,
         include: [
           {
             model: this._User,
@@ -48,6 +49,7 @@ class ArticleService {
   findOne(id) {
     return this._Article.findByPk(id, {include: [Aliase.CATEGORIES, {
       model: this._Comment,
+      as: Aliase.COMMENTS,
       include: [
         {
           model: this._User,
