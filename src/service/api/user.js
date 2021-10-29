@@ -11,7 +11,6 @@ const route = new Router();
 
 module.exports = (app, service) => {
   app.use(URL.API.USERROUTE, route);
-  console.log(service);
   route.post(URL.API.BASEROUTE, userValidator(service), async (request, response) => {
     const data = request.body;
 

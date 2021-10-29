@@ -13,6 +13,7 @@ class ArticleService {
     const include = [Aliase.CATEGORIES,
       {
         model: this._User,
+        as: Aliase.USERS,
         attributes: {
           exclude: [`passwordHash`]
         }
@@ -24,6 +25,7 @@ class ArticleService {
         include: [
           {
             model: this._User,
+            as: Aliase.USERS,
             attributes: {
               exclude: [`passwordHash`]
             }
@@ -49,6 +51,7 @@ class ArticleService {
       include: [
         {
           model: this._User,
+          as: Aliase.USERS,
           attributes: {
             exclude: [`passwordHash`, `email`]
           }
@@ -56,23 +59,22 @@ class ArticleService {
       ]
     }, {
       model: this._User,
+      as: Aliase.USERS,
       attributes: {
         exclude: [`passwordHash`]
       }
     }]});
   }
 
-  async findPage({limit, offset, needComments}) {
-    const include = [Aliase.CATEGORIES, {
+  async findPage({limit, offset}) {
+    const include = [Aliase.CATEGORIES, Aliase.COMMENTS, {
       model: this._User,
+      as: Aliase.USERS,
       attributes: {
         exclude: [`passwordHash`]
       }
     }];
 
-    if (needComments) {
-      include.push(Aliase.COMMENTS);
-    }
 
     const {count, rows} = await this._Article.findAndCountAll({
       limit,

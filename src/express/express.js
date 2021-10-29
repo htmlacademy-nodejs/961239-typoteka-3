@@ -17,6 +17,7 @@ const PORT = 8080;
 const app = express();
 
 app.locals.moment = moment;
+app.use(express.urlencoded({extended: false}));
 app.use(express.static(PUBLIC_PATH));
 app.use(cookieParser());
 app.use(`/media`, express.static(UPLOAD_PATH));
