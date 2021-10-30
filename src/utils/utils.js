@@ -1,8 +1,6 @@
 'use strict';
 
-const prepareErrors = (errors) => {
-  console.log(errors.response.data);
+const prepareErrors = (errors) =>
   errors.response.data.split(`\n`);
-};
 
 module.exports = {prepareErrors};
