@@ -311,7 +311,7 @@ describe(`Edit article with correct data`, () => {
   test(`Article has correct title`, async () => expect(articleDataResponse.body.title).toEqual(`Тестовый заголовк не менее 30 символов`));
   test(`Article has correct announce`, async () => expect(articleDataResponse.body.announce).toEqual(`Некоторый анонс не менее 30 символов`));
   test(`Article has correct full text`, async () => expect(articleDataResponse.body.fullText).toEqual(PLACEHOLDER_TEXT));
-  test(`Article has correct count of categories`, async () => expect(articleDataResponse.body.categories).toHaveLength(3));
+  test(`Article has correct count of categories`, async () => expect(articleDataResponse.body.categories).toHaveLength(2));
 });
 
 describe(`Delete article`, () => {

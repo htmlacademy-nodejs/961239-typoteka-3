@@ -102,10 +102,12 @@ class ArticleService {
     return !!deletedRows;
   }
 
-  async update(id, article) {
-    const [affectedRows] = await this._Article.update(article, {
+  async update(id, articleData) {
+    const [affectedRows] = await this._Article.update(articleData, {
       where: {id}
     });
+    const updatedArticle = await this._Article.findByPk(id);
+    await updatedArticle.setCategories(articleData.categories);
     return !!affectedRows;
 
   }
