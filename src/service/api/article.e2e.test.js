@@ -353,7 +353,8 @@ describe(`Add new comment`, () => {
     response = await request(app)
       .post(`/articles/3/comments`)
       .send({
-        "text": `New comment`
+        text: `New comment with 20 symbols`,
+        userId: 2
       });
     commentsListResponse = await request(app)
       .get(`/articles/3/comments`);
@@ -361,7 +362,7 @@ describe(`Add new comment`, () => {
 
   test(`Status code 201`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CREATED, 10)));
   test(`New comment added`, () => expect(commentsListResponse.body).toHaveLength(6));
-  test(`Comment include correct message`, () => expect(commentsListResponse.body[5].text).toEqual(`New comment`));
+  test(`Comment include correct message`, () => expect(commentsListResponse.body[5].text).toEqual(`New comment with 20 symbols`));
 });
 
 describe(`Delete comment`, () => {
