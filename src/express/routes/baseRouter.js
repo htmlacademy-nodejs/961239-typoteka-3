@@ -27,9 +27,9 @@ baseRouter.get(URL.BASE, async (request, response) => {
   response.render(`main`, {articles, page, totalPages, categories});
 });
 
-baseRouter.get(URL.LOGIN, (request, response) => response.render(`login`));
-baseRouter.get(URL.REGISTER, (request, response) => response.render(`sign-up`));
-baseRouter.get(URL.CATEGORY, (request, response) => response.render(`all-categories`));
+baseRouter.get(URL.LOGIN, (request, response) => response.render(`register-and-login/login`));
+baseRouter.get(URL.REGISTER, (request, response) => response.render(`register-and-login/sign-up`));
+baseRouter.get(URL.CATEGORY, (request, response) => response.render(`articles/all-categories`));
 baseRouter.get(URL.MY, async (request, response) => {
   const articles = await api.getArticles({limit: 1, offset: 1});
   response.render(`my`, {articles});
@@ -38,9 +38,9 @@ baseRouter.get(URL.SEARCH, async (request, response) => {
   const {query} = request.query;
   try {
     const searchResult = await api.search(query);
-    response.render(`search`, {searchResult: searchResult.slice(0, 4), query});
+    response.render(`search/search`, {searchResult: searchResult.slice(0, 4), query});
   } catch (error) {
-    response.render(`search-no-result`, {query});
+    response.render(`search/search-no-result`, {query});
   }
 });
 
@@ -56,10 +56,10 @@ baseRouter.post(URL.REGISTER, upload.single(`avatar`), async (request, response)
 
   try {
     await api.createUser(userData);
-    response.redirect(`/login`);
+    response.redirect(`register-and-login/login`);
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
-    response.render(`sign-up`, {validationMessages});
+    response.render(`register-and-login/sign-up`, {validationMessages});
   }
 });
 
