@@ -12,6 +12,8 @@ const {StatusCode, ServerMessages} = require(`./../../constants`);
 
 const passwordUtils = require(`./../lib/password`);
 
+const PLACEHOLDER_TEXT = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
+
 const mockCategories = [
   `IT`,
   `Музыка`,
@@ -52,14 +54,7 @@ const mockData = [
     "announce": `Достичь успеха помогут ежедневные повторения. Программировать не настолько сложно, как об этом говорят. Это один из лучших рок-музыкантов.`,
     "fullText": `Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Как начать действовать? Для начала просто соберитесь. Достичь успеха помогут ежедневные повторения. Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Из под его пера вышло 8 платиновых альбомов. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Простые ежедневные упражнения помогут достичь успеха. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры.`,
     "categories": [
-      `IT`,
-      `Музыка`,
-      `Кино`,
-      `Железо`,
-      `Программирование`,
-      `За жизнь`,
-      `Деревья`,
-      `Без рамки`
+      `IT`
     ],
     "comments": []
   },
@@ -283,16 +278,16 @@ describe(`Create new article with correct data`, () => {
       .post(`/articles`)
       .send({
         title: `Тестовый заголовок статьи. 1234567890`,
-        announce: `Тестовый анонс статьи 1234567890`,
+        announce: `Тестовый анонс статьи. 1234567890`,
         fullText: `Тестовый полный текст. 1234567890`,
         categories: [1]
       });
   });
 
   test(`Status code 201`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CREATED, 10)));
-  test(`Article has correct title`, () => expect(response.body.title).toEqual(`Тестовый заголовок статьи.`));
-  test(`Article has correct announce`, () => expect(response.body.announce).toEqual(`Тестовый анонс`));
-  test(`Article has correct fullText`, () => expect(response.body.fullText).toEqual(`Тестовый полный текст.`));
+  test(`Article has correct title`, () => expect(response.body.title).toEqual(`Тестовый заголовок статьи. 1234567890`));
+  test(`Article has correct announce`, () => expect(response.body.announce).toEqual(`Тестовый анонс статьи. 1234567890`));
+  test(`Article has correct fullText`, () => expect(response.body.fullText).toEqual(`Тестовый полный текст. 1234567890`));
 });
 
 describe(`Edit article with correct data`, () => {
@@ -303,20 +298,20 @@ describe(`Edit article with correct data`, () => {
     response = await request(app)
       .put(`/articles/1`)
       .send({
-        "title": `Тест заголовок`,
-        "announce": `Некоторый анонс`,
-        "fullText": `Рыба`,
-        "categories": [5, 3]
+        title: `Тестовый заголовк не менее 30 символов`,
+        announce: `Некоторый анонс не менее 30 символов`,
+        fullText: PLACEHOLDER_TEXT,
+        categories: [5, 3]
       });
     articleDataResponse = await request(app)
       .get(`/articles/1`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Article has correct title`, async () => expect(articleDataResponse.body.title).toEqual(`Тест заголовок`));
-  test(`Article has correct announce`, async () => expect(articleDataResponse.body.announce).toEqual(`Некоторый анонс`));
-  test(`Article has correct full text`, async () => expect(articleDataResponse.body.fullText).toEqual(`Рыба`));
-  test(`Article has correct count of categories`, async () => expect(articleDataResponse.body.categories).toHaveLength(2));
+  test(`Article has correct title`, async () => expect(articleDataResponse.body.title).toEqual(`Тестовый заголовк не менее 30 символов`));
+  test(`Article has correct announce`, async () => expect(articleDataResponse.body.announce).toEqual(`Некоторый анонс не менее 30 символов`));
+  test(`Article has correct full text`, async () => expect(articleDataResponse.body.fullText).toEqual(PLACEHOLDER_TEXT));
+  test(`Article has correct count of categories`, async () => expect(articleDataResponse.body.categories).toHaveLength(3));
 });
 
 describe(`Delete article`, () => {
