@@ -7,6 +7,7 @@ const articlesRouter = new Router();
 const {getAPI} = require(`./../api`);
 const upload = require(`./../middlewares/upload`);
 const csrf = require(`csurf`);
+const auth = require(`./../middlewares/auth`);
 
 const api = getAPI();
 
@@ -38,12 +39,12 @@ const getEditArticleData = async (articleId) => {
 articlesRouter.get(URL.ARTICLESURL.CATEGORY, (request, response) =>
   response.render(`articles/articles-by-category`));
 
-articlesRouter.get(URL.ARTICLESURL.ADD, csrfProtection, async (request, response) => {
+articlesRouter.get(URL.ARTICLESURL.ADD, auth, csrfProtection, async (request, response) => {
   const categories = await getAddArticleData();
   response.render(`articles/new-post`, {categories, csrfToken: request.csrfToken()});
 });
 
-articlesRouter.get(URL.ARTICLESURL.EDIT, csrfProtection, async (request, response) => {
+articlesRouter.get(URL.ARTICLESURL.EDIT, auth, csrfProtection, async (request, response) => {
   const {id} = request.params;
   const [article, categories] = await getEditArticleData(id);
   response.render(`articles/edit-post`, {article, categories, id, csrfToken: request.csrfToken()});
@@ -55,7 +56,7 @@ articlesRouter.get(URL.ARTICLESURL.ID, async (request, response) => {
   response.render(`articles/post`, {article, id});
 });
 
-articlesRouter.post(URL.ARTICLESURL.ADD, upload.single(`upload`), csrfProtection, async (request, response) => {
+articlesRouter.post(URL.ARTICLESURL.ADD, auth, upload.single(`upload`), csrfProtection, async (request, response) => {
   const {body, file} = request;
   const articleData = {
     image: file ? file.filename : null,
@@ -75,7 +76,7 @@ articlesRouter.post(URL.ARTICLESURL.ADD, upload.single(`upload`), csrfProtection
   }
 });
 
-articlesRouter.post(URL.ARTICLESURL.EDIT, upload.single(`upload`), csrfProtection, async (request, response) => {
+articlesRouter.post(URL.ARTICLESURL.EDIT, auth, upload.single(`upload`), csrfProtection, async (request, response) => {
   const {body, file} = request;
   const {id} = request.params;
   const articleData = {
@@ -96,16 +97,17 @@ articlesRouter.post(URL.ARTICLESURL.EDIT, upload.single(`upload`), csrfProtectio
   }
 });
 
-articlesRouter.post(URL.ARTICLESURL.COMMENTS, async (request, response) => {
+articlesRouter.post(URL.ARTICLESURL.COMMENTS, auth, async (request, response) => {
+  const {user} = request.session;
   const {id} = request.params;
   const {message} = request.body;
   try {
-    await api.createComment(id, {text: message});
+    await api.createComment(id, {userId: user.id, text: message});
     response.redirect(URL.ARTICLESURL.ID);
   } catch (errors) {
     const allValidationMessages = prepareErrors(errors);
     const article = await api.getArticle(request.params.id, true);
-    response.render(`articles/post`, {article, allValidationMessages, id});
+    response.render(`articles/post`, {article, allValidationMessages, id, user, csrfToken: request.csrfToken()});
   }
 });
 

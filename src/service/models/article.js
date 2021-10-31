@@ -1,7 +1,6 @@
 'use strict';
 
 const {DataTypes, Model} = require(`sequelize`);
-const {SCHEMA_NAME} = require(`./../../constants`);
 
 class Article extends Model {}
 
@@ -24,7 +23,6 @@ const define = (sequelize) => Article.init({
   image: DataTypes.STRING
 }, {
   sequelize,
-  schema: SCHEMA_NAME,
   modelName: `Article`,
   tableName: `articles`
 });
