@@ -12,12 +12,12 @@ module.exports = (app, articleService, commentService) => {
   app.use(URL.API.ARTICLESROUTE, route);
 
   route.get(URL.API.BASEROUTE, async (request, response) => {
-    const {offset, limit, comments} = request.query;
+    const {offset, limit} = request.query;
     let articles;
     if (limit || offset) {
-      articles = await articleService.findPage({limit, offset, comments});
+      articles = await articleService.findPage({limit, offset});
     } else {
-      articles = await articleService.findAll(comments);
+      articles = await articleService.findAll();
     }
     if (!articles) {
       return response.status(StatusCode.NOTFOUND)

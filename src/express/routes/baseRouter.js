@@ -13,19 +13,21 @@ const ARTICLES_PER_PAGE = 8;
 const api = getAPI();
 
 baseRouter.get(URL.BASE, async (request, response) => {
+  const {user} = request.session;
+  const limit = ARTICLES_PER_PAGE;
+
   let {page = 1} = request.query;
   page += page;
-  const limit = ARTICLES_PER_PAGE;
   const offset = (page - 1) * ARTICLES_PER_PAGE;
   const [
     {count, articles},
     categories
   ] = await Promise.all([
-    api.getArticles({limit, offset}),
+    api.getArticles({limit, offset, comments: true}),
     api.getCategories(true)
   ]);
   const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
-  response.render(`main`, {articles, page, totalPages, categories});
+  response.render(`main`, {user, articles, page, totalPages, categories});
 });
 
 baseRouter.get(URL.LOGIN, (request, response) => response.render(`register-and-login/login`));
