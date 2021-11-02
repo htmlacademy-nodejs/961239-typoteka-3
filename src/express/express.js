@@ -58,12 +58,12 @@ app.use(URL.BASE, baseRouter);
 app.use(URL.MY, myRouter);
 
 app.use((req, res) => {
-  res.status(404).render(`404`);
+  res.status(404).render(`errors/404`);
 });
 
 app.use((err, req, res) => {
   console.error(err.stack);
-  res.status(500).render(`500`);
+  res.status(500).render(`errors/500`);
 });
 
 app.listen(PORT);
