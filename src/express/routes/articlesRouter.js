@@ -103,7 +103,7 @@ articlesRouter.post(URL.ARTICLESURL.COMMENTS, auth, async (request, response) =>
   const {message} = request.body;
   try {
     await api.createComment(id, {userId: user.id, text: message});
-    response.redirect(URL.ARTICLESURL.ID);
+    response.redirect(`${URL.ARTICLES}/${id}`);
   } catch (errors) {
     const allValidationMessages = prepareErrors(errors);
     const article = await api.getArticle(request.params.id, true);
