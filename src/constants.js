@@ -35,7 +35,8 @@ const URL = {
     COMMENTS: `/:articleId/comments`,
     COMMENTID: `/:articleId/comments/:commentId`,
     SEARCHROUTE: `/search`,
-    USERROUTE: `/user`
+    USERROUTE: `/user`,
+    AUTHROUTE: `/auth`
   }
 };
 
@@ -54,6 +55,7 @@ const StatusCode = {
   OK: `200`,
   CREATED: `201`,
   BADREQUEST: `400`,
+  UNAUTHORIZED: `401`,
   NOTFOUND: `404`,
   CONFLICT: `409`,
   SERVERERROR: `500`
@@ -78,7 +80,8 @@ const ValidationMessages = {
     TITLE_MAX: `Заголовок не может содержать более 250 символов`,
     ANNOUNCE_MIN: `Анонс должен содержать как минимум 30 символов`,
     ANNOUNCE_MAX: `Анонс не может содержать более 250 символов`,
-    FULLTEXT_MAX: `Текст публикации не может содержать более 1000 символов`
+    FULLTEXT_MAX: `Текст публикации не может содержать более 1000 символов`,
+    IMAGE: `Изображение может быть только в формате .png или .jpg`
   },
   USER: {
     NAME: `Имя содержит некорректные символы`,
@@ -90,7 +93,11 @@ const ValidationMessages = {
     PASSWORD_REQUIRED: `Поле Пароль обязательно для заполнения`,
     PASSWORD_REPEATED: `Пароли не совпадают`,
     AVATAR: `Изображение не выбрано или тип изображения не поддерживается`,
-    AVATAR_REQUIRED: `Поле Изображение обязательно для заполнения`
+    AVATAR_REQUIRED: `Поле Изображение обязательно для заполнения`,
+  },
+  LOGIN: {
+    EMAIL_NOT_EXIST: `Электронный адрес не существует`,
+    PASSWORD_NOT_MATCH: `Неверный пароль`
   }
 };
 

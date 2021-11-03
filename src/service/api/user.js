@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL, StatusCode} = require(`./../../constants`);
+const {URL, StatusCode, ValidationMessages} = require(`./../../constants`);
 
 const userValidator = require(`./../middlewares/user-validator`);
 
@@ -22,5 +22,25 @@ module.exports = (app, service) => {
 
     response.status(StatusCode.CREATED)
       .json(result);
+  });
+
+  route.post(URL.API.AUTHROUTE, async (request, response) => {
+    console.log(request.body);
+    const {email, password} = request.body;
+    const user = await service.findByEmail(email);
+
+    if (!user) {
+      response.status(StatusCode.UNAUTHORIZED).send(ValidationMessages.LOGIN.EMAIL_NOT_EXIST);
+      return;
+    }
+
+    const passwordIsCorrect = await passwordUtils.compare(password, user.passwordHash);
+
+    if (passwordIsCorrect) {
+      delete user.passwordHash;
+      response.status(StatusCode.OK).json(user);
+    } else {
+      response.status(StatusCode.UNAUTHORIZED).send(ValidationMessages.LOGIN.PASSWORD_NOT_MATCH);
+    }
   });
 };

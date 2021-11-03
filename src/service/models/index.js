@@ -1,7 +1,6 @@
 'use strict';
 
 const {Model} = require(`sequelize`);
-const {SCHEMA_NAME} = require(`./../../constants`);
 
 const defineCategory = require(`./category`);
 const defineComment = require(`./comment`);
@@ -19,7 +18,7 @@ const define = (sequelize) => {
   Comment.belongsTo(Article, {foreignKey: `articleId`});
 
   class ArticleCategory extends Model {}
-  ArticleCategory.init({}, {sequelize, schema: SCHEMA_NAME});
+  ArticleCategory.init({}, {sequelize});
 
   Article.belongsToMany(Category, {through: ArticleCategory, as: Aliase.CATEGORIES});
   Category.belongsToMany(Article, {through: ArticleCategory, as: Aliase.ARITCLES});

@@ -21,7 +21,9 @@ const schema = Joi.object({
   }),
   fullText: Joi.string().max(1000).messages({
     'string.max': ValidationMessages.ARTICLE.FULLTEXT_MAX
-  })
+  }),
+  image: Joi.string().empty(``).pattern(/.*\.jpg|\.jpeg|\.png$/i)
+  .messages({'string.pattern.base': ValidationMessages.ARTICLE.IMAGE}),
 });
 
 module.exports = (request, response, next) => {
