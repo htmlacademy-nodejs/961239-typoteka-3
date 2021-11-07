@@ -47,7 +47,7 @@ baseRouter.get(URL.SEARCH, async (request, response) => {
   }
 });
 
-baseRouter.post(URL.REGISTER, upload.single(`avatar`), async (request, response) => {
+baseRouter.post(URL.REGISTER, upload.single(`upload`), async (request, response) => {
   const {body, file} = request;
   const userData = {
     avatar: file ? file.filename : ``,
@@ -59,7 +59,7 @@ baseRouter.post(URL.REGISTER, upload.single(`avatar`), async (request, response)
 
   try {
     await api.createUser(userData);
-    response.redirect(`register-and-login/login`);
+    response.redirect(URL.LOGIN);
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
     response.render(`register-and-login/sign-up`, {validationMessages});
@@ -68,7 +68,6 @@ baseRouter.post(URL.REGISTER, upload.single(`avatar`), async (request, response)
 
 baseRouter.post(`/login`, async (request, response) => {
   try {
-    console.log(request.body);
     const {email, password} = request.body;
     const user = await api.auth(email, password);
     request.session.user = user;
@@ -78,7 +77,7 @@ baseRouter.post(`/login`, async (request, response) => {
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
     const {user} = request.session;
-    response.render(`login`, {user, validationMessages});
+    response.render(`register-and-login/login`, {user, validationMessages});
   }
 });
 
