@@ -35,12 +35,12 @@ baseRouter.get(URL.REGISTER, (request, response) => response.render(`register-an
 baseRouter.get(URL.CATEGORY, auth, (request, response) => response.render(`articles/all-categories`));
 baseRouter.get(URL.SEARCH, async (request, response) => {
   const {query} = request.query;
+  const user = request.session.user;
   try {
     const searchResult = await api.search(query);
-    console.log(searchResult);
-    response.render(`search/search`, {searchResult: searchResult.slice(0, 4), query});
+    response.render(`search/search`, {searchResult: searchResult.slice(0, 4), query, user});
   } catch (error) {
-    response.render(`search/search-no-result`, {query});
+    response.render(`search/search-no-result`, {query, user});
   }
 });
 
