@@ -8,7 +8,7 @@ const auth = require(`./../middlewares/auth`);
 
 const api = getAPI();
 
-myRouter.get(URL.MYURLS.COMMENTS, auth, async (request, response) => {
+myRouter.get(URL.MY, auth, async (request, response) => {
   const articles = await api.getArticles({comments: true});
   response.render(`user/my`, {articles: articles.slice(0, 3)});
 });

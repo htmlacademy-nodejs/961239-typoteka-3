@@ -16,9 +16,9 @@ const csrfProtection = csrf({cookie: true});
 const collectCategories = async (body) => {
   const categories = await api.getCategories();
   const selectedCategories = [];
-  categories.forEach((elem, index) => {
-    if (body[`category-${index}`]) {
-      selectedCategories.push(elem);
+  categories.forEach((category) => {
+    if (body[`category-${category.id}`]) {
+      selectedCategories.push(category.id);
     }
   });
   return selectedCategories;
@@ -71,7 +71,7 @@ articlesRouter.post(URL.ARTICLESURL.ADD, auth, upload.single(`upload`), csrfProt
     response.redirect(URL.MY);
   } catch (errors) {
     const allValidationMessages = prepareErrors(errors);
-    const categories = getAddArticleData();
+    const categories = await getAddArticleData();
     response.render(`articles/new-post`, {categories, allValidationMessages, article: articleData});
   }
 });
@@ -92,7 +92,7 @@ articlesRouter.post(URL.ARTICLESURL.EDIT, auth, upload.single(`upload`), csrfPro
     response.redirect(`${URL.ARTICLESURL}/${id}`);
   } catch (errors) {
     const allValidationMessages = prepareErrors(errors);
-    const categories = getAddArticleData();
+    const categories = await getAddArticleData();
     response.render(`articles/edit-post`, {categories, allValidationMessages, article: articleData, id});
   }
 });

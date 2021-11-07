@@ -33,14 +33,11 @@ baseRouter.get(URL.BASE, async (request, response) => {
 baseRouter.get(URL.LOGIN, (request, response) => response.render(`register-and-login/login`));
 baseRouter.get(URL.REGISTER, (request, response) => response.render(`register-and-login/sign-up`));
 baseRouter.get(URL.CATEGORY, auth, (request, response) => response.render(`articles/all-categories`));
-baseRouter.get(URL.MY, async (request, response) => {
-  const articles = await api.getArticles({limit: 1, offset: 1});
-  response.render(`my`, {articles});
-});
 baseRouter.get(URL.SEARCH, async (request, response) => {
   const {query} = request.query;
   try {
     const searchResult = await api.search(query);
+    console.log(searchResult);
     response.render(`search/search`, {searchResult: searchResult.slice(0, 4), query});
   } catch (error) {
     response.render(`search/search-no-result`, {query});
