@@ -7,10 +7,11 @@
     "test": "npm run eslint && npm run jest",
     "jest": "jest",
     "eslint": "eslint --ext .js src/",
-    "start": "cross-env LOG_LEVEL=error NODE_ENV=production node -r dotenv/config ./src/service/service.js",
-    "start::debug": "cross-env LOG_LEVEL=info NODE_ENV=development node -r dotenv/config ./src/service/service.js",
-    "server": "nodemon .src/service/service.js --server 3000",
-    "start-front-server": "nodemon -r dotenv/config ./src/express/express.js"
+    "service": "cross-env LOG_LEVEL=error NODE_ENV=production node -r dotenv/config ./src/service/service.js",
+    "server-dev": "cross-env LOG_LEVEL=info NODE_ENV=development nodemon -r dotenv/config src/service/service.js --server 3000",
+    "server-prod": "cross-env LOG_LEVEL=error NODE_ENV=production node -r dotenv/config ./src/service/service.js --server",
+    "start-front-server": "nodemon -r dotenv/config ./src/express/express.js",
+    "start": "concurrently --p \"{name}: {time}\" --names \"FRONT, API\" --prefix-colors \"#fa8072,#00ced1.bold\" \"npm:server-prod\" \"npm:start-front-server\""
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "axios": "^0.23.0",
     "bcrypt": "5.0.1",
     "chalk": "4.1.0",
+    "concurrently": "^6.3.0",
     "connect-session-sequelize": "7.1.2",
     "cookie-parser": "1.4.5",
     "cross-env": "7.0.3",

@@ -33,21 +33,18 @@ baseRouter.get(URL.BASE, async (request, response) => {
 baseRouter.get(URL.LOGIN, (request, response) => response.render(`register-and-login/login`));
 baseRouter.get(URL.REGISTER, (request, response) => response.render(`register-and-login/sign-up`));
 baseRouter.get(URL.CATEGORY, auth, (request, response) => response.render(`articles/all-categories`));
-baseRouter.get(URL.MY, async (request, response) => {
-  const articles = await api.getArticles({limit: 1, offset: 1});
-  response.render(`my`, {articles});
-});
 baseRouter.get(URL.SEARCH, async (request, response) => {
   const {query} = request.query;
+  const user = request.session.user;
   try {
     const searchResult = await api.search(query);
-    response.render(`search/search`, {searchResult: searchResult.slice(0, 4), query});
+    response.render(`search/search`, {searchResult: searchResult.slice(0, 4), query, user});
   } catch (error) {
-    response.render(`search/search-no-result`, {query});
+    response.render(`search/search-no-result`, {query, user});
   }
 });
 
-baseRouter.post(URL.REGISTER, upload.single(`avatar`), async (request, response) => {
+baseRouter.post(URL.REGISTER, upload.single(`upload`), async (request, response) => {
   const {body, file} = request;
   const userData = {
     avatar: file ? file.filename : ``,
@@ -59,7 +56,7 @@ baseRouter.post(URL.REGISTER, upload.single(`avatar`), async (request, response)
 
   try {
     await api.createUser(userData);
-    response.redirect(`register-and-login/login`);
+    response.redirect(URL.LOGIN);
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
     response.render(`register-and-login/sign-up`, {validationMessages});
@@ -68,7 +65,6 @@ baseRouter.post(URL.REGISTER, upload.single(`avatar`), async (request, response)
 
 baseRouter.post(`/login`, async (request, response) => {
   try {
-    console.log(request.body);
     const {email, password} = request.body;
     const user = await api.auth(email, password);
     request.session.user = user;
@@ -78,7 +74,7 @@ baseRouter.post(`/login`, async (request, response) => {
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
     const {user} = request.session;
-    response.render(`login`, {user, validationMessages});
+    response.render(`register-and-login/login`, {user, validationMessages});
   }
 });
 
