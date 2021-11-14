@@ -4,15 +4,6 @@ header.header
     span.logo__name Типотека
   if user
     if user.isAuthor
-      nav.header__nav
-        ul.header__nav-list
-          li.header__list-item
-            p #{user.firstName} #{user.lastName}
-          li.header__list-item
-            a.header__exit(href='/logout') Выйти
-      a.header__avatar.avatar
-        img(src=`/media/img/${user.avatar}` alt='аватар пользователя')
-    else
       a(href=`articles/add`)
       button.button.button--colored.header__button-new Новая запись
       .header__dropdown
@@ -26,6 +17,15 @@ header.header
             a(href="/my/comments") Комментарии
           li.navigation__item
             a(href="/logout") Выйти
+    else
+      nav.header__nav
+        ul.header__nav-list
+          li.header__list-item
+            p #{user.firstName} #{user.lastName}
+          li.header__list-item
+            a.header__exit(href='/logout') Выйти
+      a.header__avatar.avatar
+        img(src=`/media/img/${user.avatar}` alt='аватар пользователя')
   else
     nav.header__nav
       ul.header__nav-list
