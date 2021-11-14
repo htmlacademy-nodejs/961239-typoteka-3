@@ -9,10 +9,11 @@ block content
     section.main-page__theme-list
       h2.visually-hidden Список тем
       ul.themes
-        li.themes__item
-          a.themes__item-link(href='#')
-            | Автомобили 
-            sup 88
+        each category in categories
+          li.themes__item
+            a.themes__item-link(href=`/articles/category/${category.id}`)
+              | #{category.name}
+              sup #{category.count}
     .main-page__section-flex
       section.main-page__hot.hot
         h2.hot__name
@@ -28,18 +29,11 @@ block content
           | Последние комментарии 
           span.last__icon.last__icon--cloud
         ul.last__list
-          li.last__list-item
-            img.last__list-image(src='/img/avatar-small-1.png' width='20' height='20' alt='Аватар пользователя')
-            b.last__list-name Анна Артамонова
-            a.last__list-link(href='#') Сервис аренды жилья Airbnb стал глобальным партнером Международного олимпийского комитета (МОК) на девять лет, в течение которых пройдет пять Олимпиад, в том числе в Токио в 2020 году.
-          li.last__list-item
-            img.last__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b.last__list-name Александр Петров
-            a.last__list-link(href='#') Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор разъяснить штрафы за ссылки на сайты с матом
-          li.last__list-item.last__list-item--end
-            img.last__list-image(src='/img/avatar-small-3.png' width='20' height='20' alt='Аватар пользователя')
-            b.last__list-name Игорь Шманский
-            a.last__list-link(href='#') Что-то все электрокары в последнее время все на одно лицо делаются))
+          each comment in comments
+            li.last__list-item
+                img.last__list-image(src=`/media/img/${comment.users.avatar}` width='20' height='20' alt='Аватар пользователя')
+                b.last__list-name #{comment.users.firstName} #{comment.users.lastName}
+                a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.text}
     section.main-page__list.preview
       h2.visually-hidden Список превью статей
       ul.preview__list
@@ -63,16 +57,4 @@ block content
                 |  
                 b.preview__comment-count #{article.comments.length}
     .preview__toggle-wrapper
-      ul.preview__pagination.pagination
-        li
-      if start > 1
-        li
-          a.pagination__button.button.button--backwards(href=`${prefix}page=${page - 1}` aria-label='Страница назад') Назад
-      while i++ < end
-        li
-          a(class={active: i === page} href=`${prefix}page=${i}`)= i
-      if end < totalPages
-        li
-          a.pagination__button.button.button--forward(href=`${prefix}page=${page + 1}` aria-label='Страница вперед') Вперёд
-
-  +pagination(page, totalPages, 2, `?`)
+      +pagination(page, totalPages, 8)

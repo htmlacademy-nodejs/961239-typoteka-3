@@ -27,8 +27,10 @@ class CategoryService {
         include: [{
           model: this._ArticleCategory,
           as: Aliase.ARTICLE_CATEGORIES,
-          attributes: []
-        }]
+          attributes: [],
+          required: true
+        }],
+        order: [[Sequelize.fn(`COUNT`, `*`), `DESC`]]
       });
       return result.map((it) => it.get());
     } else {

@@ -9,7 +9,8 @@ const upload = require(`./../middlewares/upload`);
 const auth = require(`./../middlewares/auth`);
 
 const ARTICLES_PER_PAGE = 8;
-const HOTTEST_ARTICLES_PER_PAGE = 4;
+const HOTTEST_ARTICLES_COUNT = 4;
+const LATEST_COMMENTS_COUNT = 4;
 
 const api = getAPI();
 
@@ -17,14 +18,14 @@ baseRouter.get(URL.BASE, async (request, response) => {
   const {user} = request.session;
 
   let {page = 1} = request.query;
+  page = parseInt(page, 10);
   const offset = (page - 1) * ARTICLES_PER_PAGE;
-  console.log(`LIMIT: `, ARTICLES_PER_PAGE, `, OFFSET: `, offset);
   const {count, articles: allArticles} = await api.getArticles({limit: ARTICLES_PER_PAGE, offset, type: TypeOfLimits.PAGE});
   const categories = await api.getCategories(true);
-  const {articles: hotArticles} = await api.getArticles({limit: HOTTEST_ARTICLES_PER_PAGE, type: TypeOfLimits.HOTTEST});
+  const {articles: hotArticles} = await api.getArticles({limit: HOTTEST_ARTICLES_COUNT, type: TypeOfLimits.HOTTEST});
   const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
-  console.log(allArticles);
-  response.render(`main`, {user, allArticles, hotArticles, page, totalPages, categories});
+  const {comments} = await api.getLatestComments(LATEST_COMMENTS_COUNT);
+  response.render(`main`, {user, allArticles, hotArticles, comments, page, totalPages, categories});
 });
 
 baseRouter.get(URL.LOGIN, (request, response) => response.render(`register-and-login/login`));
@@ -45,7 +46,8 @@ baseRouter.post(URL.REGISTER, upload.single(`upload`), async (request, response)
   const {body, file} = request;
   const userData = {
     avatar: file ? file.filename : ``,
-    name: `${body[`first-name`]} ${body[`last-name`]}`,
+    firstName: body[`first-name`],
+    lastName: body[`last-name`],
     email: body[`email`],
     password: body[`password`],
     passwordRepeated: body[`repeat-password`]

@@ -37,6 +37,13 @@ module.exports = (app, articleService, commentService) => {
       .json(articles);
   });
 
+  route.get(URL.API.LATESTCOMMENTS, async (request, response) => {
+    const {limit} = request.query;
+    const comments = await commentService.findLatest(limit);
+    return response.status(StatusCode.OK)
+      .json(comments);
+  });
+
   route.get(URL.API.ARTICLEID, routeParamsValidator, async (request, response) => {
     const {articleId} = request.params;
     const article = await articleService.findOne(articleId);

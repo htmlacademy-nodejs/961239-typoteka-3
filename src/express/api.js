@@ -28,6 +28,10 @@ class API {
     return this._load(`/search`, {params: {query}});
   }
 
+  async getLatestComments(limit) {
+    return this._load(`/articles/lastcomments`, {params: {limit}});
+  }
+
   async getComments(id) {
     return this._load(`/articles/${id}/comments`);
   }

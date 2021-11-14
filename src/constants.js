@@ -31,6 +31,7 @@ const URL = {
     BASEROUTE: `/`,
     ARTICLESROUTE: `/articles`,
     ARTICLEID: `/:articleId`,
+    LATESTCOMMENTS: `/lastcomments`,
     CATEGORIESROUTE: `/categories`,
     COMMENTS: `/:articleId/comments`,
     COMMENTID: `/:articleId/comments/:commentId`,

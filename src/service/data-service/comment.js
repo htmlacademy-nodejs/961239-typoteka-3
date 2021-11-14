@@ -15,13 +15,27 @@ class CommentService {
         model: this._User,
         as: Aliase.USERS,
         attributes: {
-          exclude: [`passwordHash`]
+          exclude: [`passwordHash`, `isAuthor`]
         }
       }],
       raw: true,
     });
   }
 
+  async findLatest(limit) {
+    const {rows} = await this._Comment.findAndCountAll({
+      limit,
+      include: [{
+        model: this._User,
+        as: Aliase.USERS,
+        attributes: {
+          exclude: [`passwordHash`, `isAuthor`]
+        }
+      }],
+      order: [[`createdAt`, `DESC`]]
+    });
+    return {comments: rows};
+  }
   async create(articleId, commentData) {
     const article = await this._Article.findByPk(articleId);
     return article.createComment(commentData);

@@ -70,7 +70,6 @@ class ArticleService {
   }
 
   async findHottest({limit}) {
-    console.log(this._Comment);
     const {rows} = await this._Article.findAndCountAll({
       subQuery: false,
       limit,

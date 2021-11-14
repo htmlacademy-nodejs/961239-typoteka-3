@@ -19,9 +19,10 @@ const readMockData = async (dataPath) => {
 const SENTENCES_MAX_COUNT = 5;
 const DEFAULT_MOCK_COUNT = 1;
 
-const generateMockComments = (count, comments) => {
+const generateMockComments = (count, comments, user) => {
   const commentsList = new Array(count).fill(` `).map(() =>({
-    text: comments[getRandomInt(0, comments.length - 1)]
+    text: comments[getRandomInt(0, comments.length - 1)],
+    user
   }));
   return commentsList;
 };
@@ -52,9 +53,8 @@ const generatePublication = (titles, sentences, comments, categories, users) => 
   fullText: generateFullText(sentences),
   createdAt: getRandomDate(),
   image: `example0${getRandomInt(1, 4)}.jpg`,
-  user: users[getRandomInt(0, users.length - 1)].email,
   categories: generateMockCategories(getRandomInt(1, categories.length - 1), categories),
-  comments: generateMockComments(getRandomInt(0, comments.length), comments)
+  comments: generateMockComments(getRandomInt(0, comments.length), comments, users[getRandomInt(0, users.length - 1)].email)
 });
 
 const generatePublications = (count, titles, sentences, comments, categories, users) => {
@@ -80,14 +80,16 @@ module.exports = {
     const comments = await readMockData(path.resolve(__dirname, `./../../data/comments.txt`));
     const users = [
       {
-        name: `Иван Иванов`,
+        firstName: `Иван`,
+        lastName: `Иванов`,
         email: `ivanov@example.com`,
         passwordHash: await passwordUtils.hash(`ivanov`),
         avatar: `avatar01.jpg`,
         isAuthor: true
       },
       {
-        name: `Пётр Петров`,
+        firstName: `Пётр`,
+        lastName: `Петров`,
         email: `petrov@example.com`,
         passwordHash: await passwordUtils.hash(`petrov`),
         avatar: `avatar02.jpg`,
