@@ -16,7 +16,7 @@ module.exports = async (sequelize, {categories, articles, users}) => {
     ...acc
   }), {});
 
-  const userModels = await User.bulkCreate(users, {include: [Aliase.ARTICLES, Aliase.COMMENTS]});
+  const userModels = await User.bulkCreate(users, {include: [Aliase.COMMENTS]});
 
   const userIdByEmail = userModels.reduce((acc, next) => ({
     [next.email]: next.id,
@@ -24,7 +24,6 @@ module.exports = async (sequelize, {categories, articles, users}) => {
   }), {});
 
   articles.forEach((article) => {
-    article.userId = userIdByEmail[article.user];
     article.comments.forEach((comment) => {
       comment.userId = userIdByEmail[comment.user];
     });

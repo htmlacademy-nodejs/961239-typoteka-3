@@ -20,7 +20,7 @@ const URL = {
     CATEGORY: `/category/:id`,
     ID: `/:id`,
     ADD: `/add`,
-    EDIT: `/:id/edit`,
+    EDIT: `/edit/:id`,
     COMMENTS: `/:id/comments`
   },
   MYURLS: {
@@ -101,6 +101,12 @@ const ValidationMessages = {
   }
 };
 
+const TypeOfLimits = {
+  HOTTEST: `hot`,
+  PAGE: `page`,
+  API_PAGE: `api-page`
+};
+
 const SCHEMA_NAME = `typoteka`;
 
 const ANNOUNCE_SIZE = 250;
@@ -116,6 +122,7 @@ module.exports = {
   StatusCode,
   HttpMethod,
   ValidationMessages,
+  TypeOfLimits,
   SCHEMA_NAME,
   ANNOUNCE_SIZE,
   FULLTEXT_SIZE

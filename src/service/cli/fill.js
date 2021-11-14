@@ -23,8 +23,6 @@ const ANNOUNCE_MAX_COUNT = 5;
 const NOW_DATE = new Date(Date.now());
 const LOW_DATE = new Date(NOW_DATE.getFullYear(), NOW_DATE.getMonth() - 3, NOW_DATE.getDay());
 
-const ROLES = [`guest`, `reader`, `author`];
-
 const CATEGORIES = [
   `Деревья`,
   `За жизнь`,
@@ -44,7 +42,7 @@ const USERS = [
     lastname: `Testov`,
     password: `5f4dcc3b5aa765d61d8327deb882cf99`,
     avatar: `example05.jpg`,
-    roleid: 3
+    isAuthor: true
   },
   {
     email: `test_ann@mail.com`,
@@ -52,7 +50,7 @@ const USERS = [
     lastname: `Narrow`,
     password: `5f4dcc3b5aa765d61d8327deb882cf99`,
     avatar: `example06.jpg`,
-    roleid: 2
+    isAuthor: false
   },
   {
     email: `test_josh@mail.com`,
@@ -60,7 +58,7 @@ const USERS = [
     lastname: `Shepard`,
     password: `5f4dcc3b5aa765d61d8327deb882cf99`,
     avatar: `example07.jpg`,
-    roleid: 2
+    isAuthor: false
   },
   {
     email: `test_testov@mail.com`,
@@ -68,7 +66,7 @@ const USERS = [
     lastname: `Testov`,
     password: `5f4dcc3b5aa765d61d8327deb882cf99`,
     avatar: `example08.jpg`,
-    roleid: 2
+    isAuthor: false
   }];
 
 const readMockData = async (dataPath) => {
@@ -103,10 +101,9 @@ const generateData = async (count) => {
 };
 
 const convertToSQL = (articles) => {
-  const rolesValues = ROLES.map((role) => `('${role}')`).join(`,\n`);
   const usersValues = USERS.map(
-      ({email, firstname, lastname, password, avatar, roleid}) =>
-        `('${email}', '${firstname}', '${lastname}', '${password}', '${avatar}', ${roleid})`)
+      ({email, firstname, lastname, password, avatar, isAuthor}) =>
+        `('${email}', '${firstname}', '${lastname}', '${password}', '${avatar}', ${isAuthor})`)
         .join(`,\n`);
   const categoriesValues = CATEGORIES.map((category) => `('${category}')`).join(`,\n`);
   const articlesValues = articles.map(({title, announce, fullText, createDate, image}) =>
@@ -116,9 +113,6 @@ const convertToSQL = (articles) => {
     comments.map(({userid, text, createDate}) => `(${userid}, ${index + 1}, '${moment(createDate).format()}', '${text}')`).join(`,\n`)).join(`,\n`);
 
   const query = `
-INSERT INTO roles (name)
-VALUES ${rolesValues};
-  
 INSERT INTO articles (title, created_date, announce, full_text, image)
 VALUES ${articlesValues};
 
@@ -126,7 +120,7 @@ INSERT INTO categories (name)
 VALUES ${categoriesValues};
 
 ALTER TABLE users DISABLE TRIGGER ALL;
-INSERT INTO users (email, firstname, lastname, password, avatar, role_id)
+INSERT INTO users (email, firstname, lastname, password, avatar, isAuthor)
 VALUES ${usersValues}
 ALTER TABLE users ENABLE TRIGGER ALL;
 

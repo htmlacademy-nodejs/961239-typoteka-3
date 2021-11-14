@@ -20,10 +20,10 @@ block content
                   button.themes__remove-btn(type='button') Удалить категорию
           if article.image
             .post__picture
-              img(src=`/media/img/${article.image}` alt='пейзаж море, скалы, пляж')
+              img(src=`/media/img/${article.image}`)
           .post__text
             h3 #{article.announce}
-            p | #{article.fullText}
+            p #{article.fullText}
       .post__wrapper.post__wrapper--comments
         section.post__comments.comments
           h2.comments__title.title.title--middle Комментарии

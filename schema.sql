@@ -1,9 +1,3 @@
-CREATE TABLE roles
-(
-    id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    name character varying(8) NOT NULL
-);
-
 CREATE TABLE users
 (
     id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -11,13 +5,7 @@ CREATE TABLE users
     firstname character varying(100) NOT NULL,
     lastname character varying(100) NOT NULL,
     password character varying(100) NOT NULL,
-    avatar text,
-    role_id int,
-    CONSTRAINT roles FOREIGN KEY (role_id)
-        REFERENCES roles (id) MATCH SIMPLE
-        ON UPDATE SET NULL
-        ON DELETE SET NULL
-        NOT VALID
+    avatar text
 );
 
 CREATE TABLE articles

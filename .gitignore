@@ -22,3 +22,5 @@ src/express/upload
 
 #Файл переменных окружения
 .env
+
+markup/fixesList.md

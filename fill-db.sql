@@ -1,9 +1,3 @@
--- добавление ролей
-INSERT INTO roles (name)
-VALUES ('guest'),
-('reader'),
-('author');
-
 -- добавление категорий
 INSERT INTO categories (name)
 VALUES ('IT'),
@@ -15,21 +9,21 @@ VALUES ('IT'),
 
 -- добавление пользователей
 ALTER TABLE users DISABLE TRIGGER ALL;
-INSERT INTO users (email, firstname, lastname, password, avatar, role_id)
+INSERT INTO users (email, firstname, lastname, password, avatar, isGuest)
 VALUES (
   'test_andrew@mail.com',
   'Andrew',
   'Testov',
   '5f4dcc3b5aa765d61d8327deb882cf99',
   'example04.jpg',
-  3),
+  true),
   (
   'test_ann@mail.com',
   'Ann',
   'Narrow',
   '5f4dcc3b5aa765d61d8327deb882cf99',
   'example05.jpg',
-  2
+  false
   ),
   (
   'test_josh@mail.com',
@@ -37,7 +31,7 @@ VALUES (
   'Shepard',
   '5f4dcc3b5aa765d61d8327deb882cf99',
   'example06.jpg',
-  2
+  false
   ),
   (
   'test_teest@mail.com',
@@ -45,7 +39,7 @@ VALUES (
   'Testov',
   '5f4dcc3b5aa765d61d8327deb882cf99',
   'example07.jpg',
-  2
+  false
   );
 ALTER TABLE users ENABLE TRIGGER ALL;
 

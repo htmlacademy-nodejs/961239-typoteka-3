@@ -36,8 +36,10 @@ const getEditArticleData = async (articleId) => {
   return [article, categories];
 };
 
-articlesRouter.get(URL.ARTICLESURL.CATEGORY, (request, response) =>
-  response.render(`articles/articles-by-category`));
+articlesRouter.get(URL.ARTICLESURL.CATEGORY, async (request, response) => {
+  const categories = await api.getCategories();
+  response.render(`articles/articles-by-category`, {categories});
+});
 
 articlesRouter.get(URL.ARTICLESURL.ADD, auth, csrfProtection, async (request, response) => {
   const categories = await getAddArticleData();

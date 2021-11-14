@@ -7,17 +7,11 @@ class ArticleService {
     this._Comment = sequelize.models.Comment;
     this._Category = sequelize.models.Category;
     this._User = sequelize.models.User;
+    this._sequelize = sequelize;
   }
 
   async findAll(NeedComments) {
-    const include = [Aliase.CATEGORIES,
-      {
-        model: this._User,
-        as: Aliase.USERS,
-        attributes: {
-          exclude: [`passwordHash`]
-        }
-      }];
+    const include = [Aliase.CATEGORIES];
 
     if (NeedComments) {
       include.push({
@@ -28,7 +22,7 @@ class ArticleService {
             model: this._User,
             as: Aliase.USERS,
             attributes: {
-              exclude: [`passwordHash`]
+              exclude: [`passwordHash`, `isAuthor`]
             }
           }
         ]
@@ -55,27 +49,15 @@ class ArticleService {
           model: this._User,
           as: Aliase.USERS,
           attributes: {
-            exclude: [`passwordHash`, `email`]
+            exclude: [`passwordHash`, `email`, `isAuthor`]
           }
         }
       ]
-    }, {
-      model: this._User,
-      as: Aliase.USERS,
-      attributes: {
-        exclude: [`passwordHash`]
-      }
     }]});
   }
 
   async findPage({limit, offset}) {
-    const include = [Aliase.CATEGORIES, Aliase.COMMENTS, {
-      model: this._User,
-      as: Aliase.USERS,
-      attributes: {
-        exclude: [`passwordHash`]
-      }
-    }];
+    const include = [Aliase.CATEGORIES, Aliase.COMMENTS];
 
 
     const {count, rows} = await this._Article.findAndCountAll({
@@ -85,6 +67,29 @@ class ArticleService {
       distinct: true
     });
     return {count, articles: rows};
+  }
+
+  async findHottest({limit}) {
+    console.log(this._Comment);
+    const {rows} = await this._Article.findAndCountAll({
+      subQuery: false,
+      limit,
+      offset: 0,
+      attributes: {include: [[this._sequelize.fn(`COUNT`, this._sequelize.col(`comments.id`)), `commentsCount`]]},
+      include: [{
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        required: true,
+        attributes: []
+      }],
+      group: [`Article.id`],
+      order: [
+        [this._sequelize.fn(`COUNT`, this._sequelize.col(`comments.id`)), `DESC`]
+      ],
+      distinct: true
+    });
+
+    return {articles: rows};
   }
 
   async create(articleData) {

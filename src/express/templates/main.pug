@@ -4,9 +4,8 @@ block content
   main.main-page
     h1.visually-hidden Главная страница личного блога Типотека
     p.
-      
-      Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏
-      
+      Приветствую вас в моем блоге 👏
+      Возьмите себе чайку с печеньками и устраивайтесь поудобнее ☕
     section.main-page__theme-list
       h2.visually-hidden Список тем
       ul.themes
@@ -20,10 +19,10 @@ block content
           | Самое обсуждаемое 
           span.hot__icon.hot__icon--fire
         ul.hot__list
-          each article in articles
+          each article in hotArticles
             li.hot__list-item
-              a.hot__list-link(href=`/articles/${article.id}`) #{article.title} 
-                sup.hot__link-sup 12
+              a.hot__list-link(href=`/articles/${article.id}`) #{article.announce} 
+                sup.hot__link-sup #{article.commentsCount}
       section.main-page__last.last
         h2.last__name
           | Последние комментарии 
@@ -44,23 +43,25 @@ block content
     section.main-page__list.preview
       h2.visually-hidden Список превью статей
       ul.preview__list
-        each article in articles
-          li.preview__item
-            ul.preview__breadcrumbs(style="flex-wrap: wrap")
-              each category in article.categories
-                li.preview__breadcrumbs-item
-                  a.preview__breadcrumbs-link(href='#') #{category.name}
-            .preview__background
-              img.preview__background-image(src=`/media/img/${article.image}` width='460' height='240' srcset=`/media/img/${article.image}, /media/img/${article.image}` alt='Фотография небоскреба')
-            time.preview__time(datetime=article.createDate) #{moment(article.createDate).format(`DD.MM.YYYY, hh:mm`)}
-            h3.preview__name
-              a.preview__name-link(href=`/articles/${article.id}`) #{article.title}
-            p.preview__text #{article.announce}
-            a.preview__comment(href='#')
-              | Комментарии 
-              span.preview__cloud
-              |  
-              b.preview__comment-count #{article.comments.length}
+        each article in allArticles
+          if article.image !== null
+            li(class="preview__item #{article.image ? `` : `preview__item--noimage`}")
+              ul.preview__breadcrumbs(style="flex-wrap: wrap")
+                each category in article.categories
+                  li.preview__breadcrumbs-item
+                    a.preview__breadcrumbs-link(href='#') #{category.name}
+              .preview__background
+                if article.image !== null
+                img.preview__background-image(src=`/media/img/${article.image}` style='height: 100%' width='460' srcset=`/media/img/${article.image}, /media/img/${article.image}`)
+              time.preview__time(datetime=article.createDate) #{moment(article.createDate).format(`DD.MM.YYYY, hh:mm`)}
+              h3.preview__name
+                a.preview__name-link(href=`/articles/${article.id}`) #{article.title}
+              p.preview__text #{article.announce}
+              a.preview__comment(href='#')
+                | Комментарии 
+                span.preview__cloud
+                |  
+                b.preview__comment-count #{article.comments.length}
     .preview__toggle-wrapper
       ul.preview__pagination.pagination
         li
