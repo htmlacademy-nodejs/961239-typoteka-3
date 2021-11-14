@@ -64,7 +64,8 @@ class ArticleService {
       limit,
       offset,
       include,
-      distinct: true
+      distinct: true,
+      order: [[`createdAt`, `DESC`]]
     });
     return {count, articles: rows};
   }
