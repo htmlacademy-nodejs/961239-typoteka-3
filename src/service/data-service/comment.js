@@ -18,7 +18,8 @@ class CommentService {
           exclude: [`passwordHash`, `isAuthor`]
         }
       }],
-      raw: true,
+      order: [[`createdAt`, `DESC`]],
+      raw: true
     });
   }
 

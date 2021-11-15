@@ -76,7 +76,7 @@ const readMockData = async (dataPath) => {
 
 const generateMockComments = (commentsList, count) => {
   const comments = new Array(count).fill(` `).map(() =>({
-    text: commentsList[getRandomInt(1, commentsList.length - 1)],
+    message: commentsList[getRandomInt(1, commentsList.length - 1)],
     userid: getRandomInt(1, USERS.length),
     createDate: new Date(getRandomInt(LOW_DATE.getTime(), NOW_DATE.getTime())),
   }));
@@ -110,7 +110,7 @@ const convertToSQL = (articles) => {
     `('${title}', '${moment(createDate).format()}', '${announce}', '${fullText}', '${image}')`).join(`,\n`);
   const articlesCategoriesValues = articles.map(({categories}, index) => `(${categories + 1}, ${index + 1})`).join(`,\n`);
   const commentsValues = articles.map(({comments}, index) =>
-    comments.map(({userid, text, createDate}) => `(${userid}, ${index + 1}, '${moment(createDate).format()}', '${text}')`).join(`,\n`)).join(`,\n`);
+    comments.map(({userid, message, createDate}) => `(${userid}, ${index + 1}, '${moment(createDate).format()}', '${message}')`).join(`,\n`)).join(`,\n`);
 
   const query = `
 INSERT INTO articles (title, created_date, announce, full_text, image)

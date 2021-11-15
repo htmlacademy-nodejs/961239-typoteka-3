@@ -15,7 +15,6 @@ myRouter.get(URL.BASE, auth, async (request, response) => {
 
 myRouter.get(URL.MYURLS.COMMENTS, auth, async (request, response) => {
   const articles = await api.getArticles({comments: true});
-  console.log(articles);
   response.render(`my/comments`, {articles});
 });
 

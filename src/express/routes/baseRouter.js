@@ -3,7 +3,6 @@
 const {Router} = require(`express`);
 const {URL, TypeOfLimits} = require(`./../../constants`);
 const baseRouter = new Router();
-const {prepareErrors} = require(`./../../utils/utils`);
 const {getAPI} = require(`./../api`);
 const upload = require(`./../middlewares/upload`);
 const auth = require(`./../middlewares/auth`);
@@ -45,7 +44,7 @@ baseRouter.get(URL.SEARCH, async (request, response) => {
 baseRouter.post(URL.REGISTER, upload.single(`upload`), async (request, response) => {
   const {body, file} = request;
   const userData = {
-    avatar: file ? file.filename : ``,
+    avatar: file ? file.filename : null,
     firstName: body[`first-name`],
     lastName: body[`last-name`],
     email: body[`email`],
@@ -57,8 +56,7 @@ baseRouter.post(URL.REGISTER, upload.single(`upload`), async (request, response)
     await api.createUser(userData);
     response.redirect(URL.LOGIN);
   } catch (errors) {
-    const validationMessages = prepareErrors(errors);
-    response.render(`register-and-login/sign-up`, {validationMessages});
+    response.render(`register-and-login/sign-up`, {errors: errors.response.data});
   }
 });
 
@@ -71,9 +69,8 @@ baseRouter.post(`/login`, async (request, response) => {
       response.redirect(`/`);
     });
   } catch (errors) {
-    const validationMessages = prepareErrors(errors);
     const {user} = request.session;
-    response.render(`register-and-login/login`, {user, validationMessages});
+    response.render(`register-and-login/login`, {user, errors: errors.response.data});
   }
 });
 

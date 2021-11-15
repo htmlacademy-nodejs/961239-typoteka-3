@@ -4,7 +4,11 @@ const Joi = require(`joi`);
 const {StatusCode, ValidationMessages} = require(`./../../constants`);
 
 const schema = Joi.object({
-  name: Joi.string().pattern(/[^0-9$&+,:;=?@#|'<>.^*()%!]+$/).required().messages({
+  firstName: Joi.string().pattern(/[^0-9$&+,:;=?@#|'<>.^*()%!]+$/).required().messages({
+    'string.pattern.base': ValidationMessages.USER.NAME,
+    'any.required': ValidationMessages.USER.NAME_REQUIRED
+  }),
+  lastName: Joi.string().pattern(/[^0-9$&+,:;=?@#|'<>.^*()%!]+$/).required().messages({
     'string.pattern.base': ValidationMessages.USER.NAME,
     'any.required': ValidationMessages.USER.NAME_REQUIRED
   }),
@@ -19,9 +23,8 @@ const schema = Joi.object({
   passwordRepeated: Joi.string().valid(Joi.ref(`password`)).messages({
     'any.only': ValidationMessages.USER.PASSWORD_REPEATED
   }),
-  avatar: Joi.string().required().messages({
-    'string.empty': ValidationMessages.USER.AVATAR,
-    'any.required': ValidationMessages.USER.AVATAR_REQUIRED
+  avatar: Joi.string().pattern(/\.(jpe?g|png)$/i).messages({
+    'string.pattern.base': ValidationMessages.USER.AVATAR,
   })
 });
 

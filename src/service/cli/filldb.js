@@ -21,7 +21,7 @@ const DEFAULT_MOCK_COUNT = 1;
 
 const generateMockComments = (count, comments, user) => {
   const commentsList = new Array(count).fill(` `).map(() =>({
-    text: comments[getRandomInt(0, comments.length - 1)],
+    message: comments[getRandomInt(0, comments.length - 1)],
     user
   }));
   return commentsList;

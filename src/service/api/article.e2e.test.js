@@ -77,23 +77,23 @@ const mockData = [
     "comments": [
       {
         "user": `petrov@example.com`,
-        "text": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
+        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
       },
       {
         "user": `petrov@example.com`,
-        "text": `Мне кажется или я уже читал это где-то?`
+        "message": `Мне кажется или я уже читал это где-то?`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Планируете записать видосик на эту тему?`
+        "message": `Планируете записать видосик на эту тему?`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Совсем немного...`
+        "message": `Совсем немного...`
       },
       {
         "user": `petrov@example.com`,
-        "text": `Согласен с автором!`
+        "message": `Согласен с автором!`
       }
     ]
   },
@@ -111,23 +111,23 @@ const mockData = [
     "comments": [
       {
         "user": `petrov@example.com`,
-        "text": `Согласен с автором!`
+        "message": `Согласен с автором!`
       },
       {
         "user": `petrov@example.com`,
-        "text": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
+        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
       },
       {
         "user": `petrov@example.com`,
-        "text": `Плюсую, но слишком много буквы!`
+        "message": `Плюсую, но слишком много буквы!`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Давно не пользуюсь стационарными компьютерами. Ноутбуки победили.`
+        "message": `Давно не пользуюсь стационарными компьютерами. Ноутбуки победили.`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Совсем немного...`
+        "message": `Совсем немного...`
       }
     ]
   },
@@ -142,26 +142,26 @@ const mockData = [
     "comments": [
       {
         "user": `sidorov@example.com`,
-        "text": `Согласен с автором!`
+        "message": `Согласен с автором!`
       },
       {
         "user": `ivanov@example.com`,
-        "text": `Это где ж такие красоты?`
+        "message": `Это где ж такие красоты?`
       },
       {
         "user": `petrov@example.com`,
-        "text": `Мне кажется или я уже читал это где-то?`
+        "message": `Мне кажется или я уже читал это где-то?`
       },
       {
         "user": `ivanov@example.com`,
-        "text": `Это где ж такие красоты?`
+        "message": `Это где ж такие красоты?`
       },
       {
-        "text": `Согласен с автором!`
+        "message": `Согласен с автором!`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Согласен с автором!`
+        "message": `Согласен с автором!`
       }
     ]
   },
@@ -184,39 +184,39 @@ const mockData = [
     "comments": [
       {
         "user": `petrov@example.com`,
-        "text": `Планируете записать видосик на эту тему?`
+        "message": `Планируете записать видосик на эту тему?`
       },
       {
         "user": `petrov@example.com`,
-        "text": `Плюсую, но слишком много буквы!`
+        "message": `Плюсую, но слишком много буквы!`
       },
       {
         "user": `petrov@example.com`,
-        "text": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
+        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Согласен с автором!`
+        "message": `Согласен с автором!`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
+        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
+        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Планируете записать видосик на эту тему?`
+        "message": `Планируете записать видосик на эту тему?`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Совсем немного...`
+        "message": `Совсем немного...`
       },
       {
         "user": `sidorov@example.com`,
-        "text": `Мне кажется или я уже читал это где-то?`
+        "message": `Мне кажется или я уже читал это где-то?`
       }
     ]
   }
@@ -353,7 +353,7 @@ describe(`Add new comment`, () => {
     response = await request(app)
       .post(`/articles/3/comments`)
       .send({
-        text: `New comment with 20 symbols`,
+        message: `New comment with 20 symbols`,
         userId: 2
       });
     commentsListResponse = await request(app)
@@ -362,7 +362,7 @@ describe(`Add new comment`, () => {
 
   test(`Status code 201`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CREATED, 10)));
   test(`New comment added`, () => expect(commentsListResponse.body).toHaveLength(6));
-  test(`Comment include correct message`, () => expect(commentsListResponse.body[5].text).toEqual(`New comment with 20 symbols`));
+  test(`Comment include correct message`, () => expect(commentsListResponse.body[5].message).toEqual(`New comment with 20 symbols`));
 });
 
 describe(`Delete comment`, () => {
@@ -479,7 +479,7 @@ describe(`Add comment to non-existing offer`, () => {
     response = await request(app)
     .post(`/articles/nonexistid/comments`)
     .send({
-      "text": `New comment`
+      "message": `New comment`
     });
   });
 

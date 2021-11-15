@@ -40,8 +40,8 @@ class ArticleService {
     return articles.map((item) => item.get());
   }
 
-  findOne(id) {
-    return this._Article.findByPk(id, {include: [Aliase.CATEGORIES, {
+  async findOne(id) {
+    const article = await this._Article.findByPk(id, {include: [Aliase.CATEGORIES, {
       model: this._Comment,
       as: Aliase.COMMENTS,
       include: [
@@ -53,7 +53,9 @@ class ArticleService {
           }
         }
       ]
-    }]});
+    }],
+    order: [[{model: this._Comment, as: Aliase.COMMENTS}, `createdAt`, `DESC`]]});
+    return article;
   }
 
   async findPage({limit, offset}) {

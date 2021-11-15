@@ -2,7 +2,6 @@
 
 const {Router} = require(`express`);
 const {URL} = require(`./../../constants`);
-const {prepareErrors} = require(`./../../utils/utils`);
 const articlesRouter = new Router();
 const {getAPI} = require(`./../api`);
 const upload = require(`./../middlewares/upload`);
@@ -52,10 +51,11 @@ articlesRouter.get(URL.ARTICLESURL.EDIT, auth, csrfProtection, async (request, r
   response.render(`articles/edit-post`, {article, categories, id, csrfToken: request.csrfToken()});
 });
 
-articlesRouter.get(URL.ARTICLESURL.ID, async (request, response) => {
+articlesRouter.get(URL.ARTICLESURL.ID, csrfProtection, async (request, response) => {
   const {id} = request.params;
+  const {user} = request.session;
   const article = await api.getArticle(request.params.id, true);
-  response.render(`articles/post`, {article, id});
+  response.render(`articles/post`, {article, id, user, csrfToken: request.csrfToken()});
 });
 
 articlesRouter.post(URL.ARTICLESURL.ADD, auth, upload.single(`upload`), csrfProtection, async (request, response) => {
@@ -72,9 +72,8 @@ articlesRouter.post(URL.ARTICLESURL.ADD, auth, upload.single(`upload`), csrfProt
     await api.createArticle(articleData);
     response.redirect(URL.MY);
   } catch (errors) {
-    const allValidationMessages = prepareErrors(errors);
     const categories = await getAddArticleData();
-    response.render(`articles/new-post`, {categories, allValidationMessages, article: articleData});
+    response.render(`articles/new-post`, {categories, errors, article: articleData});
   }
 });
 
@@ -93,9 +92,8 @@ articlesRouter.post(URL.ARTICLESURL.EDIT, auth, upload.single(`upload`), csrfPro
     await api.editArticle(articleData, id);
     response.redirect(`${URL.ARTICLESURL}/${id}`);
   } catch (errors) {
-    const allValidationMessages = prepareErrors(errors);
     const categories = await getAddArticleData();
-    response.render(`articles/edit-post`, {categories, allValidationMessages, article: articleData, id});
+    response.render(`articles/edit-post`, {categories, errors, article: articleData, id});
   }
 });
 
@@ -104,12 +102,11 @@ articlesRouter.post(URL.ARTICLESURL.COMMENTS, auth, async (request, response) =>
   const {id} = request.params;
   const {message} = request.body;
   try {
-    await api.createComment(id, {userId: user.id, text: message});
+    await api.createComment(id, {userId: user.id, message});
     response.redirect(`${URL.ARTICLES}/${id}`);
   } catch (errors) {
-    const allValidationMessages = prepareErrors(errors);
     const article = await api.getArticle(request.params.id, true);
-    response.render(`articles/post`, {article, allValidationMessages, id, user, csrfToken: request.csrfToken()});
+    response.render(`articles/post`, {article, errors, id, user});
   }
 });
 

@@ -33,7 +33,7 @@ block content
             li.last__list-item
                 img.last__list-image(src=`/media/img/${comment.users.avatar}` width='20' height='20' alt='Аватар пользователя')
                 b.last__list-name #{comment.users.firstName} #{comment.users.lastName}
-                a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.text}
+                a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.message}
     section.main-page__list.preview
       h2.visually-hidden Список превью статей
       ul.preview__list
