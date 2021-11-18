@@ -5,7 +5,7 @@ const {URL, TypeOfLimits} = require(`./../../constants`);
 const baseRouter = new Router();
 const {getAPI} = require(`./../api`);
 const upload = require(`./../middlewares/upload`);
-const auth = require(`./../middlewares/auth`);
+const {auth, alreadyAuth, isAuthorAuth} = require(`./../middlewares/auth`);
 
 const ARTICLES_PER_PAGE = 8;
 const HOTTEST_ARTICLES_COUNT = 4;
@@ -27,8 +27,10 @@ baseRouter.get(URL.BASE, async (request, response) => {
   response.render(`main`, {user, allArticles, hotArticles, comments, page, totalPages, categories});
 });
 
-baseRouter.get(URL.LOGIN, (request, response) => response.render(`register-and-login/login`));
-baseRouter.get(URL.REGISTER, (request, response) => response.render(`register-and-login/sign-up`));
+baseRouter.get(URL.LOGIN, alreadyAuth, (request, response) => response.render(`register-and-login/login`));
+
+baseRouter.get(URL.REGISTER, alreadyAuth, (request, response) => response.render(`register-and-login/sign-up`));
+
 baseRouter.get(URL.CATEGORY, auth, (request, response) => response.render(`articles/all-categories`));
 baseRouter.get(URL.SEARCH, async (request, response) => {
   const {query} = request.query;

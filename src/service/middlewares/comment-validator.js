@@ -17,7 +17,7 @@ module.exports = (request, response, next) => {
   const {error} = schema.validate(comment, {abortEarly: false});
   if (error) {
     return response.status(StatusCode.BADREQUEST)
-      .send(error.details.map((err) => err.message).join(`\n`));
+      .send(error.details.map((err) => err.message));
   }
 
   return next();

@@ -14,7 +14,7 @@ class SearchService {
     const articles = await this._Article.findAll({
       where: {
         title: {
-          [Op.substring]: searchText
+          [Op.iLike]: `%${searchText}%`
         }
       },
       include: [`categories`, {

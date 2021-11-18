@@ -42,4 +42,10 @@ block content
                 .form__field.form__field--publication-text
                   label
                     textarea(rows='10' name='full-text' placeholder='Полный текст публикации')
-            +insertErrorMessages(allValidationMessages)
+            if errors
+              .form__validation-error
+                p.form__error-message Невозможно создать статью:
+                ul.form__errors
+                  if typeof errors !== `string`
+                  each message in errors
+                    li.form__error #{message}
