@@ -1,13 +1,5 @@
 'use strict';
 
-const auth = (req, res, next) => {
-  const {user} = req.session;
-  if (!user) {
-    return res.redirect(`/login`);
-  }
-  return next();
-};
-
 const alreadyAuth = (req, res, next) => {
   const {user} = req.session;
   if (user) {
@@ -18,7 +10,6 @@ const alreadyAuth = (req, res, next) => {
 
 const isAuthorAuth = (req, res, next) => {
   const {user} = req.session;
-  console.log(user);
   if (!user) {
     return res.redirect(`/`);
   }
@@ -29,7 +20,6 @@ const isAuthorAuth = (req, res, next) => {
 };
 
 module.exports = {
-  auth,
   alreadyAuth,
   isAuthorAuth
 };

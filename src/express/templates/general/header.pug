@@ -25,7 +25,7 @@ header.header
           li.header__list-item
             a.header__exit(href='/logout') Выйти
       a.header__avatar.avatar
-        img(src=`/media/img/${user.avatar}` alt='аватар пользователя')
+        img(src=`/media/img/${user.avatar}` alt='аватар пользователя' style='border-radius: 50%; width: 50px; height: 50px; object-fit: cover')
   else
     nav.header__nav
       ul.header__nav-list

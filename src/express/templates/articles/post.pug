@@ -9,7 +9,7 @@ block content
         .post__wrapper
           .post__head
             a.post__backwards.button.button--backwards(onclick="javascript:history.back(); return false;") Назад
-            time.post__date(datetime=article.createdAt) #{moment(article.createDate).format(`DD.MM.YYYY hh:mm`)}
+            time.post__date(datetime=article.createdAt) #{article.createDate}
             h2.post__title.title.title--main #{article.title}
             ul.post__themes.themes
               each category in article.categories
@@ -33,7 +33,7 @@ block content
                 li.comments__comment
                   .comments__avatar.avatar
                     if comment.users.avatar
-                      img(src=`/media/img/${comment.users.avatar}` alt='аватар пользователя')
+                      img(src=`/media/img/${comment.users.avatar}` alt='аватар пользователя' style='border-radius: 50%; width: 50px; height: 50px; object-fit: cover')
                   .comments__text
                     .comments__head
                       p #{comment.users.firstName} #{comment.users.lastName} •
@@ -47,7 +47,7 @@ block content
               form(action=`/articles/${article.id}/comments` method='POST' autocomplete="off")
                 .comments__avatar.avatar
                   if user.avatar
-                    img(src=`/media/img/${user.avatar}` alt='аватар пользователя')
+                    img(src=`/media/img/${user.avatar}` alt='аватар пользователя' style='border-radius: 50%; width: 50px; height: 50px; object-fit: cover')
                 label
                   textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
                   input(type='hidden' name='_csrf' value=`${csrfToken}`)

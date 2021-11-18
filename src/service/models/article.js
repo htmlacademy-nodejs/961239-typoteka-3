@@ -20,7 +20,8 @@ const define = (sequelize) => Article.init({
     type: DataTypes.STRING(1000),
     allowNull: false
   },
-  image: DataTypes.STRING
+  image: DataTypes.STRING,
+  createDate: DataTypes.STRING
 }, {
   sequelize,
   modelName: `Article`,

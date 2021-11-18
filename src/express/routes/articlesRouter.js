@@ -32,7 +32,7 @@ const getEditArticleData = async (articleId) => {
     api.getArticle(articleId),
     api.getCategories()
   ]);
-  return [article, categories];
+  return {article, categories};
 };
 
 articlesRouter.get(URL.ARTICLESURL.CATEGORY, async (request, response) => {
@@ -47,7 +47,7 @@ articlesRouter.get(URL.ARTICLESURL.ADD, isAuthorAuth, csrfProtection, async (req
 
 articlesRouter.get(URL.ARTICLESURL.EDIT, isAuthorAuth, csrfProtection, async (request, response) => {
   const {id} = request.params;
-  const [article, categories] = await getEditArticleData(id);
+  const {article, categories} = await getEditArticleData(id);
   response.render(`articles/edit-post`, {article, categories, id, csrfToken: request.csrfToken()});
 });
 
@@ -60,13 +60,13 @@ articlesRouter.get(URL.ARTICLESURL.ID, csrfProtection, async (request, response)
 
 articlesRouter.post(URL.ARTICLESURL.ADD, isAuthorAuth, upload.single(`upload`), csrfProtection, async (request, response) => {
   const {body, file} = request;
-  console.log(file ? file.filename : null);
   const articleData = {
     image: file ? file.filename : null,
     title: body.title,
     announce: body.announcement,
     fullText: body[`full-text`],
-    categories: await collectCategories(body)
+    categories: await collectCategories(body),
+    createDate: body.date
   };
 
   try {
@@ -74,31 +74,36 @@ articlesRouter.post(URL.ARTICLESURL.ADD, isAuthorAuth, upload.single(`upload`), 
     response.redirect(URL.MY);
   } catch (errors) {
     const categories = await getAddArticleData();
-    response.render(`articles/new-post`, {categories, errors: errors.response.data, article: articleData});
+    response.render(`articles/new-post`, {categories, errors: errors.response.data, article: articleData, csrfToken: request.csrfToken()});
   }
 });
 
 articlesRouter.post(URL.ARTICLESURL.EDIT, isAuthorAuth, upload.single(`upload`), csrfProtection, async (request, response) => {
   const {body, file} = request;
   const {id} = request.params;
+  if (file) {
+    body.image = file.filename;
+  }
   const articleData = {
-    image: file ? file.filename : null,
+    image: body.image ? body.image : null,
     title: body.title,
     announce: body.announcement,
     fullText: body[`full-text`],
-    categories: await collectCategories(body)
+    categories: await collectCategories(body),
+    createDate: body.date
   };
 
   try {
     await api.editArticle(articleData, id);
-    response.redirect(`${URL.ARTICLESURL}/${id}`);
+    response.redirect(`${URL.ARTICLES}/${id}`);
   } catch (errors) {
-    const categories = await getAddArticleData();
-    response.render(`articles/edit-post`, {categories, errors, article: articleData, id});
+    const {article, categories} = await getEditArticleData(id);
+    articleData.categories = article.categories;
+    response.render(`articles/edit-post`, {categories, errors: errors.response.data, article: articleData, id, csrfToken: request.csrfToken()});
   }
 });
 
-articlesRouter.post(URL.ARTICLESURL.COMMENTS, auth, async (request, response) => {
+articlesRouter.post(URL.ARTICLESURL.COMMENTS, auth, csrfProtection, async (request, response) => {
   const {user} = request.session;
   const {id} = request.params;
   const {message} = request.body;
@@ -107,7 +112,7 @@ articlesRouter.post(URL.ARTICLESURL.COMMENTS, auth, async (request, response) =>
     response.redirect(`${URL.ARTICLES}/${id}`);
   } catch (errors) {
     const article = await api.getArticle(request.params.id, true);
-    response.render(`articles/post`, {article, errors, id, user});
+    response.render(`articles/post`, {article, errors: errors.response.data, id, user, csrfToken: request.csrfToken()});
   }
 });
 

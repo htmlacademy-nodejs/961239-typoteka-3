@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require(`fs`).promises;
+const moment = require(`moment`);
 const path = require(`path`);
 const {EXIT_CODE, ANNOUNCE_SIZE, FULLTEXT_SIZE} = require(`./../../constants`);
 const {getRandomInt, shuffle, getRandomDate} = require(`./../../utils/dev-utils`);
@@ -47,15 +48,19 @@ const generateMockCategories = (count, categories) => {
   return categoriesList;
 };
 
-const generatePublication = (titles, sentences, comments, categories, users) => ({
-  title: titles[getRandomInt(0, titles.length - 1)],
-  announce: generateAnnounce(sentences),
-  fullText: generateFullText(sentences),
-  createdAt: getRandomDate(),
-  image: `example0${getRandomInt(1, 4)}.jpg`,
-  categories: generateMockCategories(getRandomInt(1, categories.length - 1), categories),
-  comments: generateMockComments(getRandomInt(0, comments.length), comments, users[getRandomInt(0, users.length - 1)].email)
-});
+const generatePublication = (titles, sentences, comments, categories, users) => {
+  const createDate = moment(getRandomDate()).format(`YYYY-MM-DD`);
+  return {
+    title: titles[getRandomInt(0, titles.length - 1)],
+    announce: generateAnnounce(sentences),
+    fullText: generateFullText(sentences),
+    createdAt: createDate,
+    createDate,
+    image: `example0${getRandomInt(1, 8)}.jpg`,
+    categories: generateMockCategories(getRandomInt(1, categories.length - 1), categories),
+    comments: generateMockComments(getRandomInt(0, comments.length), comments, users[getRandomInt(0, users.length - 1)].email)
+  };
+};
 
 const generatePublications = (count, titles, sentences, comments, categories, users) => {
   const articles = new Array(count).fill({}).map(() => generatePublication(titles, sentences, comments, categories, users));
