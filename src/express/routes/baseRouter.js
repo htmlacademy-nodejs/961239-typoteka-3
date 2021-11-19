@@ -15,7 +15,6 @@ const api = getAPI();
 
 baseRouter.get(URL.BASE, async (request, response) => {
   const {user} = request.session;
-
   let {page = 1} = request.query;
   page = parseInt(page, 10);
   const offset = (page - 1) * ARTICLES_PER_PAGE;
@@ -71,8 +70,7 @@ baseRouter.post(`/login`, async (request, response) => {
       response.redirect(`/`);
     });
   } catch (errors) {
-    const {user} = request.session;
-    response.render(`register-and-login/login`, {user, errors: errors.response.data});
+    response.render(`register-and-login/login`, {email: request.body.email, errors: errors.response.data});
   }
 });
 

@@ -23,7 +23,7 @@ const isAuthorAuth = (req, res, next) => {
     return res.redirect(`/`);
   }
   if (!user.isAuthor) {
-    return res.redirect(`/`);
+    return res.redirect(`/404`);
   }
   return next();
 };

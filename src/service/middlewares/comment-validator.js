@@ -5,7 +5,8 @@ const {StatusCode, ValidationMessages} = require(`./../../constants`);
 
 const schema = Joi.object({
   message: Joi.string().min(20).required().messages({
-    'string.min': ValidationMessages.COMMENT.TEXT_MIN
+    'string.min': ValidationMessages.COMMENT.TEXT_MIN,
+    'string.empty': ValidationMessages.COMMENT.TEXT_MIN
   }),
   userId: Joi.number().integer().positive().required().messages({
     'number.base': ValidationMessages.COMMENT.USER_ID

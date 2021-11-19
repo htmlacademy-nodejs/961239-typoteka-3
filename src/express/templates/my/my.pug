@@ -9,5 +9,5 @@ block content
           li.notes__list-item
             time.notes__item-time(datetime=article.createDate) #{moment(article.createDate).format(`DD.MM.YYYY, hh:mm`)}
             a.notes__item-text(href=`/articles/${article.id}`) #{article.title}
-            button.notes__button.button.button--close-item(type='button')
-              span.visually-hidden Закрыть строку списка
+            a(href=`articles/${article.id}/delete`)
+              button.notes__button.button.button--close-item(type='button')

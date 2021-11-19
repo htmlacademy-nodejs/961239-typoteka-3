@@ -17,6 +17,7 @@ class ArticleService {
       include.push({
         model: this._Comment,
         as: Aliase.COMMENTS,
+        order: [[`createdAt`, `DESC`]],
         include: [
           {
             model: this._User,
@@ -32,9 +33,7 @@ class ArticleService {
     const articles = await this._Article.findAll({
       include,
       subQuery: false,
-      order: [
-        [`createdAt`, `DESC`]
-      ]
+      order: NeedComments ? [[{model: this._Comment, as: Aliase.COMMENTS}, `createdAt`, `DESC`]] : [[`createdAt`, `DESC`]]
     });
 
     return articles.map((item) => item.get());

@@ -46,16 +46,24 @@ articlesRouter.get(URL.ARTICLESURL.ADD, isAuthorAuth, csrfProtection, async (req
 });
 
 articlesRouter.get(URL.ARTICLESURL.EDIT, isAuthorAuth, csrfProtection, async (request, response) => {
-  const {id} = request.params;
-  const {article, categories} = await getEditArticleData(id);
-  response.render(`articles/edit-post`, {article, categories, id, csrfToken: request.csrfToken()});
+  try {
+    const {id} = request.params;
+    const {article, categories} = await getEditArticleData(id);
+    response.render(`articles/edit-post`, {article, categories, id, csrfToken: request.csrfToken()});
+  } catch (error) {
+    response.status(404).render(`errors/404`);
+  }
 });
 
 articlesRouter.get(URL.ARTICLESURL.ID, csrfProtection, async (request, response) => {
-  const {id} = request.params;
-  const {user} = request.session;
-  const article = await api.getArticle(request.params.id, true);
-  response.render(`articles/post`, {article, id, user, csrfToken: request.csrfToken()});
+  try {
+    const {id} = request.params;
+    const {user} = request.session;
+    const article = await api.getArticle(request.params.id, true);
+    response.render(`articles/post`, {article, id, user, csrfToken: request.csrfToken()});
+  } catch (error) {
+    response.status(404).render(`errors/404`);
+  }
 });
 
 articlesRouter.post(URL.ARTICLESURL.ADD, isAuthorAuth, upload.single(`upload`), csrfProtection, async (request, response) => {
@@ -114,6 +122,21 @@ articlesRouter.post(URL.ARTICLESURL.COMMENTS, auth, csrfProtection, async (reque
     const article = await api.getArticle(request.params.id, true);
     response.render(`articles/post`, {article, errors: errors.response.data, id, user, csrfToken: request.csrfToken()});
   }
+});
+
+articlesRouter.get(URL.ARTICLESURL.DELETE, isAuthorAuth, async (request, response) => {
+  await api.deleteArticle(request.params.id);
+  response.redirect(URL.MY);
+});
+
+
+articlesRouter.get(URL.ARTICLESURL.DELETE_COMMENTS, isAuthorAuth, async (request, response) => {
+  await api.deleteComment(request.params.id, request.params.commentId);
+  response.redirect(`${URL.MY}${URL.MYURLS.COMMENTS}`);
+});
+
+articlesRouter.use((req, res) => {
+  res.status(404).render(`errors/404`);
 });
 
 module.exports = articlesRouter;

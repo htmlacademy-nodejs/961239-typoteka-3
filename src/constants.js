@@ -21,7 +21,9 @@ const URL = {
     ID: `/:id`,
     ADD: `/add`,
     EDIT: `/edit/:id`,
-    COMMENTS: `/:id/comments`
+    COMMENTS: `/:id/comments`,
+    DELETE: `/:id/delete`,
+    DELETE_COMMENTS: `/:id/comments/:commentId/delete`
   },
   MYURLS: {
     COMMENTS: `/comments`
@@ -105,7 +107,8 @@ const ValidationMessages = {
 const TypeOfLimits = {
   HOTTEST: `hot`,
   PAGE: `page`,
-  API_PAGE: `api-page`
+  API_PAGE: `api-page`,
+  COMMENTS: `comments`
 };
 
 const SCHEMA_NAME = `typoteka`;

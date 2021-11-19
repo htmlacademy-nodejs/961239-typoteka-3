@@ -9,10 +9,11 @@ block content
           each comment in article.comments
             li.publication__list-item
               .publication__header
-                img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-                b.publication__list-name Александр Петров
-                time.publication__item-time(datetime=article.createDate) #{moment(article.createDate).format(`DD.MM.YYYY hh:mm`)}
-              a.publication__item-text(href='#') #{article.title}
-                p.publication__text-strong #{comment.text}
+                img.publication__list-image(src=`/media/img/${comment.users.avatar}` alt='аватар пользователя' style='border-radius: 50%; width: 20px; height: 20px; object-fit: cover')
+                b.publication__list-name #{comment.users.firstName} #{comment.users.lastName}
+                time.publication__item-time(datetime='#{moment(comment.createdAt).format(`DD.MM.YYYY, hh:mm`)}') #{moment(comment.createdAt).format(`DD.MM.YYYY, hh:mm`)}
+              a.publication__item-text(href=`/articles/${article.id}`) #{comment.message}
+              p.publication__text-strong #{article.title}
+              a(href=`/articles/${article.id}/comments/${comment.id}/delete`)
                 button.publication__button.button.button--close-item(type='button')
-                  span.visually-hidden Закрыть строку списка
+                span.visually-hidden Закрыть строку списка

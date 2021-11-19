@@ -27,6 +27,9 @@ module.exports = (app, articleService, commentService) => {
       case TypeOfLimits.HOTTEST:
         articles = await articleService.findHottest({limit, offset});
         break;
+      case TypeOfLimits.COMMENTS:
+        articles = await articleService.findAll(true);
+        break;
       case TypeOfLimits.API_PAGE:
         articles = await articleService.findPage({limit, offset});
         break;
@@ -98,7 +101,7 @@ module.exports = (app, articleService, commentService) => {
       .json(newComment);
   });
 
-  route.delete(URL.API.COMMENTID, routeParamsValidator, async (request, response) => {
+  route.delete(URL.API.COMMENTID, async (request, response) => {
     const {commentId} = request.params;
     const deletedComment = await commentService.delete(commentId);
     if (!deletedComment) {
