@@ -73,7 +73,7 @@ class ArticleService {
   }
 
   async findHottest({limit}) {
-    const {rows} = await this._Article.findAndCountAll({
+    const articles = await this._Article.findAll({
       subQuery: false,
       limit,
       offset: 0,
@@ -91,7 +91,7 @@ class ArticleService {
       distinct: true
     });
 
-    return {articles: rows};
+    return {articles};
   }
 
   async findByCategory({limit, id}) {

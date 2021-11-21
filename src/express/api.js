@@ -29,15 +29,15 @@ class API {
   }
 
   async getLatestComments(limit) {
-    return this._load(`/articles/lastcomments`, {params: {limit}});
+    return this._load(`/articles/comments/last`, {params: {limit}});
   }
 
   async getComments(id) {
     return this._load(`/articles/${id}/comments`);
   }
 
-  async getCategories(count) {
-    return this._load(`/categories`, {params: {count}});
+  async getCategories(withArticles) {
+    return this._load(`/categories`, {params: {withArticles}});
   }
 
   async getCategoryArticles({id, limit, type}) {
@@ -73,6 +73,26 @@ class API {
 
   async deleteComment(id, commentId) {
     return this._load(`/articles/${id}/comments/${commentId}`, {
+      method: HttpMethod.DELETE
+    });
+  }
+
+  async createCategory(data) {
+    return this._load(`/categories`, {
+      method: HttpMethod.POST,
+      data
+    });
+  }
+
+  async updateCategory({id, categoryData}) {
+    return this._load(`/categories/${id}`, {
+      method: HttpMethod.PUT,
+      data: categoryData
+    });
+  }
+
+  async deleteCategory(id) {
+    return this._load(`/categories/${id}`, {
       method: HttpMethod.DELETE
     });
   }

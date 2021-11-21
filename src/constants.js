@@ -12,9 +12,12 @@ const URL = {
   BASE: `/`,
   REGISTER: `/register`,
   LOGIN: `/login`,
+  LOGOUT: `/logout`,
   MY: `/my`,
   SEARCH: `/search`,
   CATEGORY: `/categories`,
+  EDIT_CATEGORY: `/categories/:id`,
+  DELETE_CATEGORY: `/categories/:id/delete`,
   ARTICLES: `/articles`,
   ARTICLESURL: {
     CATEGORY: `/category/:id`,
@@ -33,8 +36,9 @@ const URL = {
     BASEROUTE: `/`,
     ARTICLESROUTE: `/articles`,
     ARTICLEID: `/:articleId`,
-    LATESTCOMMENTS: `/lastcomments`,
+    LATESTCOMMENTS: `/comments/last`,
     CATEGORIESROUTE: `/categories`,
+    CATEGORIESID: `/:categoryId`,
     COMMENTS: `/:articleId/comments`,
     COMMENTID: `/:articleId/comments/:commentId`,
     SEARCHROUTE: `/search`,
@@ -46,10 +50,12 @@ const URL = {
 const ServerMessages = {
   NOT_FOUND: `Not found`,
   NOT_FOUND_ARTICLE: `Article not found`,
+  NOT_FOUND_CATEGORY: `Category not found`,
   NOT_FOUND_COMMENT: `Comment not found`,
   BAD_REQUEST: `Invalid request params`,
   ARTICLE_EDIT: `Article edited`,
   ARTICLE_DELETE: `Article deleted`,
+  CATEGORY_DELETE: `Category deleted`,
   COMMENT_DELETE: `Comment deleted`,
   SERVER_ERROR: `Something went wrong`
 };
@@ -86,6 +92,11 @@ const ValidationMessages = {
     FULLTEXT_MAX: `Текст публикации не может содержать более 1000 символов`,
     IMAGE: `Изображение может быть только в формате .png или .jpg`,
     DATE_EMPTY: `Поле Дата публикации не может быть пустым`
+  },
+  CATEGORY: {
+    NAME_MIN: `Имя категории должно содержать минимум 5 символов`,
+    NAME_MAX: `Имя категории должно содержать не более 30 символов`,
+    CATEGORY_EXIST: `Категория с такими именем уже существует`
   },
   USER: {
     NAME: `Имя содержит некорректные символы`,

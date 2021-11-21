@@ -11,6 +11,11 @@ const ARTICLES_PER_PAGE = 8;
 const HOTTEST_ARTICLES_COUNT = 4;
 const LATEST_COMMENTS_COUNT = 4;
 
+const CategoryErrorSource = {
+  ADD: `add`,
+  EDIT: `edit-`
+};
+
 const api = getAPI();
 
 baseRouter.get(URL.BASE, async (request, response) => {
@@ -30,7 +35,13 @@ baseRouter.get(URL.LOGIN, alreadyAuth, (request, response) => response.render(`r
 
 baseRouter.get(URL.REGISTER, alreadyAuth, (request, response) => response.render(`register-and-login/sign-up`));
 
-baseRouter.get(URL.CATEGORY, isAuthorAuth, (request, response) => response.render(`articles/all-categories`));
+baseRouter.get(URL.CATEGORY, isAuthorAuth, async (request, response) => {
+  const categories = await api.getCategories(false);
+  console.log(categories);
+  const {user} = request.session;
+  response.render(`categories/categories`, {categories, user});
+});
+
 baseRouter.get(URL.SEARCH, async (request, response) => {
   const {query} = request.query;
   const user = request.session.user;
@@ -40,6 +51,39 @@ baseRouter.get(URL.SEARCH, async (request, response) => {
   } catch (error) {
     response.render(`search/search-no-result`, {query, user});
   }
+});
+
+baseRouter.post(URL.CATEGORY, isAuthorAuth, async (request, response) => {
+  const {body} = request;
+  const categoryData = {name: body[`add-category`]};
+  try {
+    await api.createCategory(categoryData);
+    response.redirect(URL.CATEGORY);
+  } catch (errors) {
+    const {user} = request.session;
+    const categories = await api.getCategories(false);
+    response.render(`categories/categories`, {categories, user, errors: errors.response.data, errorsSource: CategoryErrorSource.ADD});
+  }
+});
+
+baseRouter.post(URL.EDIT_CATEGORY, isAuthorAuth, async (request, response) => {
+  const {body} = request;
+  const {id} = request.params;
+  const categoryData = {name: body[`category-${id}`]};
+  try {
+    await api.updateCategory({id, categoryData});
+    response.redirect(URL.CATEGORY);
+  } catch (errors) {
+    const {user} = request.session;
+    const categories = await api.getCategories(false);
+    response.render(`categories/categories`, {categories, user, errors: errors.response.data, errorsSource: `${CategoryErrorSource.EDIT}${id}`});
+  }
+});
+
+baseRouter.get(URL.DELETE_CATEGORY, isAuthorAuth, async (request, response) => {
+  const {id} = request.params;
+  await api.deleteCategory(id);
+  response.redirect(URL.CATEGORY);
 });
 
 baseRouter.post(URL.REGISTER, upload.single(`upload`), async (request, response) => {
@@ -61,7 +105,7 @@ baseRouter.post(URL.REGISTER, upload.single(`upload`), async (request, response)
   }
 });
 
-baseRouter.post(`/login`, async (request, response) => {
+baseRouter.post(URL.LOGIN, async (request, response) => {
   try {
     const {email, password} = request.body;
     const user = await api.auth(email, password);
