@@ -1,7 +1,7 @@
 'use strict';
-const Aliase = require(`./../models/aliase`);
 
 const {Op} = require(`sequelize`);
+const Aliase = require(`./../models/aliase`);
 
 class SearchService {
   constructor(sequelize) {
@@ -17,13 +17,6 @@ class SearchService {
           [Op.iLike]: `%${searchText}%`
         }
       },
-      include: [`categories`, {
-        model: this._User,
-        as: Aliase.USERS,
-        attributes: {
-          exclude: [`passwordHash`]
-        }
-      }],
       order: [
         [`createdAt`, `DESC`]
       ]

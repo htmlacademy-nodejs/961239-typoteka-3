@@ -49,15 +49,17 @@ articlesRouter.get(URL.ARTICLESURL.CATEGORY, async (request, response) => {
 });
 
 articlesRouter.get(URL.ARTICLESURL.ADD, isAuthorAuth, csrfProtection, async (request, response) => {
+  const {user} = request.session;
   const categories = await getAddArticleData();
-  response.render(`articles/new-post`, {categories, csrfToken: request.csrfToken()});
+  response.render(`articles/new-post`, {categories, csrfToken: request.csrfToken(), user});
 });
 
 articlesRouter.get(URL.ARTICLESURL.EDIT, isAuthorAuth, csrfProtection, async (request, response) => {
   try {
     const {id} = request.params;
+    const {user} = request.session;
     const {article, categories} = await getEditArticleData(id);
-    response.render(`articles/edit-post`, {article, categories, id, csrfToken: request.csrfToken()});
+    response.render(`articles/edit-post`, {article, categories, id, csrfToken: request.csrfToken(), user});
   } catch (error) {
     response.status(404).render(`errors/404`);
   }
@@ -67,8 +69,12 @@ articlesRouter.get(URL.ARTICLESURL.ID, csrfProtection, async (request, response)
   try {
     const {id} = request.params;
     const {user} = request.session;
+    console.log(request.headers.referer.includes(request.originalUrl));
+    if (!request.headers.referer.includes(request.originalUrl)) {
+      request.session.path = request.headers.referer;
+    }
     const article = await api.getArticle(request.params.id, true);
-    response.render(`articles/post`, {article, id, user, csrfToken: request.csrfToken()});
+    response.render(`articles/post`, {article, id, user, csrfToken: request.csrfToken(), backHistory: request.session.path});
   } catch (error) {
     response.status(404).render(`errors/404`);
   }
@@ -76,6 +82,7 @@ articlesRouter.get(URL.ARTICLESURL.ID, csrfProtection, async (request, response)
 
 articlesRouter.post(URL.ARTICLESURL.ADD, isAuthorAuth, upload.single(`upload`), csrfProtection, async (request, response) => {
   const {body, file} = request;
+  const {user} = request.session;
   const articleData = {
     image: file ? file.filename : null,
     title: body.title,
@@ -90,12 +97,13 @@ articlesRouter.post(URL.ARTICLESURL.ADD, isAuthorAuth, upload.single(`upload`), 
     response.redirect(URL.MY);
   } catch (errors) {
     const categories = await getAddArticleData();
-    response.render(`articles/new-post`, {categories, errors: errors.response.data, article: articleData, csrfToken: request.csrfToken()});
+    response.render(`articles/new-post`, {categories, errors: errors.response.data, article: articleData, csrfToken: request.csrfToken(), user});
   }
 });
 
 articlesRouter.post(URL.ARTICLESURL.EDIT, isAuthorAuth, upload.single(`upload`), csrfProtection, async (request, response) => {
   const {body, file} = request;
+  const {user} = request.session;
   const {id} = request.params;
   if (file) {
     body.image = file.filename;
@@ -115,7 +123,7 @@ articlesRouter.post(URL.ARTICLESURL.EDIT, isAuthorAuth, upload.single(`upload`),
   } catch (errors) {
     const {article, categories} = await getEditArticleData(id);
     articleData.categories = article.categories;
-    response.render(`articles/edit-post`, {categories, errors: errors.response.data, article: articleData, id, csrfToken: request.csrfToken()});
+    response.render(`articles/edit-post`, {categories, errors: errors.response.data, article: articleData, id, csrfToken: request.csrfToken(), user});
   }
 });
 
@@ -128,7 +136,7 @@ articlesRouter.post(URL.ARTICLESURL.COMMENTS, auth, csrfProtection, async (reque
     response.redirect(`${URL.ARTICLES}/${id}`);
   } catch (errors) {
     const article = await api.getArticle(request.params.id, true);
-    response.render(`articles/post`, {article, errors: errors.response.data, id, user, csrfToken: request.csrfToken()});
+    response.render(`articles/post`, {article, errors: errors.response.data, id, user, csrfToken: request.csrfToken(), backHistory: request.session.path});
   }
 });
 

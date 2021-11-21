@@ -8,7 +8,7 @@ block content
         h2.visually-hidden Основное содержание
         .post__wrapper
           .post__head
-            a.post__backwards.button.button--backwards(onclick="javascript:history.back(); return false;") Назад
+            a.post__backwards.button.button--backwards(href=backHistory) Назад
             time.post__date(datetime=article.createdAt) #{article.createDate}
             h2.post__title.title.title--main #{article.title}
             ul.post__themes.themes
@@ -17,7 +17,6 @@ block content
                   a.themes__item-link(href=`/articles/category/${category.id}`)
                     | #{category.name}
                     sup #{category.count}
-                  button.themes__remove-btn(type='button') Удалить категорию
           if article.image
             .post__picture
               img(src=`/media/img/${article.image}`)

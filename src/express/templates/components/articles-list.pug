@@ -6,7 +6,7 @@ ul.preview__list
         ul.preview__breadcrumbs(style="flex-wrap: wrap")
           each category in article.categories
             li.preview__breadcrumbs-item
-              a.preview__breadcrumbs-link(href='#') #{category.name}
+              a.preview__breadcrumbs-link(href=`/articles/category/${category.id}`) #{category.name}
         .preview__background
           if article.image !== null
           img.preview__background-image(src=`/media/img/${article.image}` style='height: 100%' width='460' srcset=`/media/img/${article.image}, /media/img/${article.image}`)
