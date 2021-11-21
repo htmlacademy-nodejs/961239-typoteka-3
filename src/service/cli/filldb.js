@@ -56,7 +56,7 @@ const generatePublication = (titles, sentences, comments, categories, users) => 
     fullText: generateFullText(sentences),
     createdAt: createDate,
     createDate,
-    image: `example0${getRandomInt(1, 8)}.jpg`,
+    image: `examples/example0${getRandomInt(1, 8)}.jpg`,
     categories: generateMockCategories(getRandomInt(1, categories.length - 1), categories),
     comments: generateMockComments(getRandomInt(0, comments.length), comments, users[getRandomInt(0, users.length - 1)].email)
   };
@@ -89,7 +89,7 @@ module.exports = {
         lastName: `Иванов`,
         email: `ivanov@example.com`,
         passwordHash: await passwordUtils.hash(`ivanov`),
-        avatar: `avatar01.jpg`,
+        avatar: `examples/avatar01.jpg`,
         isAuthor: true
       },
       {
@@ -97,7 +97,7 @@ module.exports = {
         lastName: `Петров`,
         email: `petrov@example.com`,
         passwordHash: await passwordUtils.hash(`petrov`),
-        avatar: `avatar02.jpg`,
+        avatar: `examples/avatar02.jpg`,
         isAuthor: false
       }
     ];

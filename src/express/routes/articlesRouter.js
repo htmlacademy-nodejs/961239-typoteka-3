@@ -51,7 +51,7 @@ articlesRouter.get(URL.ARTICLESURL.CATEGORY, async (request, response) => {
 articlesRouter.get(URL.ARTICLESURL.ADD, isAuthorAuth, csrfProtection, async (request, response) => {
   const {user} = request.session;
   const categories = await getAddArticleData();
-  response.render(`articles/new-post`, {categories, csrfToken: request.csrfToken(), user});
+  response.render(`articles/post-form`, {categories, csrfToken: request.csrfToken(), user});
 });
 
 articlesRouter.get(URL.ARTICLESURL.EDIT, isAuthorAuth, csrfProtection, async (request, response) => {
@@ -59,7 +59,7 @@ articlesRouter.get(URL.ARTICLESURL.EDIT, isAuthorAuth, csrfProtection, async (re
     const {id} = request.params;
     const {user} = request.session;
     const {article, categories} = await getEditArticleData(id);
-    response.render(`articles/edit-post`, {article, categories, id, csrfToken: request.csrfToken(), user});
+    response.render(`articles/post-form`, {article, categories, id, csrfToken: request.csrfToken(), user});
   } catch (error) {
     response.status(404).render(`errors/404`);
   }
@@ -97,7 +97,7 @@ articlesRouter.post(URL.ARTICLESURL.ADD, isAuthorAuth, upload.single(`upload`), 
     response.redirect(URL.MY);
   } catch (errors) {
     const categories = await getAddArticleData();
-    response.render(`articles/new-post`, {categories, errors: errors.response.data, article: articleData, csrfToken: request.csrfToken(), user});
+    response.render(`articles/post-form`, {categories, errors: errors.response.data, article: articleData, csrfToken: request.csrfToken(), user});
   }
 });
 
@@ -123,7 +123,7 @@ articlesRouter.post(URL.ARTICLESURL.EDIT, isAuthorAuth, upload.single(`upload`),
   } catch (errors) {
     const {article, categories} = await getEditArticleData(id);
     articleData.categories = article.categories;
-    response.render(`articles/edit-post`, {categories, errors: errors.response.data, article: articleData, id, csrfToken: request.csrfToken(), user});
+    response.render(`articles/post-form`, {categories, errors: errors.response.data, article: articleData, id, csrfToken: request.csrfToken(), user});
   }
 });
 

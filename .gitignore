@@ -18,7 +18,9 @@ build/
 mock.json
 
 #Загруженные изображения
-src/express/upload
+src/express/upload/img/*.png
+src/express/upload/img/*.jpg
+src/express/upload/img/*.jpeg
 
 #Файл переменных окружения
 .env
