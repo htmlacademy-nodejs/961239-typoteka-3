@@ -1,0 +1,22 @@
+h2.visually-hidden Список превью статей
+if articles
+  ul.preview__list
+    each article in articles
+      if article.image !== null
+        li(class="preview__item #{article.image ? `` : `preview__item--noimage`}")
+          ul.preview__breadcrumbs(style="flex-wrap: wrap")
+            each category in article.categories
+              li.preview__breadcrumbs-item
+                a.preview__breadcrumbs-link(href='#') #{category.name}
+          .preview__background
+            if article.image !== null
+            img.preview__background-image(src=`/media/img/${article.image}` style='height: 100%' width='460' srcset=`/media/img/${article.image}, /media/img/${article.image}`)
+          time.preview__time(datetime=moment(article.createDate, `YYYY-MM-DD`)) #{moment(article.createDate, `YYYY-MM-DD`).format(`DD.MM.YYYY, hh:mm`)}
+          h3.preview__name
+            a.preview__name-link(href=`/articles/${article.id}`) #{article.title}
+          p.preview__text #{article.announce}
+          a.preview__comment(href=`/articles/${article.id}`)
+            | Комментарии 
+            span.preview__cloud
+            |  
+            b.preview__comment-count #{article.comments.length}

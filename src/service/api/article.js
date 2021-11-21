@@ -12,7 +12,7 @@ module.exports = (app, articleService, commentService) => {
   app.use(URL.API.ARTICLESROUTE, route);
 
   route.get(URL.API.BASEROUTE, async (request, response) => {
-    const {offset, limit} = request.query;
+    const {offset, limit, id} = request.query;
     let {type} = request.query;
     let articles;
     if (Object.values(TypeOfLimits).every((a) => a !== type)) {
@@ -32,6 +32,9 @@ module.exports = (app, articleService, commentService) => {
         break;
       case TypeOfLimits.API_PAGE:
         articles = await articleService.findPage({limit, offset});
+        break;
+      case TypeOfLimits.CATEGORIES:
+        articles = await articleService.findByCategory({limit, id});
         break;
       default:
         articles = await articleService.findAll();

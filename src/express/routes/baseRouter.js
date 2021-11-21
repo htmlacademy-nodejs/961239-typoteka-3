@@ -18,12 +18,12 @@ baseRouter.get(URL.BASE, async (request, response) => {
   let {page = 1} = request.query;
   page = parseInt(page, 10);
   const offset = (page - 1) * ARTICLES_PER_PAGE;
-  const {count, articles: allArticles} = await api.getArticles({limit: ARTICLES_PER_PAGE, offset, type: TypeOfLimits.PAGE});
+  const {count, articles} = await api.getArticles({limit: ARTICLES_PER_PAGE, offset, type: TypeOfLimits.PAGE});
   const categories = await api.getCategories(true);
   const {articles: hotArticles} = await api.getArticles({limit: HOTTEST_ARTICLES_COUNT, type: TypeOfLimits.HOTTEST});
   const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
   const {comments} = await api.getLatestComments(LATEST_COMMENTS_COUNT);
-  response.render(`main`, {user, allArticles, hotArticles, comments, page, totalPages, categories});
+  response.render(`main`, {user, articles, hotArticles, comments, page, totalPages, categories});
 });
 
 baseRouter.get(URL.LOGIN, alreadyAuth, (request, response) => response.render(`register-and-login/login`));

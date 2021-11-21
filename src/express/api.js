@@ -40,6 +40,10 @@ class API {
     return this._load(`/categories`, {params: {count}});
   }
 
+  async getCategoryArticles({id, limit, type}) {
+    return this._load(`articles`, {params: {id, limit, type}});
+  }
+
   async createArticle(data) {
     return this._load(`/articles`, {
       method: HttpMethod.POST,

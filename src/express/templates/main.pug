@@ -5,15 +5,9 @@ block content
     h1.visually-hidden Главная страница личного блога Типотека
     p.
       Приветствую вас в моем блоге 👏
-      Возьмите себе чайку с печеньками и устраивайтесь поудобнее ☕
+      Налейте себе горячего чаю, возьмите печеньки и устраивайтесь поудобнее ☕
     section.main-page__theme-list
-      h2.visually-hidden Список тем
-      ul.themes
-        each category in categories
-          li.themes__item
-            a.themes__item-link(href=`/articles/category/${category.id}`)
-              | #{category.name}
-              sup #{category.count}
+      include components/categories-list.pug
     .main-page__section-flex
       section.main-page__hot.hot
         h2.hot__name
@@ -35,26 +29,6 @@ block content
                 b.last__list-name #{comment.users.firstName} #{comment.users.lastName}
                 a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.message}
     section.main-page__list.preview
-      h2.visually-hidden Список превью статей
-      ul.preview__list
-        each article in allArticles
-          if article.image !== null
-            li(class="preview__item #{article.image ? `` : `preview__item--noimage`}")
-              ul.preview__breadcrumbs(style="flex-wrap: wrap")
-                each category in article.categories
-                  li.preview__breadcrumbs-item
-                    a.preview__breadcrumbs-link(href='#') #{category.name}
-              .preview__background
-                if article.image !== null
-                img.preview__background-image(src=`/media/img/${article.image}` style='height: 100%' width='460' srcset=`/media/img/${article.image}, /media/img/${article.image}`)
-              time.preview__time(datetime=moment(article.createDate, `YYYY-MM-DD`)) #{moment(article.createDate, `YYYY-MM-DD`).format(`DD.MM.YYYY, hh:mm`)}
-              h3.preview__name
-                a.preview__name-link(href=`/articles/${article.id}`) #{article.title}
-              p.preview__text #{article.announce}
-              a.preview__comment(href=`/articles/${article.id}`)
-                | Комментарии 
-                span.preview__cloud
-                |  
-                b.preview__comment-count #{article.comments.length}
+      include components/articles-list.pug
     .preview__toggle-wrapper
       +pagination(page, totalPages, 8)

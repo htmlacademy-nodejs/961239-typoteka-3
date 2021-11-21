@@ -108,7 +108,8 @@ const TypeOfLimits = {
   HOTTEST: `hot`,
   PAGE: `page`,
   API_PAGE: `api-page`,
-  COMMENTS: `comments`
+  COMMENTS: `comments`,
+  CATEGORIES: `categories`
 };
 
 const SCHEMA_NAME = `typoteka`;

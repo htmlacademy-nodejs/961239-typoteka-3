@@ -6,6 +6,7 @@ class ArticleService {
     this._Article = sequelize.models.Article;
     this._Comment = sequelize.models.Comment;
     this._Category = sequelize.models.Category;
+    this._ArticleCategories = sequelize.models.ArticleCategory;
     this._User = sequelize.models.User;
     this._sequelize = sequelize;
   }
@@ -91,6 +92,27 @@ class ArticleService {
     });
 
     return {articles: rows};
+  }
+
+  async findByCategory({limit, id}) {
+    const articlesIdByCategory = await this._ArticleCategories.findAll({
+      attributes: [`ArticleId`],
+      where: {
+        CategoryId: id
+      },
+      raw: true
+    });
+
+    const articlesId = articlesIdByCategory.map((elem) => elem.ArticleId);
+
+    const articles = await this._Article.findAll({
+      include: [Aliase.CATEGORIES, Aliase.COMMENTS],
+      where: {id: articlesId},
+      order: [[`createdAt`, `DESC`]],
+      limit
+    });
+
+    return articles;
   }
 
   async create(articleData) {

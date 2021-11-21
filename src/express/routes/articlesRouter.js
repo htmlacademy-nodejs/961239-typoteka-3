@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL} = require(`./../../constants`);
+const {URL, TypeOfLimits} = require(`./../../constants`);
 const articlesRouter = new Router();
 const {getAPI} = require(`./../api`);
 const upload = require(`./../middlewares/upload`);
@@ -11,6 +11,8 @@ const {auth, isAuthorAuth} = require(`./../middlewares/auth`);
 const api = getAPI();
 
 const csrfProtection = csrf({cookie: true});
+
+const CATEGORY_ARTICLES_PER_PAGE = 8;
 
 const collectCategories = async (body) => {
   const categories = await api.getCategories();
@@ -36,8 +38,14 @@ const getEditArticleData = async (articleId) => {
 };
 
 articlesRouter.get(URL.ARTICLESURL.CATEGORY, async (request, response) => {
-  const categories = await api.getCategories();
-  response.render(`articles/articles-by-category`, {categories});
+  const {id} = request.params;
+  const {user} = request.session;
+  const categories = await api.getCategories(true);
+  const articles = await api.getCategoryArticles({id, limit: CATEGORY_ARTICLES_PER_PAGE, type: TypeOfLimits.CATEGORIES});
+  const activeCategory = categories.find((category) => category.id === parseInt(id, 10));
+  response.render(`articles/articles-by-category`, {
+    activeCategoryId: activeCategory.id, activeCategoryName: activeCategory.name, categories, articles, user
+  });
 });
 
 articlesRouter.get(URL.ARTICLESURL.ADD, isAuthorAuth, csrfProtection, async (request, response) => {
