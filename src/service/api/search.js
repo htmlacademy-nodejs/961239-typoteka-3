@@ -15,7 +15,6 @@ module.exports = (app, service) => {
       return;
     }
     const searchResults = await service.findAll(query);
-    console.log(searchResults);
     const searchStatus = searchResults.length > 0 ? StatusCode.OK : StatusCode.NOTFOUND;
     response.status(searchStatus)
         .json(searchResults);

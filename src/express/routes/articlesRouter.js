@@ -69,7 +69,6 @@ articlesRouter.get(URL.ARTICLESURL.ID, csrfProtection, async (request, response)
   try {
     const {id} = request.params;
     const {user} = request.session;
-    console.log(request.headers.referer.includes(request.originalUrl));
     if (!request.headers.referer.includes(request.originalUrl)) {
       request.session.path = request.headers.referer;
     }

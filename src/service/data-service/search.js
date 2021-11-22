@@ -1,7 +1,6 @@
 'use strict';
 
 const {Op} = require(`sequelize`);
-const Aliase = require(`./../models/aliase`);
 
 class SearchService {
   constructor(sequelize) {
@@ -14,7 +13,7 @@ class SearchService {
     const articles = await this._Article.findAll({
       where: {
         title: {
-          [Op.iLike]: `%${searchText}%`
+          [Op.like]: `%${searchText}%`
         }
       },
       order: [

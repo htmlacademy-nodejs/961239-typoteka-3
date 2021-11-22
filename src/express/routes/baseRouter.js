@@ -37,7 +37,6 @@ baseRouter.get(URL.REGISTER, alreadyAuth, (request, response) => response.render
 
 baseRouter.get(URL.CATEGORY, isAuthorAuth, async (request, response) => {
   const categories = await api.getCategories(false);
-  console.log(categories);
   const {user} = request.session;
   response.render(`categories/categories`, {categories, user});
 });

@@ -15,208 +15,160 @@ const passwordUtils = require(`./../lib/password`);
 const PLACEHOLDER_TEXT = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
 
 const mockCategories = [
+  `Без рамки`,
   `IT`,
+  `Деревья`,
+  `Железо`,
+  `За жизнь`,
+  `Разное`,
   `Музыка`,
   `Кино`,
-  `Железо`,
-  `Программирование`,
-  `За жизнь`,
-  `Деревья`,
-  `Без рамки`,
-  `Разное`
+  `Программирование`
 ];
 
 const mockUsers = [
   {
-    name: `Иван Иванов`,
+    firstName: `Иван`,
+    lastName: `Иванов`,
     email: `ivanov@example.com`,
     passwordHash: passwordUtils.hashSync(`ivanov`),
-    avatar: `avatar01.jpg`
+    avatar: `examples/avatar01.jpg`,
+    isAuthor: true
   },
   {
-    name: `Пётр Петров`,
+    firstName: `Пётр`,
+    lastName: `Петров`,
     email: `petrov@example.com`,
     passwordHash: passwordUtils.hashSync(`petrov`),
-    avatar: `avatar02.jpg`
-  },
-  {
-    name: `Сидор Сидоров`,
-    email: `sidorov@example.com`,
-    passwordHash: passwordUtils.hashSync(`sidorov`),
-    avatar: `avatar03.jpg`
+    avatar: `examples/avatar02.jpg`,
+    isAuthor: false
   }
 ];
 
 const mockData = [
   {
-    "user": `ivanov@example.com`,
-    "title": `Обзор новейшего смартфона`,
-    "announce": `Достичь успеха помогут ежедневные повторения. Программировать не настолько сложно, как об этом говорят. Это один из лучших рок-музыкантов.`,
-    "fullText": `Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Как начать действовать? Для начала просто соберитесь. Достичь успеха помогут ежедневные повторения. Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Из под его пера вышло 8 платиновых альбомов. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Простые ежедневные упражнения помогут достичь успеха. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры.`,
-    "categories": [
-      `IT`
-    ],
-    "comments": []
-  },
-  {
-    "user": `ivanov@example.com`,
-    "title": `Борьба с прокрастинацией`,
-    "announce": `Он написал больше 30 хитов. Программировать не настолько сложно, как об этом говорят. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много.`,
-    "fullText": `Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Альбом стал настоящим открытием года. Мощные гитарные рифы и скоростные соло-партии не дадут заскучать. Золотое сечение — соотношение двух величин, гармоническая пропорция. Собрать камни бесконечности легко, если вы прирожденный герой. Из под его пера вышло 8 платиновых альбомов. Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле? Программировать не настолько сложно, как об этом говорят. Достичь успеха помогут ежедневные повторения. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры. Это один из лучших рок-музыкантов.`,
-    "categories": [
-      `Кино`,
-      `За жизнь`,
-      `IT`,
-      `Железо`,
+    title: `Рок — это протест`,
+    announce: `Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Золотое сечение — соотношение двух величин, гармоническая пропорция. Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много.`,
+    fullText: `Первая большая ёлка была установлена только в 1938 году. Процессор заслуживает особого внимания. Он обязательно понравится геймерам со стажем. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры. Это один из лучших рок-музыкантов. Альбом стал настоящим открытием года. Мощные гитарные рифы и скоростные соло-партии не дадут заскучать. Золотое сечение — соотношение двух величин, гармоническая пропорция. Ёлки — это не просто красивое дерево. Это прочная древесина. Как начать действовать? Для начала просто соберитесь. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле? Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Из под его пера вышло 8 платиновых альбомов. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Помните, небольшое количество ежеднев...`,
+    createdAt: `2021-09-28`,
+    createDate: `2021-09-28`,
+    image: `examples/example08.jpg`,
+    categories: [
       `Без рамки`,
-      `Деревья`,
-      `Разное`,
       `Музыка`,
-      `Программирование`
-    ],
-    "comments": [
-      {
-        "user": `petrov@example.com`,
-        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
-      },
-      {
-        "user": `petrov@example.com`,
-        "message": `Мне кажется или я уже читал это где-то?`
-      },
-      {
-        "user": `sidorov@example.com`,
-        "message": `Планируете записать видосик на эту тему?`
-      },
-      {
-        "user": `sidorov@example.com`,
-        "message": `Совсем немного...`
-      },
-      {
-        "user": `petrov@example.com`,
-        "message": `Согласен с автором!`
-      }
-    ]
-  },
-  {
-    "user": `ivanov@example.com`,
-    "title": `Как собрать камни бесконечности`,
-    "announce": `Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры. Простые ежедневные упражнения помогут достичь успеха. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете.`,
-    "fullText": `Альбом стал настоящим открытием года. Мощные гитарные рифы и скоростные соло-партии не дадут заскучать. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле? Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Достичь успеха помогут ежедневные повторения. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Первая большая ёлка была установлена только в 1938 году. Он написал больше 30 хитов. Ёлки — это не просто красивое дерево. Это прочная древесина. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Процессор заслуживает особого внимания. Он обязательно понравится геймерам со стажем. Золотое сечение — соотношение двух величин, гармоническая пропорция. Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Из под его пера вышло 8 платиновых альбомов. Простые ежедневные упражнения помогут достичь успеха. Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много. Как начать действовать? Для начала просто соберитесь.`,
-    "categories": [
-      `Железо`,
-      `IT`,
-      `За жизнь`,
-      `Без рамки`
-    ],
-    "comments": [
-      {
-        "user": `petrov@example.com`,
-        "message": `Согласен с автором!`
-      },
-      {
-        "user": `petrov@example.com`,
-        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
-      },
-      {
-        "user": `petrov@example.com`,
-        "message": `Плюсую, но слишком много буквы!`
-      },
-      {
-        "user": `sidorov@example.com`,
-        "message": `Давно не пользуюсь стационарными компьютерами. Ноутбуки победили.`
-      },
-      {
-        "user": `sidorov@example.com`,
-        "message": `Совсем немного...`
-      }
-    ]
-  },
-  {
-    "user": `ivanov@example.com`,
-    "title": `Лучшие рок-музыканты 20-века`,
-    "announce": `Первая большая ёлка была установлена только в 1938 году. Ёлки — это не просто красивое дерево. Это прочная древесина.`,
-    "fullText": `Ёлки — это не просто красивое дерево. Это прочная древесина. Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете.`,
-    "categories": [
-      `Деревья`
-    ],
-    "comments": [
-      {
-        "user": `sidorov@example.com`,
-        "message": `Согласен с автором!`
-      },
-      {
-        "user": `ivanov@example.com`,
-        "message": `Это где ж такие красоты?`
-      },
-      {
-        "user": `petrov@example.com`,
-        "message": `Мне кажется или я уже читал это где-то?`
-      },
-      {
-        "user": `ivanov@example.com`,
-        "message": `Это где ж такие красоты?`
-      },
-      {
-        "message": `Согласен с автором!`
-      },
-      {
-        "user": `sidorov@example.com`,
-        "message": `Согласен с автором!`
-      }
-    ]
-  },
-  {
-    "user": `ivanov@example.com`,
-    "title": `Ёлки. История деревьев`,
-    "announce": `Как начать действовать? Для начала просто соберитесь. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Программировать не настолько сложно, как об этом говорят.`,
-    "fullText": `Из под его пера вышло 8 платиновых альбомов. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле? Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Как начать действовать? Для начала просто соберитесь. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Процессор заслуживает особого внимания. Он обязательно понравится геймерам со стажем. Это один из лучших рок-музыкантов. Достичь успеха помогут ежедневные повторения. Золотое сечение — соотношение двух величин, гармоническая пропорция. Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много. Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Собрать камни бесконечности легко, если вы прирожденный герой. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Альбом стал настоящим открытием года. Мощные гитарные рифы и скоростные соло-партии не дадут заскучать. Программировать не настолько сложно, как об этом говорят. Простые ежедневные упражнения помогут достичь успеха.`,
-    "categories": [
-      `Разное`,
-      `Деревья`,
       `Железо`,
       `Программирование`,
-      `Кино`,
-      `Без рамки`,
-      `Музыка`,
-      `IT`,
-      `За жизнь`
+      `За жизнь`,
+      `Разное`,
+      `Деревья`,
+      `Кино`
     ],
-    "comments": [
+    comments: [
       {
-        "user": `petrov@example.com`,
-        "message": `Планируете записать видосик на эту тему?`
+        message: `Согласен с автором!`,
+        user: `ivanov@example.com`
       },
       {
-        "user": `petrov@example.com`,
-        "message": `Плюсую, но слишком много буквы!`
+        message: `Согласен с автором!`,
+        user: `ivanov@example.com`
       },
       {
-        "user": `petrov@example.com`,
-        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
+        message: `Мне кажется или я уже читал это где-то?`,
+        user: `ivanov@example.com`
       },
       {
-        "user": `sidorov@example.com`,
-        "message": `Согласен с автором!`
+        message: `Давно не пользуюсь стационарными компьютерами. Ноутбуки победили.`,
+        user: `ivanov@example.com`
       },
       {
-        "user": `sidorov@example.com`,
-        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
+        message: `Плюсую, но слишком много буквы!`,
+        user: `ivanov@example.com`
       },
       {
-        "user": `sidorov@example.com`,
-        "message": `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
+        message: `Согласен с автором!`,
+        user: `ivanov@example.com`
       },
       {
-        "user": `sidorov@example.com`,
-        "message": `Планируете записать видосик на эту тему?`
+        message: `Это где ж такие красоты?`,
+        user: `ivanov@example.com`
       },
       {
-        "user": `sidorov@example.com`,
-        "message": `Совсем немного...`
+        message: `Хочу такую же футболку :-)`,
+        user: `ivanov@example.com`
+      }
+    ]
+  },
+  {
+    title: `Ёлки. История деревьев`,
+    announce: `Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры. Золотое сечение — соотношение двух величин, гармоническая пропорция. Он написал больше 30 хитов.`,
+    fullText: `Программировать не настолько сложно, как об этом говорят. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле? Как начать действовать? Для начала просто соберитесь. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры. Процессор заслуживает особого внимания. Он обязательно понравится геймерам со стажем. Из под его пера вышло 8 платиновых альбомов. Ёлки — это не просто красивое дерево. Это прочная древесина. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Он написал больше 30 хитов. Первая большая ёлка была установлена только в 1938 году. Простые ежедневные упражнения помогут достичь успеха. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете.`,
+    createdAt: `2021-10-20`,
+    createDate: `2021-10-20`,
+    image: `examples/example03.jpg`,
+    categories: [
+      `Деревья`,
+      `За жизнь`,
+      `Программирование`,
+      `Разное`,
+      `Без рамки`
+    ],
+    comments: [
+      {
+        message: `Согласен с автором!`,
+        user: `ivanov@example.com`
       },
       {
-        "user": `sidorov@example.com`,
-        "message": `Мне кажется или я уже читал это где-то?`
+        message: `Согласен с автором!`,
+        user: `ivanov@example.com`
+      },
+      {
+        message: `Планируете записать видосик на эту тему?`,
+        user: `ivanov@example.com`
+      },
+      {
+        message: `Планируете записать видосик на эту тему?`,
+        user: `ivanov@example.com`
+      },
+      {
+        message: `Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`,
+        user: `ivanov@example.com`
+      },
+      {
+        message: `Мне кажется или я уже читал это где-то?`,
+        user: `ivanov@example.com`
+      },
+      {
+        message: `Совсем немного...`,
+        user: `ivanov@example.com`
+      }
+    ]
+  },
+  {
+    title: `Лучшие рок-музыканты 20-века`,
+    announce: `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много.`,
+    fullText: `Он написал больше 30 хитов. Простые ежедневные упражнения помогут достичь успеха. Ёлки — это не просто красивое дерево. Это прочная древесина. Как начать действовать? Для начала просто соберитесь. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Программировать не настолько сложно, как об этом говорят. Достичь успеха помогут ежедневные повторения. Золотое сечение — соотношение двух величин, гармоническая пропорция. Альбом стал настоящим открытием года. Мощные гитарные рифы и скоростные соло-партии не дадут заскучать. Процессор заслуживает особого внимания. Он обязательно понравится геймерам со стажем.`,
+    createdAt: `2021-09-01`,
+    createDate: `2021-09-01`,
+    image: `examples/example06.jpg`,
+    categories: [
+      `Без рамки`
+    ],
+    comments: [
+      {
+        message: `Мне кажется или я уже читал это где-то?`,
+        user: `petrov@example.com`
+      },
+      {
+        message: `Мне кажется или я уже читал это где-то?`,
+        user: `petrov@example.com`
+      },
+      {
+        message: `Это где ж такие красоты?`,
+        user: `petrov@example.com`
+      },
+      {
+        message: `Мне кажется или я уже читал это где-то?`,
+        user: `petrov@example.com`
       }
     ]
   }
@@ -380,143 +332,3 @@ describe(`Delete comment`, () => {
   test(`Comment deleted`, () => expect(commentsListResponse.body).toHaveLength(5));
   test(`Deleted comment doesn't exist`, () => expect(commentsListResponse.body.find((elem) => elem.id === 1)).toBeUndefined());
 });
-
-// временный файл, в котором хранятся все тесты на валидацию
-// т.к. валидация запросов на данном этапе
-// не должна работать
-/*
-describe(`Create article without required parameters`, () => {
-  let response;
-  let articlesListResponse;
-  let app;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-      .post(`/articles`)
-      .send({
-        announce: `Некоторый анонс`,
-        fullText: `Рыба`,
-        categories: [1, 2]
-      });
-    articlesListResponse = await request(app)
-      .get(`/articles`);
-  });
-
-  test(`Status code 401`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.BAD_REQUEST));
-  test(`Article didn't create`, () => expect(articlesListResponse.body).toHaveLength(6));
-});
-
-describe(`Edit non-existing article`, () => {
-  let app;
-  let response;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-      .put(`/articles/3333444`)
-      .send({
-        "title": `Тест заголовок`,
-        "announce": `Некоторый анонс`,
-        "fullText": `Рыба`,
-        "createDate": `2021-04-16T10:02:37.120Z`,
-        "categories": [
-          `Тестовая1`,
-          `Тестовая2`
-        ]
-      });
-  });
-
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_ARTICLE));
-});
-
-describe(`Edit article without require data`, () => {
-  let response;
-  let articleDataResponse;
-  let app;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-      .put(`/articles/2`)
-      .send({});
-    articleDataResponse = await request(app)
-      .get(`/articles/2`);
-  });
-
-  test(`Status code 401`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.BAD_REQUEST));
-  test(`Article didn't edited`, () => expect(articleDataResponse.body.title).toEqual(`Борьба с прокрастинацией`));
-});
-
-describe(`Add comment with wrong data`, () => {
-  let response;
-  let commentsListResponse;
-  let app;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-    .post(`/articles/3/comments`)
-    .send({});
-    commentsListResponse = await request(app)
-    .get(`/articles/3/comments`);
-  });
-
-  test(`Status code 401`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.BAD_REQUEST));
-  test(`Comment didn't create`, () => expect(commentsListResponse.body).toHaveLength(6));
-});
-
-describe(`Add comment to non-existing offer`, () => {
-  let response;
-  let app;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-    .post(`/articles/nonexistid/comments`)
-    .send({
-      "message": `New comment`
-    });
-  });
-
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_ARTICLE));
-});
-
-
-describe(`Delete non-existing comment`, () => {
-  let response;
-  let commentsListResponse;
-  let app;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-      .delete(`/articles/3/comments/nonexistid`);
-    commentsListResponse = await request(app)
-      .get(`/articles/3/comments`);
-  });
-
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_COMMENT));
-  test(`Count of comments doesn't change`, () => expect(commentsListResponse.body).toHaveLength(5));
-});
-
-describe(`Delete comment in non-existing offer`, () => {
-  let app;
-  let response;
-
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app)
-      .delete(`/articles/nonexistid/comments/nonexistid`);
-  });
-
-  test(`Status code 404`, () => expect(response.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Response contains correct message`, () => expect(response.text).toEqual(Messages.NOT_FOUND_ARTICLE));
-});
-*/
