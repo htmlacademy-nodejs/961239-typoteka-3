@@ -195,7 +195,7 @@ describe(`Return all articles`, () => {
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`All articles found`, () => expect(response.body).toHaveLength(5));
+  test(`All articles found`, () => expect(response.body).toHaveLength(3));
 });
 
 describe(`Find specific article`, () => {
@@ -207,7 +207,7 @@ describe(`Find specific article`, () => {
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Article found`, () => expect(response.body.title).toEqual(`Обзор новейшего смартфона`));
+  test(`Article found`, () => expect(response.body.title).toEqual(`Рок — это протест`));
 });
 
 describe(`Find non-existing article`, () => {
@@ -232,7 +232,8 @@ describe(`Create new article with correct data`, () => {
         title: `Тестовый заголовок статьи. 1234567890`,
         announce: `Тестовый анонс статьи. 1234567890`,
         fullText: `Тестовый полный текст. 1234567890`,
-        categories: [1]
+        categories: [1],
+        createDate: `2021-10-12`
       });
   });
 
@@ -253,7 +254,8 @@ describe(`Edit article with correct data`, () => {
         title: `Тестовый заголовк не менее 30 символов`,
         announce: `Некоторый анонс не менее 30 символов`,
         fullText: PLACEHOLDER_TEXT,
-        categories: [5, 3]
+        categories: [5, 3],
+        createDate: `2021-12-22`
       });
     articleDataResponse = await request(app)
       .get(`/articles/1`);
@@ -282,7 +284,7 @@ describe(`Delete article`, () => {
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
   test(`Article doesn't exist anymore`, () => expect(articleDataResponse.statusCode).toBe(parseInt(StatusCode.NOTFOUND, 10)));
-  test(`Article isn't in the offers list`, () => expect(articlesListResponse.body).toHaveLength(5));
+  test(`Article isn't in the articles list`, () => expect(articlesListResponse.body).toHaveLength(3));
 });
 
 describe(`Return comments list`, () => {
@@ -294,7 +296,7 @@ describe(`Return comments list`, () => {
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Comments have correct count`, () => expect(response.body).toHaveLength(5));
+  test(`Comments have correct count`, () => expect(response.body).toHaveLength(4));
 });
 
 describe(`Add new comment`, () => {
@@ -313,8 +315,8 @@ describe(`Add new comment`, () => {
   });
 
   test(`Status code 201`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CREATED, 10)));
-  test(`New comment added`, () => expect(commentsListResponse.body).toHaveLength(6));
-  test(`Comment include correct message`, () => expect(commentsListResponse.body[5].message).toEqual(`New comment with 20 symbols`));
+  test(`New comment added`, () => expect(commentsListResponse.body).toHaveLength(5));
+  test(`Comment include correct message`, () => expect(commentsListResponse.body[0].message).toEqual(`New comment with 20 symbols`));
 });
 
 describe(`Delete comment`, () => {
@@ -323,12 +325,12 @@ describe(`Delete comment`, () => {
 
   beforeAll(async () => {
     response = await request(app)
-      .delete(`/articles/3/comments/6`);
+      .delete(`/articles/3/comments/17`);
     commentsListResponse = await request(app)
       .get(`/articles/3/comments`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
-  test(`Comment deleted`, () => expect(commentsListResponse.body).toHaveLength(5));
+  test(`Comment deleted`, () => expect(commentsListResponse.body).toHaveLength(4));
   test(`Deleted comment doesn't exist`, () => expect(commentsListResponse.body.find((elem) => elem.id === 1)).toBeUndefined());
 });
