@@ -1,0 +1,19 @@
+extends ../general/layout.pug
+
+block content
+  main.main-page.main-page--padding
+    section.main-page__publication.publication
+      h1.publication__title Комментарии
+      ul.publication__list
+        each article in articles
+          each comment in article.comments
+            li.publication__list-item
+              .publication__header
+                img.publication__list-image(src=`/media/img/${comment.users.avatar}` alt='аватар пользователя' style='border-radius: 50%; width: 20px; height: 20px; object-fit: cover')
+                b.publication__list-name #{comment.users.firstName} #{comment.users.lastName}
+                time.publication__item-time(datetime='#{moment(comment.createdAt).format(`DD.MM.YYYY, hh:mm`)}') #{moment(comment.createdAt).format(`DD.MM.YYYY, hh:mm`)}
+              a.publication__item-text(href=`/articles/${article.id}`) #{comment.message}
+              p.publication__text-strong #{article.title}
+              a(href=`/articles/${article.id}/comments/${comment.id}/delete`)
+                button.publication__button.button.button--close-item(type='button')
+                span.visually-hidden Закрыть строку списка

@@ -7,30 +7,19 @@ style.
     padding: 10px;
   }
 
-mixin insertErrorMessages(messages)
-  if messages
-    each message in messages
-      .server-error= message
+mixin pagination(page, totalPages, width)
+  - let i = 0;
+  ul.preview__pagination.pagination
+    if totalPages > 1
+      li
+        a(class=`pagination__button button button--backwards ${page > 1 ? `` : `button--disabled`}` href=`?page=${page - 1}` aria-label='Страница назад') Назад
+    while i++ < totalPages
+      li(class=`pagination__item ${i === page ? `pagination__item--active` : ``}`)
+        a(href=`?page=${i}`)= i
+    if totalPages > 1
+      li
+        a(class=`pagination__button button button--forward ${page < totalPages ? `` : `button--disabled`}` href=`?page=${page + 1}` aria-label='Страница вперед') Вперёд
 
-mixin pagination(page, totalPages, width, prefix)
-  -
-    let start = page - width;
-    let end = page + width;
-
-    if(start < 1){
-      end += 1 - start;
-      start = 1;
-    }
-
-    if(end > totalPages){
-      start -= end - totalPages;
-      end = totalPages;
-    }
-
-    if(start < 1){
-      start = 1;
-    }
-    let i = start - 1
 
 meta(charset='utf-8')
 meta(name='viewport' content='width=device-width,initial-scale=1')

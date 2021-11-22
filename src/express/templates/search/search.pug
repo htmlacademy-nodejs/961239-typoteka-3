@@ -13,5 +13,5 @@ block content
           each article in searchResult
             .search__result
               time.search__date(datetime=article.createDate) #{moment(article.createDate).format(`DD.MM.YYYY hh:mm`)}</time>
-                a.search__link
+                a.search__link(href=`/articles/${article.id}`)
                   | #{article.title}

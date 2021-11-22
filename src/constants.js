@@ -12,16 +12,21 @@ const URL = {
   BASE: `/`,
   REGISTER: `/register`,
   LOGIN: `/login`,
+  LOGOUT: `/logout`,
   MY: `/my`,
   SEARCH: `/search`,
   CATEGORY: `/categories`,
+  EDIT_CATEGORY: `/categories/:id`,
+  DELETE_CATEGORY: `/categories/:id/delete`,
   ARTICLES: `/articles`,
   ARTICLESURL: {
     CATEGORY: `/category/:id`,
     ID: `/:id`,
     ADD: `/add`,
-    EDIT: `/:id/edit`,
-    COMMENTS: `/:id/comments`
+    EDIT: `/edit/:id`,
+    COMMENTS: `/:id/comments`,
+    DELETE: `/:id/delete`,
+    DELETE_COMMENTS: `/:id/comments/:commentId/delete`
   },
   MYURLS: {
     COMMENTS: `/comments`
@@ -31,7 +36,9 @@ const URL = {
     BASEROUTE: `/`,
     ARTICLESROUTE: `/articles`,
     ARTICLEID: `/:articleId`,
+    LATESTCOMMENTS: `/comments/last`,
     CATEGORIESROUTE: `/categories`,
+    CATEGORIESID: `/:categoryId`,
     COMMENTS: `/:articleId/comments`,
     COMMENTID: `/:articleId/comments/:commentId`,
     SEARCHROUTE: `/search`,
@@ -43,10 +50,12 @@ const URL = {
 const ServerMessages = {
   NOT_FOUND: `Not found`,
   NOT_FOUND_ARTICLE: `Article not found`,
+  NOT_FOUND_CATEGORY: `Category not found`,
   NOT_FOUND_COMMENT: `Comment not found`,
   BAD_REQUEST: `Invalid request params`,
   ARTICLE_EDIT: `Article edited`,
   ARTICLE_DELETE: `Article deleted`,
+  CATEGORY_DELETE: `Category deleted`,
   COMMENT_DELETE: `Comment deleted`,
   SERVER_ERROR: `Something went wrong`
 };
@@ -81,7 +90,13 @@ const ValidationMessages = {
     ANNOUNCE_MIN: `Анонс должен содержать как минимум 30 символов`,
     ANNOUNCE_MAX: `Анонс не может содержать более 250 символов`,
     FULLTEXT_MAX: `Текст публикации не может содержать более 1000 символов`,
-    IMAGE: `Изображение может быть только в формате .png или .jpg`
+    IMAGE: `Изображение может быть только в формате .png или .jpg`,
+    DATE_EMPTY: `Поле Дата публикации не может быть пустым`
+  },
+  CATEGORY: {
+    NAME_MIN: `Имя категории должно содержать минимум 5 символов`,
+    NAME_MAX: `Имя категории должно содержать не более 30 символов`,
+    CATEGORY_EXIST: `Категория с такими именем уже существует`
   },
   USER: {
     NAME: `Имя содержит некорректные символы`,
@@ -92,13 +107,20 @@ const ValidationMessages = {
     PASSWORD: `Пароль содержит меньше 6-ти символов`,
     PASSWORD_REQUIRED: `Поле Пароль обязательно для заполнения`,
     PASSWORD_REPEATED: `Пароли не совпадают`,
-    AVATAR: `Изображение не выбрано или тип изображения не поддерживается`,
-    AVATAR_REQUIRED: `Поле Изображение обязательно для заполнения`,
+    AVATAR: `Тип изображения не поддерживается`
   },
   LOGIN: {
     EMAIL_NOT_EXIST: `Электронный адрес не существует`,
     PASSWORD_NOT_MATCH: `Неверный пароль`
   }
+};
+
+const TypeOfLimits = {
+  HOTTEST: `hot`,
+  PAGE: `page`,
+  API_PAGE: `api-page`,
+  COMMENTS: `comments`,
+  CATEGORIES: `categories`
 };
 
 const SCHEMA_NAME = `typoteka`;
@@ -116,6 +138,7 @@ module.exports = {
   StatusCode,
   HttpMethod,
   ValidationMessages,
+  TypeOfLimits,
   SCHEMA_NAME,
   ANNOUNCE_SIZE,
   FULLTEXT_SIZE

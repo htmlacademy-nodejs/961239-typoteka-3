@@ -4,8 +4,9 @@ const Joi = require(`joi`);
 const {StatusCode, ValidationMessages} = require(`./../../constants`);
 
 const schema = Joi.object({
-  text: Joi.string().min(20).required().messages({
-    'string.min': ValidationMessages.COMMENT.TEXT_MIN
+  message: Joi.string().min(20).required().messages({
+    'string.min': ValidationMessages.COMMENT.TEXT_MIN,
+    'string.empty': ValidationMessages.COMMENT.TEXT_MIN
   }),
   userId: Joi.number().integer().positive().required().messages({
     'number.base': ValidationMessages.COMMENT.USER_ID
@@ -17,7 +18,7 @@ module.exports = (request, response, next) => {
   const {error} = schema.validate(comment, {abortEarly: false});
   if (error) {
     return response.status(StatusCode.BADREQUEST)
-      .send(error.details.map((err) => err.message).join(`\n`));
+      .send(error.details.map((err) => err.message));
   }
 
   return next();

@@ -25,7 +25,6 @@ module.exports = (app, service) => {
   });
 
   route.post(URL.API.AUTHROUTE, async (request, response) => {
-    console.log(request.body);
     const {email, password} = request.body;
     const user = await service.findByEmail(email);
 

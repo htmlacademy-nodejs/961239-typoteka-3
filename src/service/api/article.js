@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL, StatusCode, ServerMessages} = require(`./../../constants`);
+const {URL, StatusCode, ServerMessages, TypeOfLimits} = require(`./../../constants`);
 const articleValidator = require(`./../middlewares/article-validator`);
 const commentValidator = require(`./../middlewares/comment-validator`);
 const routeParamsValidator = require(`./../middlewares/route-params-validator`);
@@ -12,19 +12,42 @@ module.exports = (app, articleService, commentService) => {
   app.use(URL.API.ARTICLESROUTE, route);
 
   route.get(URL.API.BASEROUTE, async (request, response) => {
-    const {offset, limit} = request.query;
+    const {offset, limit, id} = request.query;
+    let {type} = request.query;
     let articles;
-    if (limit || offset) {
-      articles = await articleService.findPage({limit, offset});
-    } else {
-      articles = await articleService.findAll();
+    if (Object.values(TypeOfLimits).every((a) => a !== type)) {
+      if (limit || offset) {
+        type = TypeOfLimits.API_PAGE;
+      }
     }
-    if (!articles) {
-      return response.status(StatusCode.NOTFOUND)
-        .send(ServerMessages.NOT_FOUND);
+    switch (type) {
+      case TypeOfLimits.PAGE:
+        articles = await articleService.findPage({limit, offset});
+        break;
+      case TypeOfLimits.HOTTEST:
+        articles = await articleService.findHottest({limit, offset});
+        break;
+      case TypeOfLimits.COMMENTS:
+        articles = await articleService.findAll(true);
+        break;
+      case TypeOfLimits.API_PAGE:
+        articles = await articleService.findPage({limit, offset});
+        break;
+      case TypeOfLimits.CATEGORIES:
+        articles = await articleService.findByCategory({limit, id});
+        break;
+      default:
+        articles = await articleService.findAll();
     }
     return response.status(StatusCode.OK)
       .json(articles);
+  });
+
+  route.get(URL.API.LATESTCOMMENTS, async (request, response) => {
+    const {limit} = request.query;
+    const comments = await commentService.findLatest(limit);
+    return response.status(StatusCode.OK)
+      .json(comments);
   });
 
   route.get(URL.API.ARTICLEID, routeParamsValidator, async (request, response) => {
@@ -81,7 +104,7 @@ module.exports = (app, articleService, commentService) => {
       .json(newComment);
   });
 
-  route.delete(URL.API.COMMENTID, routeParamsValidator, async (request, response) => {
+  route.delete(URL.API.COMMENTID, async (request, response) => {
     const {commentId} = request.params;
     const deletedComment = await commentService.delete(commentId);
     if (!deletedComment) {

@@ -6,7 +6,7 @@ class UserService {
   }
 
   async create(userData) {
-    const user = await this._User.create(userData);
+    const user = await this._User.create({isAuthor: false, ...userData});
     return user.get();
   }
 

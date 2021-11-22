@@ -4,8 +4,7 @@ const Joi = require(`joi`);
 const {StatusCode} = require(`./../../constants`);
 
 const schema = Joi.object({
-  articleId: Joi.number().integer().min(1),
-  commentId: Joi.number().integer().min(1)
+  articleId: Joi.number().integer().min(1)
 });
 
 module.exports = (request, response, next) => {
@@ -13,7 +12,7 @@ module.exports = (request, response, next) => {
   const {error} = schema.validate(params);
   if (error) {
     return response.status(StatusCode.BADREQUEST)
-      .send(error.details.map((err) => err.message).join(`\n`));
+      .send(error.details.map((err) => err.message));
   }
 
   return next();

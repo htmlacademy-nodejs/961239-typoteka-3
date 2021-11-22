@@ -6,29 +6,25 @@ class ArticleService {
     this._Article = sequelize.models.Article;
     this._Comment = sequelize.models.Comment;
     this._Category = sequelize.models.Category;
+    this._ArticleCategories = sequelize.models.ArticleCategory;
     this._User = sequelize.models.User;
+    this._sequelize = sequelize;
   }
 
   async findAll(NeedComments) {
-    const include = [Aliase.CATEGORIES,
-      {
-        model: this._User,
-        as: Aliase.USERS,
-        attributes: {
-          exclude: [`passwordHash`]
-        }
-      }];
+    const include = [Aliase.CATEGORIES];
 
     if (NeedComments) {
       include.push({
         model: this._Comment,
         as: Aliase.COMMENTS,
+        order: [[`createdAt`, `DESC`]],
         include: [
           {
             model: this._User,
             as: Aliase.USERS,
             attributes: {
-              exclude: [`passwordHash`]
+              exclude: [`passwordHash`, `isAuthor`]
             }
           }
         ]
@@ -38,16 +34,14 @@ class ArticleService {
     const articles = await this._Article.findAll({
       include,
       subQuery: false,
-      order: [
-        [`createdAt`, `DESC`]
-      ]
+      order: NeedComments ? [[{model: this._Comment, as: Aliase.COMMENTS}, `createdAt`, `DESC`]] : [[`createdAt`, `DESC`]]
     });
 
     return articles.map((item) => item.get());
   }
 
-  findOne(id) {
-    return this._Article.findByPk(id, {include: [Aliase.CATEGORIES, {
+  async findOne(id) {
+    const article = await this._Article.findByPk(id, {include: [Aliase.CATEGORIES, {
       model: this._Comment,
       as: Aliase.COMMENTS,
       include: [
@@ -55,36 +49,70 @@ class ArticleService {
           model: this._User,
           as: Aliase.USERS,
           attributes: {
-            exclude: [`passwordHash`, `email`]
+            exclude: [`passwordHash`, `email`, `isAuthor`]
           }
         }
       ]
-    }, {
-      model: this._User,
-      as: Aliase.USERS,
-      attributes: {
-        exclude: [`passwordHash`]
-      }
-    }]});
+    }],
+    order: [[{model: this._Comment, as: Aliase.COMMENTS}, `createdAt`, `DESC`]]});
+    return article;
   }
 
   async findPage({limit, offset}) {
-    const include = [Aliase.CATEGORIES, Aliase.COMMENTS, {
-      model: this._User,
-      as: Aliase.USERS,
-      attributes: {
-        exclude: [`passwordHash`]
-      }
-    }];
+    const include = [Aliase.CATEGORIES, Aliase.COMMENTS];
 
 
     const {count, rows} = await this._Article.findAndCountAll({
       limit,
       offset,
       include,
-      distinct: true
+      distinct: true,
+      order: [[`createdAt`, `DESC`]]
     });
     return {count, articles: rows};
+  }
+
+  async findHottest({limit}) {
+    const articles = await this._Article.findAll({
+      subQuery: false,
+      limit,
+      offset: 0,
+      attributes: {include: [[this._sequelize.fn(`COUNT`, this._sequelize.col(`comments.id`)), `commentsCount`]]},
+      include: [{
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        required: true,
+        attributes: []
+      }],
+      group: [`Article.id`],
+      order: [
+        [this._sequelize.fn(`COUNT`, this._sequelize.col(`comments.id`)), `DESC`]
+      ],
+      distinct: true
+    });
+
+    return {articles};
+  }
+
+  async findByCategory({limit, id}) {
+    const articlesIdByCategory = await this._ArticleCategories.findAll({
+      attributes: [`ArticleId`],
+      where: {
+        CategoryId: id
+      },
+      raw: true
+    });
+
+    const articlesId = articlesIdByCategory.map((elem) => elem.ArticleId);
+
+    const articles = await this._Article.findAll({
+      include: [Aliase.CATEGORIES, Aliase.COMMENTS],
+      where: {id: articlesId},
+      order: [[`createdAt`, `DESC`]],
+      limit
+    });
+
+    return articles;
   }
 
   async create(articleData) {

@@ -1,0 +1,13 @@
+extends ../general/layout.pug
+
+block content
+  main.main-page.main-page--padding
+    section.main-page__notes.notes
+      h1.notes__title Мои записи
+      ul.notes__list
+        each article in articles
+          li.notes__list-item
+            time.notes__item-time(datetime=article.createDate) #{moment(article.createDate).format(`DD.MM.YYYY, hh:mm`)}
+            a.notes__item-text(href=`/articles/edit/${article.id}`) #{article.title}
+            a(href=`articles/${article.id}/delete`)
+              button.notes__button.button.button--close-item(type='button')
