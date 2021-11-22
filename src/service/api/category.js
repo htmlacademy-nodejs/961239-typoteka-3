@@ -20,7 +20,7 @@ module.exports = (app, service) => {
     const category = request.body;
     await service.create(category);
     const categories = await service.findAll(false);
-    response.status(StatusCode.OK)
+    response.status(StatusCode.CREATED)
       .json(categories);
   });
 

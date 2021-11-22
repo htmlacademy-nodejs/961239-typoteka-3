@@ -204,3 +204,180 @@ describe(`API returns category list`, () => {
         `Разное`
       ])));
 });
+
+describe(`Create category item`, () => {
+
+  let response;
+  let categoriesListResponse;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .post(`/categories`)
+      .send({
+        name: `Тестовая категория`
+      });
+    categoriesListResponse = await request(app)
+      .get(`/categories`);
+  });
+
+
+  test(`Status code 201`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CREATED, 10)));
+  test(`All categories found`, () => expect(categoriesListResponse.body.map((it) => it.name)).toEqual(
+      expect.arrayContaining([
+        `IT`,
+        `Музыка`,
+        `Кино`,
+        `Железо`,
+        `Программирование`,
+        `За жизнь`,
+        `Деревья`,
+        `Без рамки`,
+        `Разное`,
+        `Тестовая категория`
+      ])));
+});
+
+describe(`Edit category item`, () => {
+
+  let response;
+  let categoriesListResponse;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .put(`/categories/10`)
+      .send({
+        name: `Другая категория`
+      });
+    categoriesListResponse = await request(app)
+      .get(`/categories`);
+  });
+
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
+  test(`All categories found`, () => expect(categoriesListResponse.body.map((it) => it.name)).toEqual(
+      expect.arrayContaining([
+        `IT`,
+        `Музыка`,
+        `Кино`,
+        `Железо`,
+        `Программирование`,
+        `За жизнь`,
+        `Деревья`,
+        `Без рамки`,
+        `Разное`,
+        `Другая категория`
+      ])));
+});
+
+describe(`Edit category item with existing name`, () => {
+
+  let response;
+  let categoriesListResponse;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .put(`/categories/10`)
+      .send({
+        name: `Музыка`
+      });
+    categoriesListResponse = await request(app)
+      .get(`/categories`);
+  });
+
+
+  test(`Status code 400`, () => expect(response.statusCode).toBe(parseInt(StatusCode.CONFLICT, 10)));
+  test(`All categories found`, () => expect(categoriesListResponse.body.map((it) => it.name)).toEqual(
+      expect.arrayContaining([
+        `IT`,
+        `Музыка`,
+        `Кино`,
+        `Железо`,
+        `Программирование`,
+        `За жизнь`,
+        `Деревья`,
+        `Без рамки`,
+        `Разное`,
+        `Другая категория`
+      ])));
+});
+
+describe(`Edit category item with short name`, () => {
+
+  let response;
+  let categoriesListResponse;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .put(`/categories/10`)
+      .send({
+        name: `Тест`
+      });
+    categoriesListResponse = await request(app)
+      .get(`/categories`);
+  });
+
+
+  test(`Status code 400`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
+  test(`All categories found`, () => expect(categoriesListResponse.body.map((it) => it.name)).toEqual(
+      expect.arrayContaining([
+        `IT`,
+        `Музыка`,
+        `Кино`,
+        `Железо`,
+        `Программирование`,
+        `За жизнь`,
+        `Деревья`,
+        `Без рамки`,
+        `Разное`,
+        `Другая категория`
+      ])));
+});
+
+describe(`Edit category item with too long name`, () => {
+
+  let response;
+  let categoriesListResponse;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .put(`/categories/10`)
+      .send({
+        name: `Категория содержащая более 30 символов`
+      });
+    categoriesListResponse = await request(app)
+      .get(`/categories`);
+  });
+
+
+  test(`Status code 400`, () => expect(response.statusCode).toBe(parseInt(StatusCode.BADREQUEST, 10)));
+  test(`All categories found`, () => expect(categoriesListResponse.body.map((it) => it.name)).toEqual(
+      expect.arrayContaining([
+        `IT`,
+        `Музыка`,
+        `Кино`,
+        `Железо`,
+        `Программирование`,
+        `За жизнь`,
+        `Деревья`,
+        `Без рамки`,
+        `Разное`,
+        `Другая категория`
+      ])));
+});
+
+describe(`Delete category item`, () => {
+
+  let response;
+  let categoriesListResponse;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .delete(`/categories/1`);
+    categoriesListResponse = await request(app)
+      .get(`/categories`);
+  });
+
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(parseInt(StatusCode.OK, 10)));
+  test(`All categories found`, () => expect(categoriesListResponse.body).toHaveLength(9));
+});
