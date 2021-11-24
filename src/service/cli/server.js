@@ -1,10 +1,14 @@
 'use strict';
 
 const express = require(`express`);
+const http = require(`http`);
+const socket = require(`./../lib/socket`);
+
 const routes = require(`./../api`);
 const {URL, ServerMessages, StatusCode} = require(`./../../constants`);
 const {getLogger} = require(`./../lib/logger`);
 const sequelize = require(`./../lib/sequelize`);
+
 
 const DEFAULT_PORT = 3000;
 
@@ -34,7 +38,10 @@ app.use((error, request, response, next) => {
   logger.error(`An error occured on processing request: ${error.message}`);
   return response.status(StatusCode.SERVERERROR).send(ServerMessages.SERVER_ERROR);
 });
+const server = http.createServer(app);
 
+const io = socket(server);
+app.locals.socketio = io;
 
 module.exports = {
   name: `--server`,
@@ -49,11 +56,13 @@ module.exports = {
     }
     logger.info(`Connection to database successfully established`);
     try {
-      app.listen(port, (err) => {
+      server.listen(port, (err) => {
         if (err) {
           return logger.error(`An error occurred on server creation: ${err.message}`);
         }
-
+        io.on(`connection`, (soc) => {
+          console.log(`${soc.id} is connected`);
+        });
         return logger.info(`Listening to connections on ${port}`);
       });
 

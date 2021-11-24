@@ -3,7 +3,6 @@
 const fs = require(`fs`).promises;
 const path = require(`path`);
 const chalk = require(`chalk`);
-const moment = require(`moment`);
 const {EXIT_CODE} = require(`./../../constants`);
 const {getRandomInt, shuffle} = require(`./../../utils/dev-utils`);
 
@@ -107,10 +106,10 @@ const convertToSQL = (articles) => {
         .join(`,\n`);
   const categoriesValues = CATEGORIES.map((category) => `('${category}')`).join(`,\n`);
   const articlesValues = articles.map(({title, announce, fullText, createDate, image}) =>
-    `('${title}', '${moment(createDate).format()}', '${announce}', '${fullText}', '${image}')`).join(`,\n`);
+    `('${title}', '${createDate}', '${announce}', '${fullText}', '${image}')`).join(`,\n`);
   const articlesCategoriesValues = articles.map(({categories}, index) => `(${categories + 1}, ${index + 1})`).join(`,\n`);
   const commentsValues = articles.map(({comments}, index) =>
-    comments.map(({userid, message, createDate}) => `(${userid}, ${index + 1}, '${moment(createDate).format()}', '${message}')`).join(`,\n`)).join(`,\n`);
+    comments.map(({userid, message, createDate}) => `(${userid}, ${index + 1}, '${createDate}', '${message}')`).join(`,\n`)).join(`,\n`);
 
   const query = `
 INSERT INTO articles (title, created_date, announce, full_text, image)

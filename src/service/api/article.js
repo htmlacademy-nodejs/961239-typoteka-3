@@ -6,6 +6,9 @@ const articleValidator = require(`./../middlewares/article-validator`);
 const commentValidator = require(`./../middlewares/comment-validator`);
 const routeParamsValidator = require(`./../middlewares/route-params-validator`);
 
+const HOTTEST_ARTICLES_COUNT = 4;
+const LATEST_COMMENTS_COUNT = 4;
+
 const route = new Router();
 
 module.exports = (app, articleService, commentService) => {
@@ -86,6 +89,10 @@ module.exports = (app, articleService, commentService) => {
       return response.status(StatusCode.NOTFOUND)
         .send(ServerMessages.NOT_FOUND_ARTICLE);
     }
+    const hotArticles = await articleService.findHottest({HOTTEST_ARTICLES_COUNT});
+    const latestComments = await commentService.findLatest(LATEST_COMMENTS_COUNT);
+    const io = request.app.locals.socketio;
+    io.emit(`article::delete`, {hotArticles: hotArticles.articles, latestComments: latestComments.comments});
     return response.status(StatusCode.OK)
       .json(ServerMessages.ARTICLE_DELETE);
   });
@@ -100,6 +107,11 @@ module.exports = (app, articleService, commentService) => {
   route.post(URL.API.COMMENTS, [routeParamsValidator, commentValidator], async (request, response) => {
     const {articleId} = request.params;
     const newComment = await commentService.create(articleId, request.body);
+    const hotArticles = await articleService.findHottest({HOTTEST_ARTICLES_COUNT});
+    const latestComments = await commentService.findLatest(LATEST_COMMENTS_COUNT);
+    const io = request.app.locals.socketio;
+    io.emit(`comment::create`, {hotArticles: hotArticles.articles, latestComments: latestComments.comments});
+
     return response.status(StatusCode.CREATED)
       .json(newComment);
   });
@@ -111,6 +123,10 @@ module.exports = (app, articleService, commentService) => {
       return response.status(StatusCode.NOTFOUND)
         .send(ServerMessages.NOT_FOUND_COMMENT);
     }
+    const latestComments = await commentService.findLatest(LATEST_COMMENTS_COUNT);
+    const hotArticles = await articleService.findHottest({HOTTEST_ARTICLES_COUNT});
+    const io = request.app.locals.socketio;
+    io.emit(`comment::delete`, {hotArticles: hotArticles.articles, latestComments: latestComments.comments});
     return response.status(StatusCode.OK)
       .json(ServerMessages.COMMENT_DELETE);
   });

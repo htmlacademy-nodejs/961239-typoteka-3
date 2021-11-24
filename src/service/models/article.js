@@ -21,7 +21,10 @@ const define = (sequelize) => Article.init({
     allowNull: false
   },
   image: DataTypes.STRING,
-  createDate: DataTypes.STRING
+  createDate: {
+    type: DataTypes.DATE,
+    allowNull: false
+  }
 }, {
   sequelize,
   modelName: `Article`,

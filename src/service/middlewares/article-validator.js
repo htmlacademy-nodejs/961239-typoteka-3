@@ -28,8 +28,8 @@ const schema = Joi.object({
   }),
   image: Joi.string().allow(null).pattern(/.*\.jpg|\.jpeg|\.png$/i)
   .messages({'string.pattern.base': ValidationMessages.ARTICLE.IMAGE}),
-  createDate: Joi.string().required().messages({
-    'string.empty': ValidationMessages.ARTICLE.DATE_EMPTY,
+  createDate: Joi.date().required().messages({
+    'date.empty': ValidationMessages.ARTICLE.DATE_EMPTY,
     'any.required': ValidationMessages.ARTICLE.DATE_EMPTY
   })
 });
