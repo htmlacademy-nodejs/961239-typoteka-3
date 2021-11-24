@@ -15,11 +15,6 @@ const DEFAULT_PORT = 3000;
 const logger = getLogger({name: `api`});
 
 const app = express();
-const server = http.createServer(app);
-
-const io = socket(server);
-app.locals.socketio = io;
-
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -43,7 +38,10 @@ app.use((error, request, response, next) => {
   logger.error(`An error occured on processing request: ${error.message}`);
   return response.status(StatusCode.SERVERERROR).send(ServerMessages.SERVER_ERROR);
 });
+const server = http.createServer(app);
 
+const io = socket(server);
+app.locals.socketio = io;
 
 module.exports = {
   name: `--server`,

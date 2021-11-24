@@ -4,6 +4,10 @@ const express = require(`express`);
 const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
+
+const http = require(`http`);
+const socket = require(`./../lib/socket`);
+
 const initDB = require(`./../lib/init-db`);
 const article = require(`./article`);
 const ArticleService = require(`./../data-service/article`);
@@ -178,7 +182,10 @@ const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 
 const app = express();
 app.use(express.json());
+const server = http.createServer(app);
 
+const io = socket(server);
+app.locals.socketio = io;
 
 beforeAll(async () => {
   await initDB(mockDB, {categories: mockCategories, articles: mockData, users: mockUsers});
