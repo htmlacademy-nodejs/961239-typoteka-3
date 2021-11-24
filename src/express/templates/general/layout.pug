@@ -34,5 +34,11 @@ link(rel='stylesheet' href='/css/style.min.css')
   include header.pug
   block content
   include footer.pug
+  include ../components/templates/hot-template.pug
+  include ../components/templates/latest-template.pug
+  include ../components/templates/hot-empty-template.pug
+  include ../components/templates/latest-empty-template.pug
   script(src='/js/vendor.js')
   script(src='/js/main.js')
+  script(src='https://cdn.socket.io/4.0.1/socket.io.js')
+  script(src='/js/socket.js')
