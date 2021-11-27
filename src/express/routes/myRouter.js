@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL, TypeOfLimits} = require(`./../../constants`);
+const {URL, Source} = require(`./../../constants`);
 const myRouter = new Router();
 const {getAPI} = require(`./../api`);
 const {isAuthorAuth} = require(`./../middlewares/auth`);
@@ -16,7 +16,7 @@ myRouter.get(URL.BASE, isAuthorAuth, async (request, response) => {
 
 myRouter.get(URL.MYURLS.COMMENTS, isAuthorAuth, async (request, response) => {
   const user = request.session.user;
-  const articles = await api.getArticles({type: TypeOfLimits.COMMENTS});
+  const articles = await api.getArticles({source: Source.COMMENTS});
   response.render(`my/comments`, {articles, user});
 });
 

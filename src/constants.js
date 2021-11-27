@@ -3,6 +3,12 @@
 const DEFAULT_COMMAND = `--version`;
 const USER_ARVG_INDEX = 2;
 const NOT_COMMAND_TEXT = `Команда не найдена. Приложение завершит свою работу`;
+
+const SCHEMA_NAME = `typoteka`;
+
+const ANNOUNCE_SIZE = 250;
+const FULLTEXT_SIZE = 1000;
+
 const EXIT_CODE = {
   SUCCESS: 0,
   ERROR: 1
@@ -115,7 +121,7 @@ const ValidationMessages = {
   }
 };
 
-const TypeOfLimits = {
+const Source = {
   HOTTEST: `hot`,
   PAGE: `page`,
   API_PAGE: `api-page`,
@@ -123,28 +129,25 @@ const TypeOfLimits = {
   CATEGORIES: `categories`
 };
 
-const SCHEMA_NAME = `typoteka`;
+const Env = {
+  DEVELOPMENT: `development`,
+  PRODUCTION: `production`
+};
 
-const ANNOUNCE_SIZE = 250;
-const FULLTEXT_SIZE = 1000;
 
 module.exports = {
   DEFAULT_COMMAND,
   USER_ARVG_INDEX,
   NOT_COMMAND_TEXT,
+  SCHEMA_NAME,
+  ANNOUNCE_SIZE,
+  FULLTEXT_SIZE,
   EXIT_CODE,
   URL,
   ServerMessages,
   StatusCode,
   HttpMethod,
   ValidationMessages,
-  TypeOfLimits,
-  SCHEMA_NAME,
-  ANNOUNCE_SIZE,
-  FULLTEXT_SIZE
-};
-
-module.exports.Env = {
-  DEVELOPMENT: `development`,
-  PRODUCTION: `production`
+  Source,
+  Env
 };

@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL, StatusCode, ServerMessages, TypeOfLimits} = require(`./../../constants`);
+const {URL, StatusCode, ServerMessages, Source} = require(`./../../constants`);
 const articleValidator = require(`./../middlewares/article-validator`);
 const commentValidator = require(`./../middlewares/comment-validator`);
 const routeParamsValidator = require(`./../middlewares/route-params-validator`);
@@ -16,31 +16,37 @@ module.exports = (app, articleService, commentService) => {
 
   route.get(URL.API.BASEROUTE, async (request, response) => {
     const {offset, limit, id} = request.query;
-    let {type} = request.query;
+    let {source} = request.query;
     let articles;
-    if (Object.values(TypeOfLimits).every((a) => a !== type)) {
+    if (Object.values(Source).every((a) => a !== source)) {
       if (limit || offset) {
-        type = TypeOfLimits.API_PAGE;
+        source = Source.API_PAGE;
       }
     }
-    switch (type) {
-      case TypeOfLimits.PAGE:
+    switch (source) {
+      case Source.PAGE: {
         articles = await articleService.findPage({limit, offset});
         break;
-      case TypeOfLimits.HOTTEST:
+      }
+      case Source.HOTTEST: {
         articles = await articleService.findHottest({limit, offset});
         break;
-      case TypeOfLimits.COMMENTS:
+      }
+      case Source.COMMENTS: {
         articles = await articleService.findAll(true);
         break;
-      case TypeOfLimits.API_PAGE:
+      }
+      case Source.API_PAGE: {
         articles = await articleService.findPage({limit, offset});
         break;
-      case TypeOfLimits.CATEGORIES:
+      }
+      case Source.CATEGORIES: {
         articles = await articleService.findByCategory({limit, id});
         break;
-      default:
+      }
+      default: {
         articles = await articleService.findAll();
+      }
     }
     return response.status(StatusCode.OK)
       .json(articles);
