@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL, TypeOfLimits} = require(`./../../constants`);
+const {URL, Source} = require(`./../../constants`);
 const baseRouter = new Router();
 const {getAPI} = require(`./../api`);
 const upload = require(`./../middlewares/upload`);
@@ -10,6 +10,7 @@ const {alreadyAuth, isAuthorAuth} = require(`./../middlewares/auth`);
 const ARTICLES_PER_PAGE = 8;
 const HOTTEST_ARTICLES_COUNT = 4;
 const LATEST_COMMENTS_COUNT = 4;
+const SEARCH_RESULT_COUNT = 4;
 
 const CategoryErrorSource = {
   ADD: `add`,
@@ -23,9 +24,9 @@ baseRouter.get(URL.BASE, async (request, response) => {
   let {page = 1} = request.query;
   page = parseInt(page, 10);
   const offset = (page - 1) * ARTICLES_PER_PAGE;
-  const {count, articles} = await api.getArticles({limit: ARTICLES_PER_PAGE, offset, type: TypeOfLimits.PAGE});
+  const {count, articles} = await api.getArticles({limit: ARTICLES_PER_PAGE, offset, source: Source.PAGE});
   const categories = await api.getCategories(true);
-  const {articles: hotArticles} = await api.getArticles({limit: HOTTEST_ARTICLES_COUNT, type: TypeOfLimits.HOTTEST});
+  const {articles: hotArticles} = await api.getArticles({limit: HOTTEST_ARTICLES_COUNT, source: Source.HOTTEST});
   const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
   const {comments} = await api.getLatestComments(LATEST_COMMENTS_COUNT);
   response.render(`main`, {user, articles, hotArticles, comments, page, totalPages, categories});
@@ -46,7 +47,7 @@ baseRouter.get(URL.SEARCH, async (request, response) => {
   const user = request.session.user;
   try {
     const searchResult = await api.search(query);
-    response.render(`search/search`, {searchResult: searchResult.slice(0, 4), query, user});
+    response.render(`search/search`, {searchResult: searchResult.slice(0, SEARCH_RESULT_COUNT), query, user});
   } catch (error) {
     response.render(`search/search-no-result`, {query, user});
   }
@@ -75,7 +76,7 @@ baseRouter.post(URL.EDIT_CATEGORY, isAuthorAuth, async (request, response) => {
   } catch (errors) {
     const {user} = request.session;
     const categories = await api.getCategories(false);
-    response.render(`categories/categories`, {categories, user, errors: errors.response.data, errorsSource: `${CategoryErrorSource.EDIT}${id}`});
+    response.render(`categories/categories`, {categories, user, errors: errors.response.data, errorsSource: CategoryErrorSource.EDIT + (id).toString()});
   }
 });
 

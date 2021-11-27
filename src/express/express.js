@@ -11,15 +11,15 @@ const SequelizeStore = require(`connect-session-sequelize`)(session.Store);
 const baseRouter = require(`./routes/baseRouter`);
 const myRouter = require(`./routes/myRouter`);
 const articlesRouter = require(`./routes/articlesRouter`);
-const PUBLIC_PATH = path.resolve(__dirname, `public`);
-const TEMPLATE_PATH = path.resolve(__dirname, `templates`);
-const UPLOAD_PATH = path.resolve(__dirname, `upload`);
 const cookieParser = require(`cookie-parser`);
 const moment = require(`moment`);
 
 const PORT = 8080;
-
 const {SESSION_SECRET} = process.env;
+
+const publicPath = path.resolve(__dirname, `public`);
+const templatePath = path.resolve(__dirname, `templates`);
+const uploadPath = path.resolve(__dirname, `upload`);
 
 if (!SESSION_SECRET) {
   throw new Error(`SESSION_SECRET environment variable is not defined`);
@@ -48,10 +48,10 @@ app.use(session({
 
 app.locals.moment = moment;
 app.use(express.urlencoded({extended: false}));
-app.use(express.static(PUBLIC_PATH));
+app.use(express.static(publicPath));
 app.use(cookieParser());
-app.use(`/media`, express.static(UPLOAD_PATH));
-app.set(`views`, TEMPLATE_PATH);
+app.use(`/media`, express.static(uploadPath));
+app.set(`views`, templatePath);
 app.set(`view engine`, `pug`);
 app.use(URL.ARTICLES, articlesRouter);
 app.use(URL.BASE, baseRouter);
