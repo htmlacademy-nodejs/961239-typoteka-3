@@ -6,10 +6,6 @@ const chalk = require(`chalk`);
 const {EXIT_CODE} = require(`./../../constants`);
 const {getRandomInt, shuffle} = require(`./../../utils/dev-utils`);
 
-const TITLES_PATH = path.resolve(__dirname, `./../../data/titles.txt`);
-const SENTENCES_PATH = path.resolve(__dirname, `./../../data/sentences.txt`);
-const COMMENTS_PATH = path.resolve(__dirname, `./../../data/comments.txt`);
-
 const FILENAME = path.resolve(__dirname, `./../../../fill-db.sql`);
 const DEFAULT_MOCK_COUNT = 1;
 const MAX_MOCK_COUNT = 1000;
@@ -19,8 +15,6 @@ const MANY_PUBL_TEXT = `Не больше 1000 публикаций`;
 const SUCCESS_TEXT = `Данные сгенерированны. Новый файл создан.`;
 
 const ANNOUNCE_MAX_COUNT = 5;
-const NOW_DATE = new Date(Date.now());
-const LOW_DATE = new Date(NOW_DATE.getFullYear(), NOW_DATE.getMonth() - 3, NOW_DATE.getDay());
 
 const CATEGORIES = [
   `Деревья`,
@@ -68,6 +62,13 @@ const USERS = [
     isAuthor: false
   }];
 
+const titlesDataPath = path.resolve(__dirname, `./../../data/titles.txt`);
+const sentencesDataPath = path.resolve(__dirname, `./../../data/sentences.txt`);
+const commentsDataPath = path.resolve(__dirname, `./../../data/comments.txt`);
+
+const nowDate = new Date(Date.now());
+const lowDate = new Date(nowDate.getFullYear(), nowDate.getMonth() - 3, nowDate.getDay());
+
 const readMockData = async (dataPath) => {
   const mockData = await fs.readFile(dataPath, `utf-8`);
   return mockData.split(`\n`);
@@ -77,7 +78,7 @@ const generateMockComments = (commentsList, count) => {
   const comments = new Array(count).fill(` `).map(() =>({
     message: commentsList[getRandomInt(1, commentsList.length - 1)],
     userid: getRandomInt(1, USERS.length),
-    createDate: new Date(getRandomInt(LOW_DATE.getTime(), NOW_DATE.getTime())),
+    createDate: new Date(getRandomInt(lowDate.getTime(), nowDate.getTime())),
   }));
   return comments;
 };
@@ -86,16 +87,16 @@ const generateArticle = (TITLE_PUBL, ANNOUNCE_PUBL, COMMENTS_PUBL) => ({
   title: TITLE_PUBL[getRandomInt(0, TITLE_PUBL.length - 1)],
   announce: shuffle(ANNOUNCE_PUBL).slice(0, getRandomInt(1, ANNOUNCE_MAX_COUNT)).join(` `),
   fullText: shuffle(ANNOUNCE_PUBL).slice(0, getRandomInt(1, ANNOUNCE_PUBL.length)).join(` `),
-  createDate: new Date(getRandomInt(LOW_DATE.getTime(), NOW_DATE.getTime())),
+  createDate: new Date(getRandomInt(lowDate.getTime(), nowDate.getTime())),
   image: `example0${getRandomInt(1, 4)}.jpg`,
   categories: getRandomInt(1, CATEGORIES.length),
   comments: generateMockComments(COMMENTS_PUBL, getRandomInt(0, COMMENTS_PUBL.length))
 });
 
 const generateData = async (count) => {
-  const TITLE_PUBL = await readMockData(TITLES_PATH);
-  const ANNOUNCE_PUBL = await readMockData(SENTENCES_PATH);
-  const COMMENTS_PUBL = await readMockData(COMMENTS_PATH);
+  const TITLE_PUBL = await readMockData(titlesDataPath);
+  const ANNOUNCE_PUBL = await readMockData(sentencesDataPath);
+  const COMMENTS_PUBL = await readMockData(commentsDataPath);
   return new Array(count).fill({}).map(() => generateArticle(TITLE_PUBL, ANNOUNCE_PUBL, COMMENTS_PUBL));
 };
 
