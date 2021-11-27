@@ -3,6 +3,8 @@
 const axios = require(`axios`);
 const {HttpMethod} = require(`./../constants`);
 
+const TIMEOUT = 1000;
+
 class API {
   constructor(baseURL, timeout) {
     this._http = axios.create({
@@ -11,13 +13,8 @@ class API {
     });
   }
 
-  async _load(url, options) {
-    const response = await this._http.request({url, ...options});
-    return response.data;
-  }
-
-  async getArticles({offset, limit, type}) {
-    return this._load(`/articles`, {params: {offset, limit, type}});
+  async getArticles({offset, limit, source}) {
+    return this._load(`/articles`, {params: {offset, limit, source}});
   }
 
   async getArticle(id) {
@@ -40,8 +37,8 @@ class API {
     return this._load(`/categories`, {params: {withArticles}});
   }
 
-  async getCategoryArticles({id, limit, type}) {
-    return this._load(`articles`, {params: {id, limit, type}});
+  async getCategoryArticles({id, limit, source}) {
+    return this._load(`articles`, {params: {id, limit, source}});
   }
 
   async createArticle(data) {
@@ -110,9 +107,12 @@ class API {
       data: {email, password}
     });
   }
-}
 
-const TIMEOUT = 1000;
+  async _load(url, options) {
+    const response = await this._http.request({url, ...options});
+    return response.data;
+  }
+}
 
 const port = process.env.API_PORT || 3000;
 const defaultUrl = `http://localhost:${port}/api/`;

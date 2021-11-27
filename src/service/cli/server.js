@@ -31,9 +31,7 @@ app.use((request, response) => {
   logger.error(`Route not found: ${request.url}`);
 });
 
-// next добавляем для того, чтобы не вызывать дефолтный обработчик 500й
-// eslint-disable-next-line
-app.use((error, request, response, next) => {
+app.use((error, request, response, _next) => {
   console.error(error.stack);
   logger.error(`An error occured on processing request: ${error.message}`);
   return response.status(StatusCode.SERVERERROR).send(ServerMessages.SERVER_ERROR);

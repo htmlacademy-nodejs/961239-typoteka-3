@@ -1,18 +1,18 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {URL, TypeOfLimits} = require(`./../../constants`);
+const {URL, Source} = require(`./../../constants`);
 const articlesRouter = new Router();
 const {getAPI} = require(`./../api`);
 const upload = require(`./../middlewares/upload`);
 const csrf = require(`csurf`);
 const {auth, isAuthorAuth} = require(`./../middlewares/auth`);
 
+const CATEGORY_ARTICLES_PER_PAGE = 8;
+
 const api = getAPI();
 
 const csrfProtection = csrf({cookie: true});
-
-const CATEGORY_ARTICLES_PER_PAGE = 8;
 
 const collectCategories = async (body) => {
   const categories = await api.getCategories();
@@ -41,7 +41,7 @@ articlesRouter.get(URL.ARTICLESURL.CATEGORY, async (request, response) => {
   const {id} = request.params;
   const {user} = request.session;
   const categories = await api.getCategories(true);
-  const articles = await api.getCategoryArticles({id, limit: CATEGORY_ARTICLES_PER_PAGE, type: TypeOfLimits.CATEGORIES});
+  const articles = await api.getCategoryArticles({id, limit: CATEGORY_ARTICLES_PER_PAGE, source: Source.CATEGORIES});
   const activeCategory = categories.find((category) => category.id === parseInt(id, 10));
   response.render(`articles/articles-by-category`, {
     activeCategoryId: activeCategory.id, activeCategoryName: activeCategory.name, categories, articles, user
@@ -147,7 +147,7 @@ articlesRouter.get(URL.ARTICLESURL.DELETE, isAuthorAuth, async (request, respons
 
 articlesRouter.get(URL.ARTICLESURL.DELETE_COMMENTS, isAuthorAuth, async (request, response) => {
   await api.deleteComment(request.params.id, request.params.commentId);
-  response.redirect(`${URL.MY}${URL.MYURLS.COMMENTS}`);
+  response.redirect(URL.MY + URL.MYURLS.COMMENTS);
 });
 
 articlesRouter.use((req, res) => {

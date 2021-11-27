@@ -10,15 +10,16 @@ const sequelize = require(`./../lib/sequelize`);
 const initDB = require(`./../lib/init-db`);
 const passwordUtils = require(`./../lib/password`);
 
+const THREE_DOTS_COUNT = 3;
+const SENTENCES_MAX_COUNT = 5;
+const DEFAULT_MOCK_COUNT = 1;
+
 const logger = getLogger({name: `api`});
 
 const readMockData = async (dataPath) => {
   const mockData = await fs.readFile(dataPath, `utf-8`);
   return mockData.split(`\n`);
 };
-
-const SENTENCES_MAX_COUNT = 5;
-const DEFAULT_MOCK_COUNT = 1;
 
 const generateMockComments = (count, comments, user) => {
   const commentsList = new Array(count).fill(` `).map(() =>({
@@ -31,14 +32,14 @@ const generateMockComments = (count, comments, user) => {
 const generateAnnounce = (sentences) => {
   const announce = shuffle(sentences).slice(0, getRandomInt(1, SENTENCES_MAX_COUNT)).join(` `);
   const shortAnnounce = announce.length > ANNOUNCE_SIZE ?
-    `${announce.slice(0, ANNOUNCE_SIZE - 3)}...` : announce;
+    `${announce.slice(0, ANNOUNCE_SIZE - THREE_DOTS_COUNT)}...` : announce;
   return shortAnnounce;
 };
 
 const generateFullText = (sentences) => {
   const fullText = shuffle(sentences).slice(0, getRandomInt(1, sentences.length)).join(` `);
   const shortFullText = fullText.length > FULLTEXT_SIZE ?
-    `${fullText.slice(0, FULLTEXT_SIZE - 3)}...` : fullText;
+    `${fullText.slice(0, FULLTEXT_SIZE - THREE_DOTS_COUNT)}...` : fullText;
   return shortFullText;
 };
 
